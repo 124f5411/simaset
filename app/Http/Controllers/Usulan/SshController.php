@@ -111,7 +111,7 @@ class SshController extends Controller
                 })
                 ->addColumn('rincian',function($ssh) {
                     return '
-                    <a href="#" class="btn btn-sm btn-success btn-icon-split">
+                    <a href="'.route('ssh.rincian').'" class="btn btn-sm btn-success btn-icon-split">
                         <span class="icon text-white-50">
                             <i class="fas fa-eye"></i>
                         </span>
