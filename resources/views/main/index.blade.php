@@ -207,7 +207,7 @@
                     $(".alert" ).removeClass( "alert-success" );
                     $("#massages").empty();
                     window.location.replace("{{ route('dashboard') }}");
-                }, 3000);
+                }, 1000);
             })
             .fail((errors) => {
                 let err = errors.responseJSON.errors;
