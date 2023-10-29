@@ -193,6 +193,11 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('ssh/valid/{id}',[SshController::class,'validasi'])->name('ssh.validasi');
     Route::put('ssh/tolak/{id}',[SshController::class,'tolak'])->name('ssh.reject');
 
+    Route::get('ssh/rincian/{id}',[SshController::class,'usulan'])->name('ssh.usulan');
+    Route::get('ssh/rincian/{id}',[SshController::class,'rincian'])->name('ssh.rincian');
+    Route::get('ssh/rincian/{id}',[SshController::class,'rincianShow'])->name('ssh.rincianShow');
+    Route::post('ssh/rincian/{id}',[SshController::class,'rincianStore'])->name('ssh.rincianStore');
+
     Route::get('asb/data',[AsbController::class,'data'])->name('asb.data');
     Route::get('asb/{id}',[AsbController::class,'show'])->name('asb.show');
     Route::post('asb',[AsbController::class,'store'])->name('asb.store');
