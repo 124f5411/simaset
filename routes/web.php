@@ -11,6 +11,7 @@ use App\Http\Controllers\Pengaturan\AdminController;
 use App\Http\Controllers\Pengaturan\BendaharaController;
 use App\Http\Controllers\Pengaturan\InstansiController;
 use App\Http\Controllers\Pengaturan\OperatorController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Referensi\hakTanahController;
 use App\Http\Controllers\Referensi\jenisController;
 use App\Http\Controllers\Referensi\KelompokController;
@@ -49,6 +50,8 @@ Route::post('/authenticate',[MainController::class,'c_auth'])->name('userCheck')
 Route::group(['middleware' => 'auth'], function (){
     Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
     Route::post('/logout',[DashboardController::class,'keluar'])->name('logout');
+
+    Route::put('profil/password/{id}',[ProfilController::class,'password'])->name('profil.password');
 
     Route::get('/kontrak',[KontrakController::class,'index'])->name('kontrak.index');
     Route::get('/kontrak/data',[KontrakController::class,'data'])->name('kontrak.data');

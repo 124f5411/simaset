@@ -65,6 +65,41 @@
         @csrf
     </form>
 
+    <div class="modal fade" id="modalPassword"  aria-labelledby="modalPasswordLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class="form-laporan" enctype="multipart/form-data">
+                    @csrf
+                    @method('post')
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalPasswordLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="password">Password Baru</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password_confirmation">Konfirmasi Password</label>
+                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                        </div>
+                        <div class="alert" role="alert" style="display: none">
+                            <p id="massages"></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('themes/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('themes/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -74,6 +109,52 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('themes/js/sb-admin-2.min.js') }}"></script>
+    <script src="{{ asset('js/validator.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#modalPassword').validator().on('submit', function (e){
+                if(! e.preventDefault()){
+                    $.post($('#modalPassword form').attr('action'), $('#modalPassword form').serialize())
+                    .done((response) => {
+                        $(".alert" ).addClass( "alert-success" );
+                        $(".alert").show();
+                        $("#massages").append(response);
+                        setTimeout(function(){
+                            $(".alert" ).removeClass( "alert-success" );
+                            $("#massages").empty();
+                            $('#modalPassword form')[0].reset();
+                            $('#modalPassword').modal('hide');
+                        }, 1000);
+                    })
+                    .fail((errors) => {
+                        let err = errors.responseJSON.errors;
+                        $(".alert" ).addClass( "alert-danger" );
+                        $(".alert").show();
+                        $.each(err, function(key, val) {
+                            $("#massages").append(val);
+                            setTimeout(function(){
+                                $(".alert").hide();
+                                $(".alert" ).removeClass( "alert-danger" );
+                                $("#massages").empty();
+                            }, 3000);
+                        });
+                    });
+                }
+            });
+        });
+        function _password(url){
+            $('#modalPassword').modal('show');
+            $('#modalPassword .modal-title').text('Ubah Password');
+
+            $('#modalPassword form')[0].reset();
+            $('#modalPassword form').attr('action',url);
+            $('#modalPassword [name=_method]').val('put');
+            $('#modalPassword [name=password]').val('');
+            $('#modalPassword').on('shown.bs.modal', function () {
+                $('#password').focus();
+            })
+        }
+    </script>
     @stack('scripits')
 </body>
 
