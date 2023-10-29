@@ -13,11 +13,11 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">RINCIAN STANDAR SATUAN HARGA (SSH)</h6>
                 @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
-                <a href="#" onclick="addSsh('{{ route('ssh.rincianStore') }}')" class="btn btn-primary btn-icon-split float-right">
+                <a href="#" onclick="addSsh('{{ route('ssh.rincianStore',decrypt(Request::segment(4))) }}')" class="btn btn-primary btn-icon-split float-right">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus-circle"></i>
                     </span>
-                    <span class="text">{{ $page }}</span>
+                    <span class="text">RINCIAN</span>
                 </a>
                 @endif
             </div>
@@ -71,8 +71,8 @@
 
     <script>
         let user_akses = "{{ Auth::user()->level }}";
+        let id_usulan = '{{decrypt(Request::segment(4))}}';
         let table;
-        let id_usulan = '{{Request::segment(3)}}';
         $(document).ready(function() {
             $('#id_kode').select2({
                 theme: 'bootstrap4',
@@ -90,7 +90,7 @@
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('ssh.usulan','') }}'+'/'+id_usulan;
+                    url: '{{ route('ssh.data_rincian','') }}'+'/'+id_usulan,
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
@@ -176,7 +176,7 @@
                 $('#id_kode').focus();
             })
 
-            let show = "{{route('ssh.show', '')}}"+"/"+id;
+            let show = "{{route('ssh.rincianShow', '')}}"+"/"+id;
             $.get(show)
             .done((response) => {
                 $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');

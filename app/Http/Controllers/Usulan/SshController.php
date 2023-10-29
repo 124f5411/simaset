@@ -15,9 +15,13 @@ class SshController extends Controller
 {
     public function index(){
         if(Auth::user()->level == 'aset'){
+            $instansi = DataOpd::all();
             return view('usulan.ssh.aset',[
                 'title' => 'Usulan',
-                'page' => 'SSH'
+                'page' => 'SSH',
+                'drops' => [
+                    'instansi' => $instansi
+                ]
             ]);
         }
         return view('usulan.ssh.index',[
@@ -41,12 +45,63 @@ class SshController extends Controller
         ]);
     }
 
-    public function usulan($id){
-        if(Auth::user()->level == 'aset'){
-            $ssh = dataSsh::where('id_kelompok','=','1')->whereIn('status',['1','2'])->get();
-        }else{
-            $ssh = dataSsh::where('id_usulan','=',$id)->get();
-        }
+    public function datas(){
+        $ssh = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status')
+                        ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
+                        ->where('usulan_ssh.id_kelompok','=',1)
+                        ->whereIn('usulan_ssh.status',['1','2'])->get();
+
+        return datatables()->of($ssh)
+                ->addIndexColumn()
+                ->addColumn('q_opd',function($ssh) {
+                    return getValue("opd","data_opd","id = ".$ssh->id_opd);
+                })
+                ->addColumn('uraian',function($ssh) {
+                    return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('satuan',function($ssh){
+                    return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
+                })
+                ->addColumn('dokumen',function($ssh){
+                    $dok = '
+                    <div class="btn-group">
+                        <a href="'.asset('upload/ssh/'.$ssh->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-file-pdf"></i>
+                            </span>
+                            <span class="text">PDF</span>
+                        </a>
+                    </div>
+                    ';
+                    return $dok;
+                })
+                ->addColumn('aksi', function($ssh){
+                    if(Auth::user()->level == 'aset'){
+                        if($ssh->status == '1'){
+                            $aksi = '
+                            <div class="btn-group">
+                                <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.rincianValidasi',$ssh->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                <a href="javascript:void(0)" onclick="tolakSsh(`'.route('ssh.rincianReject',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
+                            </div>
+                            ';
+                        }
+                        if($ssh->status == '2'){
+                            $aksi = '
+                            <div class="btn-group">
+                                <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.rincianUpdate',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                <a href="javascript:void(0)" onclick="hapusSsh(`'.route('ssh.rincianDestroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                            </div>
+                            ';
+                        }
+                    }
+                    return $aksi;
+                })
+                ->rawColumns(['aksi','dokumen'])
+                ->make(true);
+    }
+
+    public function data_rincian($id){
+        $ssh = dataSsh::where('id_usulan','=',$id)->get();
         return datatables()->of($ssh)
                 ->addIndexColumn()
                 ->addColumn('uraian',function($ssh) {
@@ -56,31 +111,12 @@ class SshController extends Controller
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
                 })
                 ->addColumn('aksi', function($ssh){
-                    if(Auth::user()->level == 'aset'){
-                        if($ssh->status == '1'){
-                            $aksi = '
-                            <div class="btn-group">
-                            <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.validasi',$ssh->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
-                            <a href="javascript:void(0)" onclick="tolakSsh(`'.route('ssh.reject',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
-                            </div>
-                            ';
-                        }
-                        if($ssh->status == '2'){
-                            $aksi = '
-                            <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="editSsh(`'.route('asb.update',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
-                                <a href="javascript:void(0)" onclick="hapusSsh(`'.route('asb.destroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
-                            </div>
-                            ';
-                        }
-                    }
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){
                         if($ssh->status == '0'){
                             $aksi = '
                             <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.update',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
-                                <a href="javascript:void(0)" onclick="hapusSsh(`'.route('ssh.destroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
-                                <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.validasi',$ssh->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.rincianUpdate',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                <a href="javascript:void(0)" onclick="hapusSsh(`'.route('ssh.rincianDestroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
                             </div>
                             ';
                         }
@@ -107,11 +143,38 @@ class SshController extends Controller
                     return getValue("opd","data_opd","id = ".$ssh->id_opd);
                 })
                 ->addColumn('dokumen',function($ssh) {
-                    return (!is_null($ssh->ssd_dokumen)) ? "OK" : "-";
+                    if(is_null($ssh->ssd_dokumen)){
+                        $aksi = '
+                            <a href="javascript:void(0)" onclick="sshUpload(`'.route('ssh.upload',$ssh->id).'`)" class="btn btn-sm btn-success btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="text">Upload</span>
+                            </a>
+                        ';
+                    }else{
+                        $aksi = '
+                        <div class="btn-group">
+                            <a href="'.asset('upload/ssh/'.$ssh->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-file-pdf"></i>
+                                </span>
+                                <span class="text">PDF</span>
+                            </a>
+                            <a href="javascript:void(0)" onclick="sshUpload(`'.route('ssh.upload',$ssh->id).'`)" class="btn btn-sm btn-success btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="text">Ubah</span>
+                            </a>
+                        </div>
+                        ';
+                    }
+                    return $aksi;
                 })
                 ->addColumn('rincian',function($ssh) {
                     return '
-                    <a href="'.route('ssh.rincian',Request::segment(3)).'" class="btn btn-sm btn-success btn-icon-split">
+                    <a href="'.route('ssh.rincian',encrypt($ssh->id)).'" class="btn btn-sm btn-success btn-icon-split">
                         <span class="icon text-white-50">
                             <i class="fas fa-eye"></i>
                         </span>
@@ -122,14 +185,22 @@ class SshController extends Controller
                 ->addColumn('aksi', function($ssh){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){
                         if($ssh->status == '0'){
-                            $aksi = '
-                            <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.update',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
-                                <a href="javascript:void(0)" onclick="hapusSsh(`'.route('ssh.destroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
-                                <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.validasi',$ssh->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
-                                <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.validasi',$ssh->id).'`)" class="btn btn-sm btn-success" title="Upload"><i class="fas fa-upload"></i></a>
-                            </div>
-                            ';
+                            if(is_null($ssh->ssd_dokumen)){
+                                $aksi = '
+                                    <div class="btn-group">
+                                        <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.update',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                        <a href="javascript:void(0)" onclick="hapusSsh(`'.route('ssh.destroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                    ';
+                            }else{
+                                $aksi = '
+                                <div class="btn-group">
+                                    <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.update',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                    <a href="javascript:void(0)" onclick="hapusSsh(`'.route('ssh.destroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                                    <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.validasi',$ssh->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                </div>
+                                ';
+                            }
                         }
                         if($ssh->status == '1'){
                             $aksi = 'Proccesed';
@@ -141,7 +212,7 @@ class SshController extends Controller
                     }
                     return $aksi;
                 })
-                ->rawColumns(['aksi','rincian'])
+                ->rawColumns(['aksi','rincian','dokumen'])
                 ->make(true);
     }
 
@@ -190,11 +261,16 @@ class SshController extends Controller
         ];
 
         dataSsh::create($data);
-        return response()->json('usulan ssh berhasil ditambahkan',200);
+        return response()->json('item ssh berhasil ditambahkan',200);
     }
 
     public function show($id){
         $ssh = UsulanSsh::find($id);
+        return response()->json($ssh);
+    }
+
+    public function rincianShow($id){
+        $ssh = dataSsh::find($id);
         return response()->json($ssh);
     }
 
@@ -218,10 +294,90 @@ class SshController extends Controller
         return response()->json('SSH berhasil diubah',200);
     }
 
+    public function rincianUpdate(Request $request,$id){
+        $ssh = dataSsh::find($id);
+        $field = [
+            'id_kode' => ['required'],
+            'spesifikasi' => ['required'],
+            'id_satuan' => ['required'],
+            'harga' => ['required']
+        ];
+
+        $pesan = [
+            'id_kode.required' => 'Barang tidak boleh kosong <br />',
+            'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
+            'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
+            'harga.required' => 'Harga tidak boleh kosong <br />',
+        ];
+        $this->validate($request, $field, $pesan);
+        $data = [
+            'id_kode' => $request->id_kode,
+            'spesifikasi' => $request->spesifikasi,
+            'harga' => $request->harga,
+            'id_satuan' => $request->id_satuan
+        ];
+
+        $ssh->update($data);
+        return response()->json('item ssh berhasil diubah',200);
+    }
+
     public function destroy($id){
         $ssh = UsulanSsh::find($id);
         $ssh->delete();
         return response()->json('SSH berhasil dihapus', 204);
+    }
+
+    public function rincianDestroy($id){
+        $ssh = dataSsh::find($id);
+        $ssh->delete();
+        return response()->json('item ssh berhasil dihapus', 204);
+    }
+
+    public function upload(Request $request,$id){
+        $ssh = UsulanSsh::find($id);
+        $filter = [
+            'ssd_dokumen' => 'required|mimes:pdf',
+        ];
+        $pesan = [
+            'ssd_dokumen.required' => 'Dokumen SSH tidak boleh kosong <br />',
+            'ssd_dokumen.mimes' => 'Dokumen SSH harus berformat PDF <br />'
+        ];
+        $this->validate($request, $filter, $pesan);
+        $dok = $request->file('ssd_dokumen');
+        $nm = 'ssh-'.date('Y').'-'.date('Ymdhis').'.'.$dok->getClientOriginalExtension();
+        if(!is_null($ssh->ssd_dokumen)){
+            unlink(public_path()."/upload/ssh/".$ssh->ssd_dokumen);
+        }
+        $dok->move(public_path('upload/ssh'),$nm);
+        $data = [
+            'ssd_dokumen' => $nm
+        ];
+        $ssh->update($data);
+        return response()->json('dokumen ssh berhasil diupload',200);
+    }
+
+    public function validasi($id){
+        $ssh = UsulanSsh::find($id);
+        if(Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara'){
+            $verif = ['status' => '1'];
+            $respon = 'usulan SSH berhasil dikirim ke admin Aset';
+            $item_status = ['status' => '1'];
+            dataSsh::where('id_usulan','=',$ssh->id)->update($item_status);
+        }elseif(Auth::user()->level == 'aset'){
+            $verif = ['status' => '2'];
+            $respon = 'usulan SSH telah diterima';
+        }
+        $ssh->update($verif);
+        return response()->json($respon,200);
+    }
+
+    public function tolak($id){
+        $ssh = UsulanSsh::find($id);
+        $data = [
+            'status' => '0'
+        ];
+        $ssh->update($data);
+        return response()->json('usulan SSH berhasil dikembalikan',200);
     }
 
 }

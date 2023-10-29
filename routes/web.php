@@ -185,6 +185,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('kode_barang/{id}',[KodeBarangController::class,'update'])->name('kode_barang.update');
     Route::delete('kode_barang/{id}',[KodeBarangController::class,'destroy'])->name('kode_barang.destroy');
 
+    Route::get('ssh/datas',[SshController::class,'datas'])->name('ssh.datas');
     Route::get('ssh/data',[SshController::class,'data'])->name('ssh.data');
     Route::get('ssh/{id}',[SshController::class,'show'])->name('ssh.show');
     Route::post('ssh',[SshController::class,'store'])->name('ssh.store');
@@ -192,11 +193,19 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('ssh/{id}',[SshController::class,'destroy'])->name('ssh.destroy');
     Route::put('ssh/valid/{id}',[SshController::class,'validasi'])->name('ssh.validasi');
     Route::put('ssh/tolak/{id}',[SshController::class,'tolak'])->name('ssh.reject');
+    Route::put('ssh/upload/{id}',[SshController::class,'upload'])->name('ssh.upload');
 
-    Route::get('ssh/rincian/{id}',[SshController::class,'usulan'])->name('ssh.usulan');
+
+    Route::get('ssh/rincian/{id}',[SshController::class,'data_rincian'])->name('ssh.data_rincian');
     Route::get('ssh/rincian/item/{id}',[SshController::class,'rincian'])->name('ssh.rincian');
-    Route::get('ssh/rincian/{id}',[SshController::class,'rincianShow'])->name('ssh.rincianShow');
+    Route::get('ssh/rincian/show/{id}',[SshController::class,'rincianShow'])->name('ssh.rincianShow');
     Route::post('ssh/rincian/{id}',[SshController::class,'rincianStore'])->name('ssh.rincianStore');
+    Route::put('ssh/rincian/{id}',[SshController::class,'rincianUpdate'])->name('ssh.rincianUpdate');
+    Route::delete('ssh/rincian/{id}',[SshController::class,'rincianDestroy'])->name('ssh.rincianDestroy');
+    Route::put('ssh/rincian/valid/{id}',[SshController::class,'rincianValidasi'])->name('ssh.rincianValidasi');
+    Route::put('ssh/rincian/tolak/{id}',[SshController::class,'rincianTolak'])->name('ssh.rincianReject');
+
+
 
     Route::get('asb/data',[AsbController::class,'data'])->name('asb.data');
     Route::get('asb/{id}',[AsbController::class,'show'])->name('asb.show');

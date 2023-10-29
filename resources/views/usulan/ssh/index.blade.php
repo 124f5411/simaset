@@ -29,7 +29,7 @@
                                 <th>#</th>
                                 <th>OPD</th>
                                 <th>Tahun</th>
-                                <th>Dokumen</th>
+                                <th style="width: 200px">Dokumen</th>
                                 <th style="width: 100px">Rincian</th>
                                 <th style="width: 150px">Aksi</th>
                             </tr>
@@ -42,6 +42,7 @@
     </div>
 </div>
 @includeIf('form.usulan.ssh.index')
+@includeIf('form.usulan.ssh.upload')
 @endsection
 
 @push('css')
@@ -135,6 +136,47 @@
                 }
             });
 
+            $('#modalUpload').validator().on('submit', function (e){
+                if(! e.preventDefault()){
+                    let url_upload = $('#modalUpload form').attr('action');
+                    $.ajax({
+                                url : url_upload,
+                                type : 'POST',
+                                data : new FormData($('.form-import')[0]),
+                                async : false,
+                                processData : false,
+                                contentType : false,
+                            })
+                    .done((response) => {
+                        $(".alert" ).addClass( "alert-success" );
+                        $(".alert").show();
+                        $("#massages-imp").append(response);
+                        setTimeout(function(){
+                            $(".alert" ).removeClass( "alert-success" );
+                            $("#massages-imp").empty();
+                            $('#modalUpload form')[0].reset();
+                            $('#modalUpload').modal('hide');
+                        }, 3000);
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        let err = errors.responseJSON.errors;
+                        $(".alert" ).addClass( "alert-danger" );
+                        $(".alert").show();
+                        $.each(err, function(key, val) {
+                            $("#massages-imp").append(val);
+                            setTimeout(function(){
+                                $(".alert").hide();
+                                $(".alert" ).removeClass( "alert-danger" );
+                                $("#massages-imp").empty();
+                                $('#modalUpload form')[0].reset();
+                                $('#modalUpload').modal('hide');
+                            }, 5000);
+                        });
+                    });
+                }
+            });
+
         });
 
         function addSsh(url){
@@ -147,6 +189,19 @@
             $('#modalSsh [name=jenis]').val('');
             $('#modalSsh').on('shown.bs.modal', function () {
                 $('#tahun').focus();
+            })
+        }
+
+        function sshUpload(url){
+            $('#modalUpload').modal('show');
+            $('#modalUpload .modal-title').text('Upload dokume SSH');
+
+            $('#modalUpload form')[0].reset();
+            $('#modalUpload form').attr('action',url);
+            $('#modalUpload [name=_method]').val('put');
+            $('#modalUpload [name=ssd_dokumen]').val('');
+            $('#modalUpload').on('shown.bs.modal', function () {
+                $('#ssd_dokumen').focus();
             })
         }
 
@@ -184,6 +239,28 @@
                         })
                         .fail((errors) => {
                             alert('Gagal hapus data');
+                            return;
+                        });
+                }
+        }
+
+        function verifSsh(url){
+            let cnfrm;
+            if(user_akses == 'operator'){
+                cnfrm = 'Yakin? data akan dikirimka untuk validasi.';
+            }else if(user_akses == 'aset'){
+                cnfrm = 'yakin data usulan telah benar?';
+            }
+            if (confirm(cnfrm)) {
+                    $.post(url, {
+                            '_token': $('[name=csrf-token]').attr('content'),
+                            '_method': 'put'
+                        })
+                        .done((response) => {
+                            table.ajax.reload();
+                        })
+                        .fail((errors) => {
+                            alert('Gagal kirim data');
                             return;
                         });
                 }
