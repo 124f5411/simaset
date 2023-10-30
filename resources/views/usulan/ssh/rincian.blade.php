@@ -13,8 +13,14 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">RINCIAN STANDAR SATUAN HARGA (SSH)</h6>
                 @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
+                    <a href="#" onclick="window.open('{{ route('ssh.export',Request::segment(4)) }}','Title','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720');" class="btn btn-danger btn-icon-split mt-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span class="text">EXPORT</span>
+                    </a>
                     @if ($usulan_status == '0')
-                        <a href="#" onclick="addSsh('{{ route('ssh.rincianStore',decrypt(Request::segment(4))) }}')" class="btn btn-primary btn-icon-split float-right">
+                        <a href="#" onclick="addSsh('{{ route('ssh.rincianStore',decrypt(Request::segment(4))) }}')" class="btn btn-primary btn-icon-split float-right mt-2">
                             <span class="icon text-white-50">
                                 <i class="fas fa-plus-circle"></i>
                             </span>
@@ -34,6 +40,7 @@
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th>Harga</th>
+                                <th>Rekening Belanja</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -69,6 +76,9 @@
             $('#id_kode').select2({
                 theme: 'bootstrap4',
             });
+            $('#id_rekening').select2({
+                theme: 'bootstrap4',
+            });
             $('#id_satuan').select2({
                 theme: 'bootstrap4',
             });
@@ -91,6 +101,7 @@
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
+                    {data:'rekening_belanja'},
                     {data:'aksi', searchable:false, sortable:false},
                 ]
             });
@@ -107,6 +118,7 @@
                             $("#massages").empty();
                             $('#modalSsh [name=id_kode]').val('').trigger('change');
                             $('#modalSsh [name=id_satuan]').val('').trigger('change');
+                            $('#modalSsh [name=id_rekening]').val('').trigger('change');
                             $('#modalSsh form')[0].reset();
                             $('#modalSsh').modal('hide');
                         }, 1000);
@@ -162,6 +174,7 @@
             $.get(show)
             .done((response) => {
                 $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');
+                $('#modalSsh [name=id_rekening]').val(response.id_rekening).trigger('change');
                 $('#modalSsh [name=spesifikasi]').val(response.spesifikasi);
                 $('#modalSsh [name=id_satuan]').val(response.id_satuan).trigger('change');
                 $('#modalSsh [name=harga]').val(response.harga);

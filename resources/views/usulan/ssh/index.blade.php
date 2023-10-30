@@ -13,6 +13,12 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">STANDAR SATUAN HARGA (SSH)</h6>
                 @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
+                <a href="{{ asset('download/dokumen/SURAT-PERNYATAAN-USULAN.docx') }}" target="_blank" class="btn btn-primary btn-icon-split mt-2">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-file-word"></i>
+                    </span>
+                    <span class="text">Pakta Integritas</span>
+                </a>
                 <a href="#" onclick="addSsh('{{ route('ssh.store') }}')" class="btn btn-primary btn-icon-split float-right">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus-circle"></i>

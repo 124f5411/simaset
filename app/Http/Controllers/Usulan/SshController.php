@@ -7,9 +7,12 @@ use App\Models\DataOpd;
 use App\Models\DataSatuan;
 use App\Models\dataSsh;
 use App\Models\KodeBarang;
+use App\Models\RekeningBelanja;
+use App\Models\TtdSetting;
 use App\Models\UsulanSsh;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class SshController extends Controller
 {
@@ -33,6 +36,7 @@ class SshController extends Controller
     public function rincian($id){
         $usulan = UsulanSsh::find(decrypt($id));
         $kode_barang = KodeBarang::where('kelompok','=','1')->get();
+        $rekening = RekeningBelanja::all();
         $satuan = DataSatuan::all();
         $instansi = DataOpd::all();
         return view('usulan.ssh.rincian',[
@@ -40,6 +44,7 @@ class SshController extends Controller
             'page' => 'SSH',
             'drops' => [
                 'kode_barang' => $kode_barang,
+                'rekening' => $rekening,
                 'instansi' => $instansi,
                 'satuan' => $satuan
             ],
@@ -111,6 +116,9 @@ class SshController extends Controller
                 })
                 ->addColumn('kode_barang',function($ssh) {
                     return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('rekening_belanja',function($ssh) {
+                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->id_rekening);
                 })
                 ->addColumn('satuan',function($ssh){
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
@@ -244,6 +252,7 @@ class SshController extends Controller
     public function rincianStore(Request $request,$id){
         $field = [
             'id_kode' => ['required'],
+            'id_rekening' => ['required'],
             'spesifikasi' => ['required'],
             'id_satuan' => ['required'],
             'harga' => ['required']
@@ -251,6 +260,7 @@ class SshController extends Controller
 
         $pesan = [
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
+            'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
@@ -258,6 +268,7 @@ class SshController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
+            'id_rekening' => $request->id_rekening,
             'id_usulan' => $id,
             'spesifikasi' => $request->spesifikasi,
             'harga' => $request->harga,
@@ -303,6 +314,7 @@ class SshController extends Controller
         $ssh = dataSsh::find($id);
         $field = [
             'id_kode' => ['required'],
+            'id_rekening' => ['required'],
             'spesifikasi' => ['required'],
             'id_satuan' => ['required'],
             'harga' => ['required']
@@ -310,6 +322,7 @@ class SshController extends Controller
 
         $pesan = [
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
+            'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
@@ -317,6 +330,7 @@ class SshController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
+            'id_rekening' => $request->id_rekening,
             'spesifikasi' => $request->spesifikasi,
             'harga' => $request->harga,
             'id_satuan' => $request->id_satuan
@@ -383,6 +397,24 @@ class SshController extends Controller
         ];
         $ssh->update($data);
         return response()->json('usulan SSH berhasil dikembalikan',200);
+    }
+
+    public function exportPDF($id){
+        $ssh = dataSsh::where('id_usulan','=',decrypt($id))->get();
+        $tahun = getValue("tahun","usulan_ssh"," id = ".decrypt($id));
+        $ttd = TtdSetting::where('id_opd','=',Auth::user()->id_opd)->first();
+        $opd = getValue("opd","data_opd"," id =".Auth::user()->id_opd);
+        $data = [
+            'tahun' => $tahun,
+            'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
+            'title' => "USULAN STANDAR SATUAN HARGA TAHUN ANGGARAN",
+            'ssh' => $ssh,
+            'ttd' => $ttd,
+            'opd' => $opd
+        ];
+        $pdf = PDF::loadView('pdf.ssh',$data);
+        $pdf->setPaper('F4', 'landscape');
+        return $pdf->stream('ssh-'.Auth::user()->id_opd.'-TA-'.$tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
 }

@@ -37,6 +37,15 @@
                         <label for="harga">Harga</label>
                         <input type="text" class="form-control" id="harga" name="harga" required>
                     </div>
+                    <div class="form-group">
+                        <label for="id_rekening">Rekening Belanja</label>
+                        <select class="form-control" id="id_rekening" name="id_rekening">
+                            <option value="">Cari Akun Belanja</option>
+                                @foreach ($drops['rekening'] as $value)
+                                    <option value="{{ $value->id }}">{{ $value->nm_akun }}</option>
+                                @endforeach
+                        </select>
+                    </div>
                     <div class="alert" role="alert" style="display: none">
                         <p id="massages"></p>
                     </div>

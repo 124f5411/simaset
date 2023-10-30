@@ -213,6 +213,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('ssh/valid/{id}',[SshController::class,'validasi'])->name('ssh.validasi');
     Route::put('ssh/tolak/{id}',[SshController::class,'tolak'])->name('ssh.reject');
     Route::put('ssh/upload/{id}',[SshController::class,'upload'])->name('ssh.upload');
+    Route::get('ssh/pdf/{id}',[SshController::class,'exportPDF'])->name('ssh.export');
 
 
     Route::get('ssh/rincian/{id}',[SshController::class,'data_rincian'])->name('ssh.data_rincian');
