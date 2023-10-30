@@ -76,7 +76,7 @@ class RekeningBelanjaController extends Controller
 
         $data = [
             'kode_akun' => $request->kode_akun,
-            'nm_akun' => $request->uraian
+            'nm_akun' => $request->nm_akun
         ];
 
         $rekening->update($data);
