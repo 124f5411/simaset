@@ -13,31 +13,23 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">RINCIAN STANDAR SATUAN HARGA (SSH)</h6>
                 @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
-                <a href="#" onclick="addSsh('{{ route('ssh.rincianStore',decrypt(Request::segment(4))) }}')" class="btn btn-primary btn-icon-split float-right">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-plus-circle"></i>
-                    </span>
-                    <span class="text">RINCIAN</span>
-                </a>
+                    @if ($usulan_status == '0')
+                        <a href="#" onclick="addSsh('{{ route('ssh.rincianStore',decrypt(Request::segment(4))) }}')" class="btn btn-primary btn-icon-split float-right">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-plus-circle"></i>
+                            </span>
+                            <span class="text">RINCIAN</span>
+                        </a>
+                    @endif
                 @endif
             </div>
             <div class="card-body">
-                @if (Auth::user()->level == 'aset')
-                <div class="form-group">
-                    <label><strong>Filter :</strong></label>
-                    <select id='opd' class="form-control" style="width:auto">
-                        <option value=" ">Semua</option>
-                        @foreach ($drops['instansi'] as $value)
-                            <option value="{{$value->opd}}">{{$value->opd}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                @endif
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataSsh" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
@@ -94,23 +86,13 @@
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
+                    {data:'kode_barang'},
                     {data:'uraian'},
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
                     {data:'aksi', searchable:false, sortable:false},
                 ]
-            }).column(1).visible(false);
-
-            $('#opd').change(function() {
-                // if($(this).val() != ''){
-                //     table.column(1).search($(this).val()).draw();
-                // }else{
-                //     table.ajax.reload();
-                // }
-                if($(this).val() != ''){
-                    table.column(1).search($(this).val()).draw();
-                }
             });
 
             $('#modalSsh').validator().on('submit', function (e){

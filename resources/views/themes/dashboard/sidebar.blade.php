@@ -104,16 +104,17 @@
             </a>
             <div id="collapseCog" class="collapse {{ ($title == "Pengaturan") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    @if (Auth::user()->level == 'admin')
+                    @if (Auth::user()->level == "admin")
                         <a class="collapse-item" href="{{ route('admin.index') }}">Admin</a>
                         <a class="collapse-item" href="{{ route('adminaset.index') }}">Admin Aset</a>
                         <a class="collapse-item" href="{{ route('bendahara.index') }}">Bendahara</a>
+                        <a class="collapse-item {{ ($page == "Instansi") ? "active" : "" }}" href="{{ route('instansi.index') }}">Instansi</a>
                     @endif
                     @if (Auth::user()->level == "admin" || Auth::user()->level == "bendahara")
                         <a class="collapse-item" href="{{ route('operator.index') }}">Operator</a>
                     @endif
-                    @if (Auth::user()->level == "admin")
-                        <a class="collapse-item {{ ($page == "Instansi") ? "active" : "" }}" href="{{ route('instansi.index') }}">Instansi</a>
+                    @if (Auth::user()->level == "bendahara")
+                        <a class="collapse-item {{ ($page == "PB") ? "active" : "" }}" href="{{ route('pb.index') }}">Pengguna Barang</a>
                     @endif
                 </div>
             </div>

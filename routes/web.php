@@ -11,6 +11,7 @@ use App\Http\Controllers\Pengaturan\AdminController;
 use App\Http\Controllers\Pengaturan\BendaharaController;
 use App\Http\Controllers\Pengaturan\InstansiController;
 use App\Http\Controllers\Pengaturan\OperatorController;
+use App\Http\Controllers\Pengaturan\TtdController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Referensi\hakTanahController;
 use App\Http\Controllers\Referensi\jenisController;
@@ -65,6 +66,11 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('pengaturan/adminaset',[AdminAsetController::class,'index'])->name('adminaset.index');
     Route::get('pengaturan/bendahara',[BendaharaController::class,'index'])->name('bendahara.index');
     Route::get('pengaturan/operator',[OperatorController::class,'index'])->name('operator.index');
+    Route::get('pengaturan/pb',[TtdController::class,'index'])->name('pb.index');
+
+    Route::get('pb/show/{id}',[TtdController::class,'show'])->name('ttd.show');
+    Route::post('pb/store',[TtdController::class,'store'])->name('ttd.store');
+    Route::put('pb/update/{id}',[TtdController::class,'update'])->name('ttd.update');
 
     Route::get('admin/data',[AdminController::class,'data'])->name('admin.data');
     Route::get('admin/{id}',[AdminController::class,'show'])->name('admin.show');

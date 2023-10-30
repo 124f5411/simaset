@@ -31,6 +31,7 @@ class SshController extends Controller
     }
 
     public function rincian($id){
+        $usulan = UsulanSsh::find(decrypt($id));
         $kode_barang = KodeBarang::where('kelompok','=','1')->get();
         $satuan = DataSatuan::all();
         $instansi = DataOpd::all();
@@ -41,7 +42,8 @@ class SshController extends Controller
                 'kode_barang' => $kode_barang,
                 'instansi' => $instansi,
                 'satuan' => $satuan
-            ]
+            ],
+            'usulan_status' => $usulan->status
         ]);
     }
 
@@ -106,6 +108,9 @@ class SshController extends Controller
                 ->addIndexColumn()
                 ->addColumn('uraian',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('kode_barang',function($ssh) {
+                    return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
                 ->addColumn('satuan',function($ssh){
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
