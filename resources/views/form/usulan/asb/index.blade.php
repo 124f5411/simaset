@@ -1,22 +1,22 @@
-<div class="modal fade" id="modalUpload"  aria-labelledby="modalUploadLabel" aria-hidden="true">
+<div class="modal fade" id="modalAsb"  aria-labelledby="modalAsbLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-import" enctype="multipart/form-data">
+            <form class="form-laporan" enctype="multipart/form-data">
                 @csrf
                 @method('post')
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalUploadLabel">Modal title</h5>
+                    <h5 class="modal-title" id="modalAsbLabel">Modal title</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="ssd_dokumen">Upload Dokumen SSH</label>
-                        <input type="file" class="form-control" id="ssd_dokumen" name="ssd_dokumen" required>
+                        <label for="spesifikasi">Tahun</label>
+                        <input type="year" class="form-control" id="tahun" name="tahun" required>
                     </div>
                     <div class="alert" role="alert" style="display: none">
-                        <p id="massages-imp"></p>
+                        <p id="massages"></p>
                     </div>
                 </div>
                 <div class="modal-footer">

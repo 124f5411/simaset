@@ -226,7 +226,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('ssh/rincian/tolak/{id}',[SshController::class,'rincianTolak'])->name('ssh.rincianReject');
 
 
-
+    Route::get('asb/datas',[AsbController::class,'datas'])->name('asb.datas');
     Route::get('asb/data',[AsbController::class,'data'])->name('asb.data');
     Route::get('asb/{id}',[AsbController::class,'show'])->name('asb.show');
     Route::post('asb',[AsbController::class,'store'])->name('asb.store');
@@ -234,6 +234,17 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('asb/{id}',[AsbController::class,'destroy'])->name('asb.destroy');
     Route::put('asb/valid/{id}',[AsbController::class,'validasi'])->name('asb.validasi');
     Route::put('asb/tolak/{id}',[AsbController::class,'tolak'])->name('asb.reject');
+    Route::put('asb/upload/{id}',[AsbController::class,'upload'])->name('asb.upload');
+    Route::get('asb/pdf/{id}',[AsbController::class,'exportPDF'])->name('asb.export');
+
+    Route::get('asb/rincian/{id}',[AsbController::class,'data_rincian'])->name('asb.data_rincian');
+    Route::get('asb/rincian/item/{id}',[AsbController::class,'rincian'])->name('asb.rincian');
+    Route::get('asb/rincian/show/{id}',[AsbController::class,'rincianShow'])->name('asb.rincianShow');
+    Route::post('asb/rincian/{id}',[AsbController::class,'rincianStore'])->name('asb.rincianStore');
+    Route::put('asb/rincian/{id}',[AsbController::class,'rincianUpdate'])->name('asb.rincianUpdate');
+    Route::delete('asb/rincian/{id}',[AsbController::class,'rincianDestroy'])->name('asb.rincianDestroy');
+    Route::put('asb/rincian/valid/{id}',[AsbController::class,'rincianValidasi'])->name('asb.rincianValidasi');
+    Route::put('asb/rincian/tolak/{id}',[AsbController::class,'rincianTolak'])->name('asb.rincianReject');
 
     Route::get('sbu/data',[SbuController::class,'data'])->name('sbu.data');
     Route::get('sbu/{id}',[SbuController::class,'show'])->name('sbu.show');

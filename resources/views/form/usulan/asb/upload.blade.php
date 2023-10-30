@@ -12,7 +12,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="ssd_dokumen">Upload Dokumen SSH</label>
+                        <label for="ssd_dokumen">Upload Dokumen ASB</label>
                         <input type="file" class="form-control" id="ssd_dokumen" name="ssd_dokumen" required>
                     </div>
                     <div class="alert" role="alert" style="display: none">
