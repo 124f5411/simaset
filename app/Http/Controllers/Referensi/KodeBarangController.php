@@ -29,8 +29,6 @@ class KodeBarangController extends Controller
 
     public function data(){
         $kode = KodeBarang::query();
-                // ->select('referensi_kode_barang.*','_kelompok_ssh.id as id_kelompok')
-                // ->join('_kelompok_ssh','referensi_kode_barang.kelompok','=','_kelompok_ssh.id');
         return datatables()->of($kode)
             ->addIndexColumn()
             ->addColumn('aksi', function($kode){
@@ -114,11 +112,6 @@ class KodeBarangController extends Controller
     }
 
     public function import(Request $request){
-
-        // $data = $request->file('dok_kode');
-        // $namafile = $data->getClientOriginalName();
-        // $data->move(public_path('KodeBarang'),$namafile);
-        // Excel::import(new KodeBarangImport,$request->file('dok_kode'));
         FacadesExcel::import(new KodeBarangImport,$request->file('dok_kode'));
 
         return response()->json('Kode barang berhasil diimport', 200);

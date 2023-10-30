@@ -89,6 +89,7 @@
                     <a class="collapse-item {{ ($page == "Jenis") ? "active" : "" }}" href="{{ route('jenis.index') }}">Jenis Aset</a>
                     <a class="collapse-item {{ ($page == "Kib") ? "active" : "" }}" href="{{ route('kib.index') }}">Master KIB</a>
                     <a class="collapse-item {{ ($page == "Kode") ? "active" : "" }}" href="{{ route('kode_barang.index') }}">Kode Barang</a>
+                    <a class="collapse-item {{ ($page == "Rekening") ? "active" : "" }}" href="{{ route('rekening_belanja.index') }}">Rekening Belanja</a>
                     <a class="collapse-item {{ ($page == "Kelompok") ? "active" : "" }}" href="{{ route('kelompok.index') }}">Kelompok SSH</a>
                 </div>
             </div>

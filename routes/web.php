@@ -18,12 +18,14 @@ use App\Http\Controllers\Referensi\jenisController;
 use App\Http\Controllers\Referensi\KelompokController;
 use App\Http\Controllers\Referensi\KibController;
 use App\Http\Controllers\Referensi\KodeBarangController;
+use App\Http\Controllers\Referensi\RekeningBelanjaController;
 use App\Http\Controllers\Referensi\SatuanController;
 use App\Http\Controllers\Referensi\statusTanahController;
 use App\Http\Controllers\Usulan\AsbController;
 use App\Http\Controllers\Usulan\HspkController;
 use App\Http\Controllers\Usulan\SbuController;
 use App\Http\Controllers\Usulan\SshController;
+use App\Models\RekeningBelanja;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -101,6 +103,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('referensi/status_tanah',[statusTanahController::class,'index'])->name('status_tanah.index');
     Route::get('referensi/hak_tanah',[hakTanahController::class,'index'])->name('hak_tanah.index');
     Route::get('referensi/kode_barang',[KodeBarangController::class,'index'])->name('kode_barang.index');
+    Route::get('referensi/rekening_belanja',[RekeningBelanjaController::class,'index'])->name('rekening_belanja.index');
     Route::get('referensi/kelompok',[KelompokController::class,'index'])->name('kelompok.index');
     Route::get('referensi/satuan',[SatuanController::class,'index'])->name('satuan.index');
 
@@ -193,6 +196,13 @@ Route::group(['middleware' => 'auth'], function (){
     Route::post('kode_barang/import',[KodeBarangController::class,'import'])->name('kode_barang.import');
     Route::put('kode_barang/{id}',[KodeBarangController::class,'update'])->name('kode_barang.update');
     Route::delete('kode_barang/{id}',[KodeBarangController::class,'destroy'])->name('kode_barang.destroy');
+
+    Route::get('rekening_belanja/data',[RekeningBelanjaController::class,'data'])->name('rekening_belanja.data');
+    Route::get('rekening_belanja/{id}',[RekeningBelanjaController::class,'show'])->name('rekening_belanja.show');
+    Route::post('rekening_belanja',[RekeningBelanjaController::class,'store'])->name('rekening_belanja.store');
+    Route::post('rekening_belanja/import',[RekeningBelanjaController::class,'import'])->name('rekening_belanja.import');
+    Route::put('rekening_belanja/{id}',[RekeningBelanjaController::class,'update'])->name('rekening_belanja.update');
+    Route::delete('rekening_belanja/{id}',[RekeningBelanjaController::class,'destroy'])->name('rekening_belanja.destroy');
 
     Route::get('ssh/datas',[SshController::class,'datas'])->name('ssh.datas');
     Route::get('ssh/data',[SshController::class,'data'])->name('ssh.data');
