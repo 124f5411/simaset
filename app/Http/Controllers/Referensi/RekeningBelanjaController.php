@@ -26,8 +26,8 @@ class RekeningBelanjaController extends Controller
             ->addColumn('aksi', function($rekening){
                 return '
                 <div class="btn-group">
-                    <a href="javascript:void(0)" onclick="editRekening(`'.route('rekening.update',$rekening->id).'`,'.$rekening->id.')" class="btn btn-warning" ><i class="fas fa-edit"></i></a>
-                    <a href="javascript:void(0)" onclick="hapusRekening(`'.route('rekening.destroy',$rekening->id).'`)" class="btn btn-danger" ><i class="fas fa-trash"></i></i></a>
+                    <a href="javascript:void(0)" onclick="editRekening(`'.route('rekening_belanja.update',$rekening->id).'`,'.$rekening->id.')" class="btn btn-warning" ><i class="fas fa-edit"></i></a>
+                    <a href="javascript:void(0)" onclick="hapusRekening(`'.route('rekening_belanja.destroy',$rekening->id).'`)" class="btn btn-danger" ><i class="fas fa-trash"></i></i></a>
                 </div>
                 ';
             })
