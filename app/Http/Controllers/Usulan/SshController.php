@@ -424,6 +424,7 @@ class SshController extends Controller
             'status' => '0'
         ];
         $ssh->update($data);
+        UsulanSsh::where('id','=',$ssh->id_usulan)->update($data);
         return response()->json('usulan SSH berhasil dikembalikan',200);
     }
 

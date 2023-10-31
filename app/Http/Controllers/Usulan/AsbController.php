@@ -423,6 +423,7 @@ class AsbController extends Controller
         $data = [
             'status' => '0'
         ];
+        UsulanSsh::where('id','=',$asb->id_usulan)->update($data);
         $asb->update($data);
         return response()->json('usulan ASB berhasil dikembalikan',200);
     }

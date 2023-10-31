@@ -415,6 +415,7 @@ class HspkController extends Controller
             'status' => '0'
         ];
         $hspk->update($data);
+        UsulanSsh::where('id','=',$hspk->id_usulan)->update($data);
         return response()->json('usulan HSPK berhasil dikembalikan',200);
     }
 

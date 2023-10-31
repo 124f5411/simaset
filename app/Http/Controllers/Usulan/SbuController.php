@@ -415,6 +415,7 @@ class SbuController extends Controller
             'status' => '0'
         ];
         $sbu->update($data);
+        UsulanSsh::where('id','=',$sbu->id_usulan)->update($data);
         return response()->json('usulan SBU berhasil dikembalikan',200);
     }
 
