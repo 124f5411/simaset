@@ -69,6 +69,20 @@ class SshController extends Controller
                 ->addColumn('q_opd',function($ssh) {
                     return getValue("opd","data_opd","id = ".$ssh->id_opd);
                 })
+                ->addColumn('usulan',function($ssh) {
+                    if(is_null($ssh->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($ssh->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($ssh->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
+                })
                 ->addColumn('uraian',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
@@ -80,6 +94,9 @@ class SshController extends Controller
                 })
                 ->addColumn('satuan',function($ssh){
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
+                })
+                ->addColumn('harga',function($ssh) {
+                    return "Rp. ".number_format($ssh->harga, 2, ",", ".");
                 })
                 ->addColumn('dokumen',function($ssh){
                     $dok = '
@@ -133,6 +150,9 @@ class SshController extends Controller
                 })
                 ->addColumn('satuan',function($ssh){
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
+                })
+                ->addColumn('harga',function($ssh) {
+                    return "Rp. ".number_format($ssh->harga, 2, ",", ".");
                 })
                 ->addColumn('aksi', function($ssh){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){
@@ -247,6 +267,20 @@ class SshController extends Controller
                         if($ssh->status == '2'){
                             $aksi = 'Valid';
                         }
+
+                        if($ssh->status == '3'){
+                            // $aksi = 'Ditolak, mohon cek rincian';
+                            $aksi = '
+                                <div class="btn-group">
+                                    <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.update',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                    <a href="javascript:void(0)" onclick="hapusSsh(`'.route('ssh.destroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                                    <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.validasi',$ssh->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                </div><br>
+                                <div class="badge badge-danger mt-2 text-wrap" style="width: 6rem;">
+                                    Ditolak<br>cek rincian
+                                </div>
+                                ';
+                        }
                     }
                     return $aksi;
                 })
@@ -334,8 +368,7 @@ class SshController extends Controller
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
             'induk_perubahan' => $request->induk_perubahan,
-            'id_kelompok' => 1,
-            'status' => '0'
+            'id_kelompok' => 1
         ];
         $ssh->update($data);
         return response()->json('SSH berhasil diubah',200);
@@ -438,13 +471,24 @@ class SshController extends Controller
         return response()->json('usulan SSH berhasil dikembalikan',200);
     }
 
-    public function rincianTolak($id){
+    public function rincianTolak(Request $request,$id){
         $ssh = dataSsh::find($id);
+        $filter = [
+            'keterangan' => 'required'
+        ];
+        $pesan = [
+            'keterangan.required' => 'Keterangan tolak tidak boleh kosong <br />'
+        ];
+        $this->validate($request, $filter, $pesan);
         $data = [
-            'status' => '0'
+            'status' => '0',
+            'keterangan' => $request->keterangan
         ];
         $ssh->update($data);
-        UsulanSsh::where('id','=',$ssh->id_usulan)->update($data);
+        $usulan = [
+            'status' => '3'
+        ];
+        UsulanSsh::where('id','=',$ssh->id_usulan)->update($usulan);
         return response()->json('usulan SSH berhasil dikembalikan',200);
     }
 
@@ -452,7 +496,6 @@ class SshController extends Controller
         $ssh = dataSsh::where('id_usulan','=',decrypt($id))->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
-        $tahun = getValue("tahun","usulan_ssh"," id = ".decrypt($id));
         $ttd = TtdSetting::where('id_opd','=',Auth::user()->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".Auth::user()->id_opd);
         $data = [
@@ -465,7 +508,7 @@ class SshController extends Controller
         ];
         $pdf = PDF::loadView('pdf.ssh',$data);
         $pdf->setPaper('F4', 'landscape');
-        return $pdf->stream('ssh-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('ssh-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
 }

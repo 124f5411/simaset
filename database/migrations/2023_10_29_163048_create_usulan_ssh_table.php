@@ -20,7 +20,7 @@ class CreateUsulanSshTable extends Migration
             $table->enum('induk_perubahan',['1','2'])->nullable();
             $table->string('ssd_dokumen')->nullable();
             $table->bigInteger('id_kelompok');
-            $table->enum('status',['0','1','2']);
+            $table->enum('status',['0','1','2','3']);
             $table->timestamps();
         });
     }

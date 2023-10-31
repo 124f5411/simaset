@@ -15,6 +15,14 @@
                         <label for="spesifikasi">Tahun</label>
                         <input type="year" class="form-control" id="tahun" name="tahun" required>
                     </div>
+                    <div class="form-group">
+                        <label for="induk_perubahan">Jenis Usulan</label>
+                        <select class="form-control" id="induk_perubahan" name="induk_perubahan">
+                            <option value="">Pilih Jenis</option>
+                            <option value="1">Induk</option>
+                            <option value="2">Perubahan</option>
+                        </select>
+                    </div>
                     <div class="alert" role="alert" style="display: none">
                         <p id="massages"></p>
                     </div>

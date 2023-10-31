@@ -70,6 +70,20 @@ class AsbController extends Controller
                 ->addColumn('q_opd',function($asb) {
                     return getValue("opd","data_opd","id = ".$asb->id_opd);
                 })
+                ->addColumn('usulan',function($asb) {
+                    if(is_null($asb->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($asb->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($asb->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
+                })
                 ->addColumn('uraian',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
@@ -81,6 +95,9 @@ class AsbController extends Controller
                 })
                 ->addColumn('satuan',function($asb){
                     return getValue("nm_satuan","data_satuan","id = ".$asb->id_satuan);
+                })
+                ->addColumn('harga',function($asb) {
+                    return "Rp. ".number_format($asb->harga, 2, ",", ".");
                 })
                 ->addColumn('dokumen',function($asb){
                     $dok = '
@@ -135,6 +152,9 @@ class AsbController extends Controller
                 ->addColumn('satuan',function($asb){
                     return getValue("nm_satuan","data_satuan","id = ".$asb->id_satuan);
                 })
+                ->addColumn('harga',function($asb) {
+                    return "Rp. ".number_format($asb->harga, 2, ",", ".");
+                })
                 ->addColumn('aksi', function($asb){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){
                         if($asb->status == '0'){
@@ -165,6 +185,20 @@ class AsbController extends Controller
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($asb) {
                     return getValue("opd","data_opd","id = ".$asb->id_opd);
+                })
+                ->addColumn('usulan',function($asb) {
+                    if(is_null($asb->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($asb->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($asb->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
                 })
                 ->addColumn('dokumen',function($asb) {
                     if(is_null($asb->ssd_dokumen)){
@@ -233,6 +267,20 @@ class AsbController extends Controller
                         if($asb->status == '2'){
                             $aksi = 'Valid';
                         }
+
+                        if($asb->status == '3'){
+                            // $aksi = 'Ditolak, mohon cek rincian';
+                            $aksi = '
+                                <div class="btn-group">
+                                    <a href="javascript:void(0)" onclick="editAsb(`'.route('asb.update',$asb->id).'`,'.$asb->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                    <a href="javascript:void(0)" onclick="hapusAsb(`'.route('asb.destroy',$asb->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                                    <a href="javascript:void(0)" onclick="verifAsb(`'.route('asb.validasi',$asb->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                </div><br>
+                                <div class="badge badge-danger mt-2 text-wrap" style="width: 6rem;">
+                                    Ditolak<br>cek rincian
+                                </div>
+                                ';
+                        }
                     }
                     return $aksi;
                 })
@@ -243,15 +291,18 @@ class AsbController extends Controller
     public function store(Request $request){
         $field = [
             'tahun' => ['required'],
+            'induk_perubahan' => ['required']
         ];
 
         $pesan = [
             'tahun.required' => 'Tahun ASB tidak boleh kosong <br />',
+            'induk_perubahan.required' => 'Jenis usulan tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
+            'induk_perubahan' => $request->induk_perubahan,
             'id_kelompok' => 3,
             'status' => '0'
         ];
@@ -304,18 +355,20 @@ class AsbController extends Controller
     public function update(Request $request,$id){
         $asb = UsulanSsh::find($id);
         $field = [
-            'tahun' => ['required']
+            'tahun' => ['required'],
+            'induk_perubahan' => ['required']
         ];
 
         $pesan = [
-            'tahun.required' => 'Tahun SSH boleh kosong <br />'
+            'tahun.required' => 'Tahun ASB tidak boleh kosong <br />',
+            'induk_perubahan.required' => 'Jenis usulan tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
-            'id_kelompok' => 3,
-            'status' => '0'
+            'induk_perubahan' => $request->induk_perubahan,
+            'id_kelompok' => 3
         ];
         $asb->update($data);
         return response()->json('ASB berhasil diubah',200);
@@ -418,31 +471,46 @@ class AsbController extends Controller
         return response()->json('usulan ASB berhasil dikembalikan',200);
     }
 
-    public function rincianTolak($id){
+    public function rincianTolak(Request $request,$id){
         $asb = dataAsb::find($id);
-        $data = [
-            'status' => '0'
+        $filter = [
+            'keterangan' => 'required'
         ];
-        UsulanSsh::where('id','=',$asb->id_usulan)->update($data);
+        $pesan = [
+            'keterangan.required' => 'Keterangan tolak tidak boleh kosong <br />'
+        ];
+        $this->validate($request, $filter, $pesan);
+        $data = [
+            'status' => '0',
+            'keterangan' => $request->keterangan
+        ];
         $asb->update($data);
+
+        $usulan = [
+            'status' => '3'
+        ];
+
+        UsulanSsh::where('id','=',$asb->id_usulan)->update($usulan);
         return response()->json('usulan ASB berhasil dikembalikan',200);
     }
 
     public function exportPDF($id){
         $asb = dataSsh::where('id_usulan','=',decrypt($id))->get();
-        $tahun = getValue("tahun","usulan_ssh"," id = ".decrypt($id));
+        $usulan = UsulanSsh::find(decrypt($id));
+        $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
+
         $ttd = TtdSetting::where('id_opd','=',Auth::user()->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".Auth::user()->id_opd);
         $data = [
-            'tahun' => $tahun,
+            'tahun' => $usulan->tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
-            'title' => "USULAN ANALISIS STANDAR BELANJA TAHUN ANGGARAN",
+            'title' => "USULAN ".strtoupper($jenis)." ANALISIS STANDAR BELANJA TAHUN ANGGARAN",
             'asb' => $asb,
             'ttd' => $ttd,
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.asb',$data);
         $pdf->setPaper('F4', 'landscape');
-        return $pdf->stream('asb-'.Auth::user()->id_opd.'-TA-'.$tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('asb-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 }

@@ -25,7 +25,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mr-4">
                             <label><strong>Tahun :</strong></label>
                             <select id='tahun' class="form-control" style="width:auto">
                                 <option value=" ">Semua</option>
@@ -34,10 +34,18 @@
                                 <option value="2022">2022</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label><strong>Usulan :</strong></label>
+                            <select id='usulan' class="form-control" style="width:auto">
+                                <option value=" ">Semua</option>
+                                <option value="Induk">Induk</option>
+                                <option value="Perubahan">Perubahan</option>
+                            </select>
+                        </div>
                     </div>
                 @endif
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataUsulan" width="100%" cellspacing="0">
+                    <table class="table table-sm table-bordered" id="dataUsulan" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -46,9 +54,10 @@
                                 <th>Nama Barang</th>
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
-                                <th>Harga</th>
+                                <th style="width: 150px">Harga</th>
                                 <th>Rekening Belanja</th>
                                 <th>Tahun</th>
+                                <th>Usulan</th>
                                 <th>Dokumen</th>
                                 <th>Aksi</th>
                             </tr>
@@ -61,6 +70,7 @@
     </div>
 </div>
 @includeIf('form.usulan.sbu.rincian')
+@includeIf('form.usulan.sbu.tolak')
 @endsection
 
 @push('css')
@@ -68,7 +78,11 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
-
+<style>
+    .table td, .table th {
+        font-size: 10pt;
+    }
+</style>
 @endpush
 
 @push('scripits')
@@ -108,6 +122,7 @@
                     {data:'harga'},
                     {data:'rekening_belanja'},
                     {data:'tahun'},
+                    {data:'usulan'},
                     {data:'dokumen', searchable:false, sortable:false},
                     {data:'aksi', searchable:false, sortable:false},
                 ]
@@ -131,7 +146,18 @@
                 //     table.ajax.reload();
                 // }
                 if($(this).val() != ''){
-                    table.column(6).search($(this).val()).draw();
+                    table.column(8).search($(this).val()).draw();
+                }
+            });
+
+            $('#usulan').change(function() {
+                // if($(this).val() != ''){
+                //     table.column(1).search($(this).val()).draw();
+                // }else{
+                //     table.ajax.reload();
+                // }
+                if($(this).val() != ''){
+                    table.column(9).search($(this).val()).draw();
                 }
             });
 
@@ -165,6 +191,36 @@
                                 // $('#modalSbu [name=id_kontrak]').val('').trigger('change');
                                 // $('#modalSbu form')[0].reset();
                                 // $('#modalSbu').modal('hide');
+                            }, 3000);
+                        });
+                    });
+                }
+            });
+            $('#modalTolak').validator().on('submit', function (e){
+                if(! e.preventDefault()){
+                    $.post($('#modalTolak form').attr('action'), $('#modalTolak form').serialize())
+                    .done((response) => {
+                        $(".alert" ).addClass( "alert-success" );
+                        $(".alert").show();
+                        $("#massages-imp").append(response);
+                        setTimeout(function(){
+                            $(".alert" ).removeClass( "alert-success" );
+                            $("#massages-imp").empty();
+                            $('#modalTolak form')[0].reset();
+                            $('#modalTolak').modal('hide');
+                        }, 1000);
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        let err = errors.responseJSON.errors;
+                        $(".alert" ).addClass( "alert-danger" );
+                        $(".alert").show();
+                        $.each(err, function(key, val) {
+                            $("#massages-imp").append(val);
+                            setTimeout(function(){
+                                $(".alert").hide();
+                                $(".alert" ).removeClass( "alert-danger" );
+                                $("#massages-imp").empty();
                             }, 3000);
                         });
                     });
@@ -239,19 +295,15 @@
         }
 
         function tolakSbu(url){
-        if (confirm('Yakin? Data akan ditolak atau dikembalikan.')) {
-                $.post(url, {
-                        '_token': $('[name=csrf-token]').attr('content'),
-                        '_method': 'put'
-                    })
-                    .done((response) => {
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Gagal tolak data');
-                        return;
-                    });
-            }
+            $('#modalTolak').modal('show');
+            $('#modalTolak .modal-title').text('Tolak rincian SBU');
+            $('#modalTolak form')[0].reset();
+            $('#modalTolak form').attr('action',url);
+            $('#modalTolak [name=_method]').val('put');
+            $('#modalTolak [name=keterangan]').val('');
+            $('#modalTolak').on('shown.bs.modal', function () {
+                $('#keterangan').focus();
+            })
         }
 
 

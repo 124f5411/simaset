@@ -69,6 +69,20 @@ class SbuController extends Controller
                 ->addColumn('q_opd',function($sbu) {
                     return getValue("opd","data_opd","id = ".$sbu->id_opd);
                 })
+                ->addColumn('usulan',function($sbu) {
+                    if(is_null($sbu->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($sbu->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($sbu->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
+                })
                 ->addColumn('uraian',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
@@ -80,6 +94,9 @@ class SbuController extends Controller
                 })
                 ->addColumn('satuan',function($sbu){
                     return getValue("nm_satuan","data_satuan","id = ".$sbu->id_satuan);
+                })
+                ->addColumn('harga',function($sbu) {
+                    return "Rp. ".number_format($sbu->harga, 2, ",", ".");
                 })
                 ->addColumn('dokumen',function($sbu){
                     $dok = '
@@ -134,13 +151,16 @@ class SbuController extends Controller
                 ->addColumn('satuan',function($sbu){
                     return getValue("nm_satuan","data_satuan","id = ".$sbu->id_satuan);
                 })
+                ->addColumn('harga',function($sbu) {
+                    return "Rp. ".number_format($sbu->harga, 2, ",", ".");
+                })
                 ->addColumn('aksi', function($sbu){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){
                         if($sbu->status == '0'){
                             $aksi = '
                             <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="editAsb(`'.route('asb.rincianUpdate',$sbu->id).'`,'.$sbu->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
-                                <a href="javascript:void(0)" onclick="hapusAsb(`'.route('asb.rincianDestroy',$sbu->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                                <a href="javascript:void(0)" onclick="editSbu(`'.route('sbu.rincianUpdate',$sbu->id).'`,'.$sbu->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                <a href="javascript:void(0)" onclick="hapusSbu(`'.route('sbu.rincianDestroy',$sbu->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
                             </div>
                             ';
                         }
@@ -164,6 +184,20 @@ class SbuController extends Controller
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($sbu) {
                     return getValue("opd","data_opd","id = ".$sbu->id_opd);
+                })
+                ->addColumn('usulan',function($sbu) {
+                    if(is_null($sbu->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($sbu->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($sbu->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
                 })
                 ->addColumn('dokumen',function($sbu) {
                     if(is_null($sbu->ssd_dokumen)){
@@ -232,6 +266,20 @@ class SbuController extends Controller
                         if($sbu->status == '2'){
                             $aksi = 'Valid';
                         }
+
+                        if($sbu->status == '3'){
+                            // $aksi = 'Ditolak, mohon cek rincian';
+                            $aksi = '
+                                <div class="btn-group">
+                                    <a href="javascript:void(0)" onclick="editSbu(`'.route('sbu.update',$sbu->id).'`,'.$sbu->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                    <a href="javascript:void(0)" onclick="hapusSbu(`'.route('sbu.destroy',$sbu->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                                    <a href="javascript:void(0)" onclick="verifSbu(`'.route('sbu.validasi',$sbu->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                </div><br>
+                                <div class="badge badge-danger mt-2 text-wrap" style="width: 6rem;">
+                                    Ditolak<br>cek rincian
+                                </div>
+                                ';
+                        }
                     }
                     return $aksi;
                 })
@@ -242,15 +290,18 @@ class SbuController extends Controller
     public function store(Request $request){
         $field = [
             'tahun' => ['required'],
+            'induk_perubahan' => ['required']
         ];
 
         $pesan = [
             'tahun.required' => 'Tahun SBU tidak boleh kosong <br />',
+            'induk_perubahan.required' => 'Jenis usulan tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
+            'induk_perubahan' => $request->induk_perubahan,
             'id_kelompok' => 2,
             'status' => '0'
         ];
@@ -303,18 +354,20 @@ class SbuController extends Controller
     public function update(Request $request,$id){
         $sbu = UsulanSsh::find($id);
         $field = [
-            'tahun' => ['required']
+            'tahun' => ['required'],
+            'induk_perubahan' => ['required']
         ];
 
         $pesan = [
-            'tahun.required' => 'Tahun SSH boleh kosong <br />'
+            'tahun.required' => 'Tahun SBU tidak boleh kosong <br />',
+            'induk_perubahan.required' => 'Jenis usulan tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
-            'id_kelompok' => 3,
-            'status' => '0'
+            'induk_perubahan' => $request->induk_perubahan,
+            'id_kelompok' => 2
         ];
         $sbu->update($data);
         return response()->json('SBU berhasil diubah',200);
@@ -417,31 +470,48 @@ class SbuController extends Controller
         return response()->json('usulan SBU berhasil dikembalikan',200);
     }
 
-    public function rincianTolak($id){
+    public function rincianTolak(Request $request,$id){
         $sbu = dataSbu::find($id);
-        $data = [
-            'status' => '0'
+        $filter = [
+            'keterangan' => 'required'
         ];
+        $pesan = [
+            'keterangan.required' => 'Keterangan tolak tidak boleh kosong <br />'
+        ];
+        $this->validate($request, $filter, $pesan);
+
+        $data = [
+            'status' => '0',
+            'keterangan' => $request->keterangan
+        ];
+
         $sbu->update($data);
-        UsulanSsh::where('id','=',$sbu->id_usulan)->update($data);
+
+        $usulan = [
+            'status' => '3'
+        ];
+
+        UsulanSsh::where('id','=',$sbu->id_usulan)->update($usulan);
         return response()->json('usulan SBU berhasil dikembalikan',200);
     }
 
     public function exportPDF($id){
         $sbu = dataSbu::where('id_usulan','=',decrypt($id))->get();
-        $tahun = getValue("tahun","usulan_ssh"," id = ".decrypt($id));
+        $usulan = UsulanSsh::find(decrypt($id));
+        $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
+
         $ttd = TtdSetting::where('id_opd','=',Auth::user()->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".Auth::user()->id_opd);
         $data = [
-            'tahun' => $tahun,
+            'tahun' => $usulan->tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
-            'title' => "USULAN STANDAR BIAYA UMUM TAHUN ANGGARAN",
+            'title' => "USULAN ".strtoupper($jenis)." STANDAR BIAYA UMUM TAHUN ANGGARAN",
             'sbu' => $sbu,
             'ttd' => $ttd,
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.sbu',$data);
         $pdf->setPaper('F4', 'landscape');
-        return $pdf->stream('sbu-'.Auth::user()->id_opd.'-TA-'.$tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('sbu-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 }

@@ -69,6 +69,20 @@ class HspkController extends Controller
                 ->addColumn('q_opd',function($hspk) {
                     return getValue("opd","data_opd","id = ".$hspk->id_opd);
                 })
+                ->addColumn('usulan',function($hspk) {
+                    if(is_null($hspk->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($hspk->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($hspk->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
+                })
                 ->addColumn('uraian',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
@@ -80,6 +94,9 @@ class HspkController extends Controller
                 })
                 ->addColumn('satuan',function($hspk){
                     return getValue("nm_satuan","data_satuan","id = ".$hspk->id_satuan);
+                })
+                ->addColumn('harga',function($hspk) {
+                    return "Rp. ".number_format($hspk->harga, 2, ",", ".");
                 })
                 ->addColumn('dokumen',function($hspk){
                     $dok = '
@@ -134,6 +151,9 @@ class HspkController extends Controller
                 ->addColumn('satuan',function($hspk){
                     return getValue("nm_satuan","data_satuan","id = ".$hspk->id_satuan);
                 })
+                ->addColumn('harga',function($hspk) {
+                    return "Rp. ".number_format($hspk->harga, 2, ",", ".");
+                })
                 ->addColumn('aksi', function($hspk){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){
                         if($hspk->status == '0'){
@@ -164,6 +184,20 @@ class HspkController extends Controller
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($hspk) {
                     return getValue("opd","data_opd","id = ".$hspk->id_opd);
+                })
+                ->addColumn('usulan',function($hspk) {
+                    if(is_null($hspk->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($hspk->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($hspk->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
                 })
                 ->addColumn('dokumen',function($hspk) {
                     if(is_null($hspk->ssd_dokumen)){
@@ -232,6 +266,20 @@ class HspkController extends Controller
                         if($hspk->status == '2'){
                             $aksi = 'Valid';
                         }
+
+                        if($hspk->status == '3'){
+                            // $aksi = 'Ditolak, mohon cek rincian';
+                            $aksi = '
+                                <div class="btn-group">
+                                    <a href="javascript:void(0)" onclick="editHspk(`'.route('hspk.update',$hspk->id).'`,'.$hspk->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                                    <a href="javascript:void(0)" onclick="hapusHspk(`'.route('hspk.destroy',$hspk->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
+                                    <a href="javascript:void(0)" onclick="verifHspk(`'.route('hspk.validasi',$hspk->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                </div><br>
+                                <div class="badge badge-danger mt-2 text-wrap" style="width: 6rem;">
+                                    Ditolak<br>cek rincian
+                                </div>
+                                ';
+                        }
                     }
                     return $aksi;
                 })
@@ -242,15 +290,18 @@ class HspkController extends Controller
     public function store(Request $request){
         $field = [
             'tahun' => ['required'],
+            'induk_perubahan' => ['required']
         ];
 
         $pesan = [
             'tahun.required' => 'Tahun HSPK tidak boleh kosong <br />',
+            'induk_perubahan.required' => 'Jenis usulan tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
+            'induk_perubahan' => $request->induk_perubahan,
             'id_kelompok' => 4,
             'status' => '0'
         ];
@@ -301,22 +352,24 @@ class HspkController extends Controller
     }
 
     public function update(Request $request,$id){
-        $asb = UsulanSsh::find($id);
+        $hspk = UsulanSsh::find($id);
         $field = [
-            'tahun' => ['required']
+            'tahun' => ['required'],
+            'induk_perubahan' => ['required']
         ];
 
         $pesan = [
-            'tahun.required' => 'Tahun HSPK boleh kosong <br />'
+            'tahun.required' => 'Tahun HSPK tidak boleh kosong <br />',
+            'induk_perubahan.required' => 'Jenis usulan tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
-            'id_kelompok' => 4,
-            'status' => '0'
+            'induk_perubahan' => $request->induk_perubahan,
+            'id_kelompok' => 4
         ];
-        $asb->update($data);
+        $hspk->update($data);
         return response()->json('HSPK berhasil diubah',200);
     }
 
@@ -409,31 +462,46 @@ class HspkController extends Controller
         return response()->json('usulan HSPK berhasil dikembalikan',200);
     }
 
-    public function rincianTolak($id){
+    public function rincianTolak(Request $request,$id){
         $hspk = dataHspk::find($id);
+        $filter = [
+            'keterangan' => 'required'
+        ];
+        $pesan = [
+            'keterangan.required' => 'Keterangan tolak tidak boleh kosong <br />'
+        ];
+        $this->validate($request, $filter, $pesan);
         $data = [
-            'status' => '0'
+            'status' => '0',
+            'keterangan' => $request->keterangan
         ];
         $hspk->update($data);
-        UsulanSsh::where('id','=',$hspk->id_usulan)->update($data);
+
+        $usulan = [
+            'status' => '3'
+        ];
+
+        UsulanSsh::where('id','=',$hspk->id_usulan)->update($usulan);
         return response()->json('usulan HSPK berhasil dikembalikan',200);
     }
 
     public function exportPDF($id){
         $hspk = dataHspk::where('id_usulan','=',decrypt($id))->get();
-        $tahun = getValue("tahun","usulan_ssh"," id = ".decrypt($id));
+        $usulan = UsulanSsh::find(decrypt($id));
+        $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
+
         $ttd = TtdSetting::where('id_opd','=',Auth::user()->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".Auth::user()->id_opd);
         $data = [
-            'tahun' => $tahun,
+            'tahun' => $usulan->tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
-            'title' => "USULAN HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
+            'title' => "USULAN ".strtoupper($jenis)." HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
             'hspk' => $hspk,
             'ttd' => $ttd,
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.hspk',$data);
         $pdf->setPaper('F4', 'landscape');
-        return $pdf->stream('hspk-'.Auth::user()->id_opd.'-TA-'.$tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('hspk-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 }

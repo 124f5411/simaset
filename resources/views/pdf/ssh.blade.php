@@ -35,7 +35,7 @@
                 <td>{{ $i }}</td>
                 <td>{{ getValue("kode_barang","referensi_kode_barang","id = ".$value->id_kode); }}</td>
                 <td>{{ getValue("uraian","referensi_kode_barang","id = ".$value->id_kode); }}</td>
-                <td>{{ $value->spesifikasi }}</td>
+                <td style="width: 200px">{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
                 <td>Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
                 <td>{{ getValue("kode_akun","referensi_rekening_belanja","id = ".$value->id_rekening); }}</td>

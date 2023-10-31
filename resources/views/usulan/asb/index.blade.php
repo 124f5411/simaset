@@ -35,6 +35,7 @@
                                 <th>#</th>
                                 <th>OPD</th>
                                 <th>Tahun</th>
+                                <th>Usulan</th>
                                 <th style="width: 200px">Dokumen</th>
                                 <th style="width: 100px">Rincian</th>
                                 <th style="width: 150px">Aksi</th>
@@ -91,6 +92,7 @@
                     {data:'DT_RowIndex', searchable:false, sortable:false},
                     {data:'q_opd'},
                     {data:'tahun'},
+                    {data:'usulan'},
                     {data:'dokumen'},
                     {data:'rincian', searchable:false, sortable:false},
                     {data:'aksi', searchable:false, sortable:false},
@@ -227,6 +229,7 @@
             $.get(show)
             .done((response) => {
                 $('#modalAsb [name=tahun]').val(response.tahun);
+                $('#modalAsb [name=induk_perubahan]').val(response.induk_perubahan);
             })
             .fail((errors) => {
                 alert('Gagl tampil data');
