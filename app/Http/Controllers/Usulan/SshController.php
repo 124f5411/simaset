@@ -93,12 +93,7 @@ class SshController extends Controller
                             ';
                         }
                         if($ssh->status == '2'){
-                            $aksi = '
-                            <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.rincianUpdate',$ssh->id).'`,'.$ssh->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
-                                <a href="javascript:void(0)" onclick="hapusSsh(`'.route('ssh.rincianDestroy',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
-                            </div>
-                            ';
+                            $aksi = 'Valid';
                         }
                     }
                     return $aksi;

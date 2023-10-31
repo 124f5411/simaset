@@ -93,12 +93,7 @@ class HspkController extends Controller
                             ';
                         }
                         if($hspk->status == '2'){
-                            $aksi = '
-                            <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="editHspk(`'.route('hspk.rincianUpdate',$hspk->id).'`,'.$hspk->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
-                                <a href="javascript:void(0)" onclick="hapusHspk(`'.route('hspk.rincianDestroy',$hspk->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
-                            </div>
-                            ';
+                            $aksi = 'Valid';
                         }
                     }
                     return $aksi;

@@ -94,12 +94,7 @@ class AsbController extends Controller
                             ';
                         }
                         if($asb->status == '2'){
-                            $aksi = '
-                            <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="editAsb(`'.route('asb.rincianUpdate',$asb->id).'`,'.$asb->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
-                                <a href="javascript:void(0)" onclick="hapusAsb(`'.route('asb.rincianDestroy',$asb->id).'`)" class="btn btn-sm btn-danger" title="Hapus"><i class="fas fa-trash"></i></a>
-                            </div>
-                            ';
+                            $aksi = 'Valid';
                         }
                     }
                     return $aksi;
