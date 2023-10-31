@@ -78,6 +78,7 @@
     <script src="{{ asset('js/validator.min.js') }}"></script>
 
     <script>
+        let user_akses = "{{ Auth::user()->level }}";
         let table;
         $(document).ready(function() {
             $('#id_kode').select2({
