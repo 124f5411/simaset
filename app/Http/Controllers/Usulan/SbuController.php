@@ -435,7 +435,7 @@ class SbuController extends Controller
         $data = [
             'tahun' => $tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
-            'title' => "STANDAR BIAYA UMUM TAHUN ANGGARAN",
+            'title' => "USULAN STANDAR BIAYA UMUM TAHUN ANGGARAN",
             'sbu' => $sbu,
             'ttd' => $ttd,
             'opd' => $opd

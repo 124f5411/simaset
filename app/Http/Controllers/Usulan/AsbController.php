@@ -436,7 +436,7 @@ class AsbController extends Controller
         $data = [
             'tahun' => $tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
-            'title' => "ANALISIS STANDA BELANJA TAHUN ANGGARAN",
+            'title' => "USULAN ANALISIS STANDAR BELANJA TAHUN ANGGARAN",
             'asb' => $asb,
             'ttd' => $ttd,
             'opd' => $opd

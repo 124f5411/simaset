@@ -427,7 +427,7 @@ class HspkController extends Controller
         $data = [
             'tahun' => $tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
-            'title' => "ANALISIS STANDA BELANJA TAHUN ANGGARAN",
+            'title' => "USULAN HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
             'hspk' => $hspk,
             'ttd' => $ttd,
             'opd' => $opd
