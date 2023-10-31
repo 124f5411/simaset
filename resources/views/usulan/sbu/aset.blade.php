@@ -11,7 +11,7 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">RINCIAN STANDAR SATUAN HARGA (SSH)</h6>
+                <h6 class="m-0 font-weight-bold text-primary">STANDAR BIAYA UMUM (SBU)</h6>
             </div>
             <div class="card-body">
                 @if (Auth::user()->level == 'aset')
@@ -76,7 +76,6 @@
     <script src="{{ asset('js/validator.min.js') }}"></script>
 
     <script>
-        let user_akses = "{{ Auth::user()->level }}";
         let table;
         $(document).ready(function() {
             $('#id_kode').select2({
@@ -168,44 +167,6 @@
             });
 
         });
-
-        function verifSsh(url){
-            let pesan;
-            if(user_akses == 'operator'){
-                pesan = 'Yakin? data akan dikirimka untuk validasi.';
-            }else if(user_akses == 'aset'){
-                pesan = 'yakin data usulan telah benar?';
-            }
-            if (confirm(pesan)) {
-                    $.post(url, {
-                            '_token': $('[name=csrf-token]').attr('content'),
-                            '_method': 'put'
-                        })
-                        .done((response) => {
-                            table.ajax.reload();
-                        })
-                        .fail((errors) => {
-                            alert('Gagal kirim data');
-                            return;
-                        });
-                }
-        }
-
-        function tolakSsh(url){
-        if (confirm('Yakin? Data akan ditolak atau dikembalikan.')) {
-                $.post(url, {
-                        '_token': $('[name=csrf-token]').attr('content'),
-                        '_method': 'put'
-                    })
-                    .done((response) => {
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        alert('Gagal tolak data');
-                        return;
-                    });
-            }
-        }
 
 
     </script>

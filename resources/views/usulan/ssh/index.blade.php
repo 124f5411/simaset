@@ -251,13 +251,14 @@
         }
 
         function verifSsh(url){
-            let cnfrm;
-            if(user_akses == 'operator'){
-                cnfrm = 'Yakin? data akan dikirimka untuk validasi.';
-            }else if(user_akses == 'aset'){
-                cnfrm = 'yakin data usulan telah benar?';
+            let pesan;
+            if(user_akses == 'operator' || user_akses == 'bendahara'){
+                pesan = 'Yakin? data akan dikirimkan untuk validasi.';
             }
-            if (confirm(cnfrm)) {
+            if(user_akses == 'aset'){
+                pesan = 'yakin data usulan telah benar?';
+            }
+            if (confirm(pesan)) {
                     $.post(url, {
                             '_token': $('[name=csrf-token]').attr('content'),
                             '_method': 'put'

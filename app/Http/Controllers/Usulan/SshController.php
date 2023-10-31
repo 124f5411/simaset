@@ -53,7 +53,7 @@ class SshController extends Controller
     }
 
     public function datas(){
-        $ssh = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status')
+        $ssh = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',1)
                         ->whereIn('usulan_ssh.status',['1','2'])->get();
@@ -84,15 +84,15 @@ class SshController extends Controller
                 })
                 ->addColumn('aksi', function($ssh){
                     if(Auth::user()->level == 'aset'){
-                        if($ssh->status == '1'){
+                        if($ssh->s_status == '1'){
                             $aksi = '
                             <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.rincianValidasi',$ssh->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
-                                <a href="javascript:void(0)" onclick="tolakSsh(`'.route('ssh.rincianReject',$ssh->id).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
+                                <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.rincianValidasi',$ssh->id_ssh).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                <a href="javascript:void(0)" onclick="tolakSsh(`'.route('ssh.rincianReject',$ssh->id_ssh).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
                             </div>
                             ';
                         }
-                        if($ssh->status == '2'){
+                        if($ssh->s_status == '2'){
                             $aksi = 'Valid';
                         }
                     }
@@ -211,7 +211,7 @@ class SshController extends Controller
                             }
                         }
                         if($ssh->status == '1'){
-                            $aksi = 'Proccesed';
+                            $aksi = 'Terkirim';
                         }
 
                         if($ssh->status == '2'){
@@ -381,6 +381,14 @@ class SshController extends Controller
             $verif = ['status' => '2'];
             $respon = 'usulan SSH telah diterima';
         }
+        $ssh->update($verif);
+        return response()->json($respon,200);
+    }
+
+    public function rincianValidasi($id){
+        $ssh = dataSsh::find($id);
+        $verif = ['status' => '2'];
+        $respon = 'usulan SSH telah diterima';
         $ssh->update($verif);
         return response()->json($respon,200);
     }

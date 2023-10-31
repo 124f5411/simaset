@@ -246,6 +246,8 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('asb/rincian/valid/{id}',[AsbController::class,'rincianValidasi'])->name('asb.rincianValidasi');
     Route::put('asb/rincian/tolak/{id}',[AsbController::class,'rincianTolak'])->name('asb.rincianReject');
 
+
+    Route::get('sbu/datas',[SbuController::class,'datas'])->name('sbu.datas');
     Route::get('sbu/data',[SbuController::class,'data'])->name('sbu.data');
     Route::get('sbu/{id}',[SbuController::class,'show'])->name('sbu.show');
     Route::post('sbu',[SbuController::class,'store'])->name('sbu.store');
@@ -253,6 +255,17 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('sbu/{id}',[SbuController::class,'destroy'])->name('sbu.destroy');
     Route::put('sbu/valid/{id}',[SbuController::class,'validasi'])->name('sbu.validasi');
     Route::put('sbu/tolak/{id}',[SbuController::class,'tolak'])->name('sbu.reject');
+    Route::put('sbu/upload/{id}',[SbuController::class,'upload'])->name('sbu.upload');
+    Route::get('sbu/pdf/{id}',[SbuController::class,'exportPDF'])->name('sbu.export');
+
+    Route::get('sbu/rincian/{id}',[SbuController::class,'data_rincian'])->name('sbu.data_rincian');
+    Route::get('sbu/rincian/item/{id}',[SbuController::class,'rincian'])->name('sbu.rincian');
+    Route::get('sbu/rincian/show/{id}',[SbuController::class,'rincianShow'])->name('sbu.rincianShow');
+    Route::post('sbu/rincian/{id}',[SbuController::class,'rincianStore'])->name('sbu.rincianStore');
+    Route::put('sbu/rincian/{id}',[SbuController::class,'rincianUpdate'])->name('sbu.rincianUpdate');
+    Route::delete('sbu/rincian/{id}',[SbuController::class,'rincianDestroy'])->name('sbu.rincianDestroy');
+    Route::put('sbu/rincian/valid/{id}',[SbuController::class,'rincianValidasi'])->name('sbu.rincianValidasi');
+    Route::put('sbu/rincian/tolak/{id}',[SbuController::class,'rincianTolak'])->name('sbu.rincianReject');
 
     Route::get('hspk/datas',[HspkController::class,'datas'])->name('hspk.datas');
     Route::get('hspk/data',[HspkController::class,'data'])->name('hspk.data');

@@ -11,16 +11,16 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">RINCIAN STANDAR SATUAN HARGA (SSH)</h6>
+                <h6 class="m-0 font-weight-bold text-primary">RINCIAN STANDAR BIAYA UMUM (SBU)</h6>
                 @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
-                    <a href="#" onclick="window.open('{{ route('ssh.export',Request::segment(4)) }}','Title','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720');" class="btn btn-danger btn-icon-split mt-2">
+                    <a href="#" onclick="window.open('{{ route('sbu.export',Request::segment(4)) }}','Title','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720');" class="btn btn-danger btn-icon-split mt-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-file-pdf"></i>
                         </span>
                         <span class="text">EXPORT</span>
                     </a>
                     @if ($usulan_status == '0')
-                        <a href="#" onclick="addSsh('{{ route('ssh.rincianStore',decrypt(Request::segment(4))) }}')" class="btn btn-primary btn-icon-split float-right mt-2">
+                        <a href="#" onclick="addSbu('{{ route('sbu.rincianStore',decrypt(Request::segment(4))) }}')" class="btn btn-primary btn-icon-split float-right mt-2">
                             <span class="icon text-white-50">
                                 <i class="fas fa-plus-circle"></i>
                             </span>
@@ -31,7 +31,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataSsh" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataSbu" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -51,7 +51,7 @@
 
     </div>
 </div>
-@includeIf('form.usulan.ssh.rincian')
+@includeIf('form.usulan.sbu.rincian')
 @endsection
 
 @push('css')
@@ -86,13 +86,13 @@
                 theme: 'bootstrap4',
             });
 
-            table = $('#dataSsh').DataTable({
+            table = $('#dataSbu').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('ssh.data_rincian','') }}'+'/'+id_usulan,
+                    url: '{{ route('sbu.data_rincian','') }}'+'/'+id_usulan,
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
@@ -106,9 +106,9 @@
                 ]
             });
 
-            $('#modalSsh').validator().on('submit', function (e){
+            $('#modalSbu').validator().on('submit', function (e){
                 if(! e.preventDefault()){
-                    $.post($('#modalSsh form').attr('action'), $('#modalSsh form').serialize())
+                    $.post($('#modalSbu form').attr('action'), $('#modalSbu form').serialize())
                     .done((response) => {
                         $(".alert" ).addClass( "alert-success" );
                         $(".alert").show();
@@ -116,11 +116,11 @@
                         setTimeout(function(){
                             $(".alert" ).removeClass( "alert-success" );
                             $("#massages").empty();
-                            $('#modalSsh [name=id_kode]').val('').trigger('change');
-                            $('#modalSsh [name=id_satuan]').val('').trigger('change');
-                            $('#modalSsh [name=id_rekening]').val('').trigger('change');
-                            $('#modalSsh form')[0].reset();
-                            $('#modalSsh').modal('hide');
+                            $('#modalSbu [name=id_kode]').val('').trigger('change');
+                            $('#modalSbu [name=id_satuan]').val('').trigger('change');
+                            $('#modalSbu [name=id_rekening]').val('').trigger('change');
+                            $('#modalSbu form')[0].reset();
+                            $('#modalSbu').modal('hide');
                         }, 1000);
                         table.ajax.reload();
                     })
@@ -134,9 +134,9 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
-                                // $('#modalSsh [name=id_kontrak]').val('').trigger('change');
-                                // $('#modalSsh form')[0].reset();
-                                // $('#modalSsh').modal('hide');
+                                // $('#modalSbu [name=id_kontrak]').val('').trigger('change');
+                                // $('#modalSbu form')[0].reset();
+                                // $('#modalSbu').modal('hide');
                             }, 3000);
                         });
                     });
@@ -145,39 +145,39 @@
 
         });
 
-        function addSsh(url){
-            $('#modalSsh').modal('show');
-            $('#modalSsh .modal-title').text('Tambah Usulan SSH');
+        function addSbu(url){
+            $('#modalSbu').modal('show');
+            $('#modalSbu .modal-title').text('Tambah Usulan SBU');
 
-            $('#modalSsh form')[0].reset();
-            $('#modalSsh form').attr('action',url);
-            $('#modalSsh [name=_method]').val('post');
-            $('#modalSsh [name=jenis]').val('');
-            $('#modalSsh').on('shown.bs.modal', function () {
+            $('#modalSbu form')[0].reset();
+            $('#modalSbu form').attr('action',url);
+            $('#modalSbu [name=_method]').val('post');
+            $('#modalSbu [name=jenis]').val('');
+            $('#modalSbu').on('shown.bs.modal', function () {
                 $('#id_kode').focus();
             })
         }
 
-        function editSsh(url, id){
-            $('#modalSsh').modal('show');
-            $('#modalSsh .modal-title').text('Ubah Usulan SSH');
+        function editSbu(url, id){
+            $('#modalSbu').modal('show');
+            $('#modalSbu .modal-title').text('Ubah Usulan SBUs');
 
-            $('#modalSsh form')[0].reset();
-            $('#modalSsh form').attr('action',url);
-            $('#modalSsh [name=_method]').val('put');
-            $('#modalSsh [name=jenis]').val('');
-            $('#modalSsh').on('shown.bs.modal', function () {
+            $('#modalSbu form')[0].reset();
+            $('#modalSbu form').attr('action',url);
+            $('#modalSbu [name=_method]').val('put');
+            $('#modalSbu [name=jenis]').val('');
+            $('#modalSbu').on('shown.bs.modal', function () {
                 $('#id_kode').focus();
             })
 
-            let show = "{{route('ssh.rincianShow', '')}}"+"/"+id;
+            let show = "{{route('sbu.rincianShow', '')}}"+"/"+id;
             $.get(show)
             .done((response) => {
-                $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');
-                $('#modalSsh [name=id_rekening]').val(response.id_rekening).trigger('change');
-                $('#modalSsh [name=spesifikasi]').val(response.spesifikasi);
-                $('#modalSsh [name=id_satuan]').val(response.id_satuan).trigger('change');
-                $('#modalSsh [name=harga]').val(response.harga);
+                $('#modalSbu [name=id_kode]').val(response.id_kode).trigger('change');
+                $('#modalSbu [name=id_rekening]').val(response.id_rekening).trigger('change');
+                $('#modalSbu [name=spesifikasi]').val(response.spesifikasi);
+                $('#modalSbu [name=id_satuan]').val(response.id_satuan).trigger('change');
+                $('#modalSbu [name=harga]').val(response.harga);
             })
             .fail((errors) => {
                 alert('Gagl tampil data');
@@ -185,7 +185,7 @@
             })
         }
 
-        function hapusSsh(url){
+        function hapusSbu(url){
             if (confirm('Yakin ingin menghapus data terpilih?')) {
                     $.post(url, {
                             '_token': $('[name=csrf-token]').attr('content'),
@@ -201,29 +201,29 @@
                 }
         }
 
-        function verifSsh(url){
-            let pesan;
-            if(user_akses == 'operator'){
-                pesan = 'Yakin? data akan dikirimka untuk validasi.';
-            }else if(user_akses == 'aset'){
-                pesan = 'yakin data usulan telah benar?';
-            }
-            if (confirm(pesan)) {
-                    $.post(url, {
-                            '_token': $('[name=csrf-token]').attr('content'),
-                            '_method': 'put'
-                        })
-                        .done((response) => {
-                            table.ajax.reload();
-                        })
-                        .fail((errors) => {
-                            alert('Gagal kirim data');
-                            return;
-                        });
-                }
+        function verifSbu(url){
+        let cnfrm;
+        if(user_akses == 'operator'){
+            cnfrm = 'Yakin? data akan dikirimka untuk validasi.';
+        }else if(user_akses == 'aset'){
+            cnfrm = 'yakin data usulan telah benar?';
         }
+        if (confirm(cnfrm)) {
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'put'
+                    })
+                    .done((response) => {
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        alert('Gagal kirim data');
+                        return;
+                    });
+            }
+    }
 
-    function tolakSsh(url){
+    function tolakSbu(url){
 
         if (confirm('Yakin? Data akan ditolak atau dikembalikan.')) {
                 $.post(url, {

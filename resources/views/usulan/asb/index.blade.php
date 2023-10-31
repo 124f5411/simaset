@@ -252,9 +252,10 @@
 
         function verifAsb(url){
             let cnfrm;
-            if(user_akses == 'operator'){
-                cnfrm = 'Yakin? data akan dikirimka untuk validasi.';
-            }else if(user_akses == 'aset'){
+            if(user_akses == 'operator' || user_akses == 'bendahara'){
+                cnfrm = 'Yakin? data akan dikirimkan untuk validasi.';
+            }
+            if(user_akses == 'aset'){
                 cnfrm = 'yakin data usulan telah benar?';
             }
             if (confirm(cnfrm)) {

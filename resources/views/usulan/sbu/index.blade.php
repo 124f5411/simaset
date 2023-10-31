@@ -11,7 +11,7 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">HARGA SATUAN POKOK KEGIATAN (HSPK)</h6>
+                <h6 class="m-0 font-weight-bold text-primary">STANDAR BIAYA UMUM (SBU)</h6>
                 @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
                 <a href="{{ asset('download/dokumen/SURAT-PERNYATAAN-USULAN.docx') }}" target="_blank" class="btn btn-primary btn-icon-split mt-2">
                     <span class="icon text-white-50">
@@ -19,7 +19,7 @@
                     </span>
                     <span class="text">Pakta Integritas</span>
                 </a>
-                <a href="#" onclick="addHspk('{{ route('hspk.store') }}')" class="btn btn-primary btn-icon-split float-right">
+                <a href="#" onclick="addSbu('{{ route('sbu.store') }}')" class="btn btn-primary btn-icon-split float-right">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus-circle"></i>
                     </span>
@@ -29,7 +29,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataHspk" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataSbu" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -47,8 +47,8 @@
 
     </div>
 </div>
-@includeIf('form.usulan.hspk.index')
-@includeIf('form.usulan.hspk.upload')
+@includeIf('form.usulan.sbu.index')
+@includeIf('form.usulan.sbu.upload')
 @endsection
 
 @push('css')
@@ -79,13 +79,13 @@
                 theme: 'bootstrap4',
             });
 
-            table = $('#dataHspk').DataTable({
+            table = $('#dataSbu').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('hspk.data') }}'
+                    url: '{{ route('sbu.data') }}'
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
@@ -108,9 +108,9 @@
                 }
             });
 
-            $('#modalHspk').validator().on('submit', function (e){
+            $('#modalSbu').validator().on('submit', function (e){
                 if(! e.preventDefault()){
-                    $.post($('#modalHspk form').attr('action'), $('#modalHspk form').serialize())
+                    $.post($('#modalSbu form').attr('action'), $('#modalSbu form').serialize())
                     .done((response) => {
                         $(".alert" ).addClass( "alert-success" );
                         $(".alert").show();
@@ -118,8 +118,8 @@
                         setTimeout(function(){
                             $(".alert" ).removeClass( "alert-success" );
                             $("#massages").empty();
-                            $('#modalHspk form')[0].reset();
-                            $('#modalHspk').modal('hide');
+                            $('#modalSbu form')[0].reset();
+                            $('#modalSbu').modal('hide');
                         }, 1000);
                         table.ajax.reload();
                     })
@@ -133,9 +133,9 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
-                                // $('#modalHspk [name=id_kontrak]').val('').trigger('change');
-                                // $('#modalHspk form')[0].reset();
-                                // $('#modalHspk').modal('hide');
+                                // $('#modalSbu [name=id_kontrak]').val('').trigger('change');
+                                // $('#modalSbu form')[0].reset();
+                                // $('#modalSbu').modal('hide');
                             }, 3000);
                         });
                     });
@@ -185,22 +185,22 @@
 
         });
 
-        function addHspk(url){
-            $('#modalHspk').modal('show');
-            $('#modalHspk .modal-title').text('Tambah HSPK');
+        function addSbu(url){
+            $('#modalSbu').modal('show');
+            $('#modalSbu .modal-title').text('Tambah SBU');
 
-            $('#modalHspk form')[0].reset();
-            $('#modalHspk form').attr('action',url);
-            $('#modalHspk [name=_method]').val('post');
-            $('#modalHspk [name=jenis]').val('');
-            $('#modalHspk').on('shown.bs.modal', function () {
+            $('#modalSbu form')[0].reset();
+            $('#modalSbu form').attr('action',url);
+            $('#modalSbu [name=_method]').val('post');
+            $('#modalSbu [name=jenis]').val('');
+            $('#modalSbu').on('shown.bs.modal', function () {
                 $('#tahun').focus();
             })
         }
 
-        function hspkUpload(url){
+        function sbuUpload(url){
             $('#modalUpload').modal('show');
-            $('#modalUpload .modal-title').text('Upload dokume HSPK');
+            $('#modalUpload .modal-title').text('Upload dokume SBU');
 
             $('#modalUpload form')[0].reset();
             $('#modalUpload form').attr('action',url);
@@ -211,22 +211,22 @@
             })
         }
 
-        function editHspk(url, id){
-            $('#modalHspk').modal('show');
-            $('#modalHspk .modal-title').text('Ubah Usulan HSPK');
+        function editSbu(url, id){
+            $('#modalSbu').modal('show');
+            $('#modalSbu .modal-title').text('Ubah Usulan SBU');
 
-            $('#modalHspk form')[0].reset();
-            $('#modalHspk form').attr('action',url);
-            $('#modalHspk [name=_method]').val('put');
-            $('#modalHspk [name=tahun]').val('');
-            $('#modalHspk').on('shown.bs.modal', function () {
+            $('#modalSbu form')[0].reset();
+            $('#modalSbu form').attr('action',url);
+            $('#modalSbu [name=_method]').val('put');
+            $('#modalSbu [name=tahun]').val('');
+            $('#modalSbu').on('shown.bs.modal', function () {
                 $('#tahun').focus();
             })
 
-            let show = "{{route('hspk.show', '')}}"+"/"+id;
+            let show = "{{route('ssh.show', '')}}"+"/"+id;
             $.get(show)
             .done((response) => {
-                $('#modalHspk [name=tahun]').val(response.tahun);
+                $('#modalSbu [name=tahun]').val(response.tahun);
             })
             .fail((errors) => {
                 alert('Gagl tampil data');
@@ -234,7 +234,7 @@
             })
         }
 
-        function hapusHspk(url){
+        function hapusSbu(url){
             if (confirm('Yakin ingin menghapus data terpilih?')) {
                     $.post(url, {
                             '_token': $('[name=csrf-token]').attr('content'),
@@ -250,7 +250,7 @@
                 }
         }
 
-        function verifHspk(url){
+        function verifSbu(url){
             let cnfrm;
             if(user_akses == 'operator' || user_akses == 'bendahara'){
                 cnfrm = 'Yakin? data akan dikirimkan untuk validasi.';

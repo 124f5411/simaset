@@ -53,9 +53,9 @@ class HspkController extends Controller
     }
 
     public function datas(){
-        $hspk = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status')
+        $hspk = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                        ->where('usulan_ssh.id_kelompok','=',3)
+                        ->where('usulan_ssh.id_kelompok','=',4)
                         ->whereIn('usulan_ssh.status',['1','2'])->get();
 
         return datatables()->of($hspk)
@@ -84,15 +84,15 @@ class HspkController extends Controller
                 })
                 ->addColumn('aksi', function($hspk){
                     if(Auth::user()->level == 'aset'){
-                        if($hspk->status == '1'){
+                        if($hspk->s_status == '1'){
                             $aksi = '
                             <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="verifHspk(`'.route('hspk.rincianValidasi',$hspk->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
-                                <a href="javascript:void(0)" onclick="tolakHspk(`'.route('hspk.rincianReject',$hspk->id).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
+                                <a href="javascript:void(0)" onclick="verifHspk(`'.route('hspk.rincianValidasi',$hspk->id_ssh).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                <a href="javascript:void(0)" onclick="tolakHspk(`'.route('hspk.rincianReject',$hspk->id_ssh).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
                             </div>
                             ';
                         }
-                        if($hspk->status == '2'){
+                        if($hspk->s_status == '2'){
                             $aksi = 'Valid';
                         }
                     }
@@ -210,7 +210,7 @@ class HspkController extends Controller
                             }
                         }
                         if($hspk->status == '1'){
-                            $aksi = 'Proccesed';
+                            $aksi = 'Terkirim';
                         }
 
                         if($hspk->status == '2'){

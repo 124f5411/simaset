@@ -54,7 +54,7 @@ class AsbController extends Controller
     }
 
     public function datas(){
-        $asb = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status')
+        $asb = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',3)
                         ->whereIn('usulan_ssh.status',['1','2'])->get();
@@ -85,15 +85,15 @@ class AsbController extends Controller
                 })
                 ->addColumn('aksi', function($asb){
                     if(Auth::user()->level == 'aset'){
-                        if($asb->status == '1'){
+                        if($asb->s_status == '1'){
                             $aksi = '
                             <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="verifAsb(`'.route('asb.rincianValidasi',$asb->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
-                                <a href="javascript:void(0)" onclick="tolakAsb(`'.route('asb.rincianReject',$asb->id).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
+                                <a href="javascript:void(0)" onclick="verifAsb(`'.route('asb.rincianValidasi',$asb->id_ssh).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                <a href="javascript:void(0)" onclick="tolakAsb(`'.route('asb.rincianReject',$asb->id_ssh).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
                             </div>
                             ';
                         }
-                        if($asb->status == '2'){
+                        if($asb->s_status == '2'){
                             $aksi = 'Valid';
                         }
                     }
@@ -211,7 +211,7 @@ class AsbController extends Controller
                             }
                         }
                         if($asb->status == '1'){
-                            $aksi = 'Proccesed';
+                            $aksi = 'Terkirim';
                         }
 
                         if($asb->status == '2'){
