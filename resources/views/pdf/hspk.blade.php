@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>HSPK {{ $tahun }} {{ strtoupper($opd) }}</title>
-    <link href="{{ asset('themes/hspk/sb-admin-2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('themes/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <style>
         .table td, .table th {
             font-size: 10pt;
@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="text-center text-dark font-weight-light">
-        <img src="{{ asset('logo/pbd.png') }}" class="rounded" alt="imms" width="100px" >
+        <img src="{{ asset('logo/pbd.png') }}" class="rounded" alt="" width="100px" >
         <p class="font-weight-light">{{$instansi}} <br>{{$title}} {{ $tahun }}<br>{{strtoupper($opd)}}</p>
     </div>
     <table class="table table-sm table-bordered mt-4 text-dark" width="100%" cellspacing="0">
@@ -34,7 +34,7 @@
             <tr>
                 <td>{{ $i }}</td>
                 <td>{{ getValue("kode_barang","referensi_kode_barang","id = ".$value->id_kode); }}</td>
-                <td>{{ getValue("uraian","referensi_kode_barang","id = ".$value->id_kode); }}</td>
+                <td style="width: 200px">{{ getValue("uraian","referensi_kode_barang","id = ".$value->id_kode); }}</td>
                 <td>{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
                 <td>Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
