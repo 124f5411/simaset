@@ -25,14 +25,25 @@
     <div class="sidebar-heading">
         Data
     </div>
+    <li class="nav-item {{ ($title == "Usulan") ? "active" : "" }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSSH"
+            aria-expanded="true" aria-controls="collapseSSH">
+
+            <i class="fas fa-money-check-alt"></i>
+            <span>Usulan</span>
+        </a>
+        <div id="collapseSSH" class="collapse {{ ($title == "Usulan") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{ ($page == "SSH") ? "active" : "" }}" href="{{ route('ssh.index') }}">SSH</a>
+                <a class="collapse-item {{ ($page == "ASB") ? "active" : "" }}"  href="{{ route('asb.index') }}">ASB</a>
+                <a class="collapse-item {{ ($page == "HSPK") ? "active" : "" }}" href="{{ route('hspk.index') }}">HSPK</a>
+                <a class="collapse-item {{ ($page == "SBU") ? "active" : "" }}" href="{{ route('sbu.index') }}">SBU</a>
+            </div>
+        </div>
+    </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
     @if (Auth::user()->level != 'admin')
-    <li class="nav-item {{ ($title == "Kontrak") ? "active" : "" }}">
-        <a class="nav-link" href="{{ route('kontrak.index') }}">
-            <i class="fas fa-file"></i>
-            <span>Kontrak</span></a>
-    </li>
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
             aria-expanded="true" aria-controls="collapseTwo">
@@ -50,12 +61,17 @@
             </div>
         </div>
     </li>
+    <li class="nav-item {{ ($title == "Kontrak") ? "active" : "" }}">
+        <a class="nav-link" href="{{ route('kontrak.index') }}">
+            <i class="fas fa-file"></i>
+            <span>Kontrak</span></a>
+    </li>
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
             aria-expanded="true" aria-controls="collapseUtilities">
             <i class="far fa-file"></i>
-            <span>KIB</span>
+            <span>KARTU INVENTARIS BARANG</span>
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
@@ -121,22 +137,7 @@
             </div>
         </li>
     @endif
-    <li class="nav-item {{ ($title == "Usulan") ? "active" : "" }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSSH"
-            aria-expanded="true" aria-controls="collapseSSH">
 
-            <i class="fas fa-money-check-alt"></i>
-            <span>Usulan</span>
-        </a>
-        <div id="collapseSSH" class="collapse {{ ($title == "Usulan") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item {{ ($page == "SSH") ? "active" : "" }}" href="{{ route('ssh.index') }}">SSH</a>
-                <a class="collapse-item {{ ($page == "ASB") ? "active" : "" }}"  href="{{ route('asb.index') }}">ASB</a>
-                <a class="collapse-item {{ ($page == "HSPK") ? "active" : "" }}" href="{{ route('hspk.index') }}">HSPK</a>
-                <a class="collapse-item {{ ($page == "SBU") ? "active" : "" }}" href="{{ route('sbu.index') }}">SBU</a>
-            </div>
-        </div>
-    </li>
 
 
     <!-- Divider -->
