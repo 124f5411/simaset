@@ -18,12 +18,18 @@ class SshController extends Controller
 {
     public function index(){
         if(Auth::user()->level == 'aset'){
+            $kode_barang = KodeBarang::where('kelompok','=','1')->get();
+            $rekening = RekeningBelanja::all();
+            $satuan = DataSatuan::all();
             $instansi = DataOpd::all();
             return view('usulan.ssh.aset',[
                 'title' => 'Usulan',
                 'page' => 'SSH',
                 'drops' => [
-                    'instansi' => $instansi
+                    'kode_barang' => $kode_barang,
+                    'rekening' => $rekening,
+                    'instansi' => $instansi,
+                    'satuan' => $satuan
                 ]
             ]);
         }
@@ -53,10 +59,10 @@ class SshController extends Controller
     }
 
     public function datas(){
-        $ssh = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status')
+        $ssh = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',1)
-                        ->whereIn('usulan_ssh.status',['1','2'])->get();
+                        ->whereIn('_data_ssh.status',['1','2'])->get();
 
         return datatables()->of($ssh)
                 ->addIndexColumn()
@@ -65,6 +71,12 @@ class SshController extends Controller
                 })
                 ->addColumn('uraian',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('kode_barang',function($ssh) {
+                    return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('rekening_belanja',function($ssh) {
+                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->id_rekening);
                 })
                 ->addColumn('satuan',function($ssh){
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
@@ -86,14 +98,18 @@ class SshController extends Controller
                     if(Auth::user()->level == 'aset'){
                         if($ssh->s_status == '1'){
                             $aksi = '
-                            <div class="btn-group">
-                                <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.rincianValidasi',$ssh->id_ssh).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
-                                <a href="javascript:void(0)" onclick="tolakSsh(`'.route('ssh.rincianReject',$ssh->id_ssh).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
-                            </div>
+                                <div class="btn-group">
+                                    <a href="javascript:void(0)" onclick="verifSsh(`'.route('ssh.rincianValidasi',$ssh->id_ssh).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                    <a href="javascript:void(0)" onclick="tolakSsh(`'.route('ssh.rincianReject',$ssh->id_ssh).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
+                                </div>
                             ';
                         }
                         if($ssh->s_status == '2'){
-                            $aksi = 'Valid';
+                            $aksi = '
+                            <div class="btn-group">
+                                <a href="javascript:void(0)" onclick="editSsh(`'.route('ssh.rincianUpdate',$ssh->id_ssh).'`,'.$ssh->id_ssh.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                            </div>
+                            ';
                         }
                     }
                     return $aksi;
@@ -395,6 +411,15 @@ class SshController extends Controller
 
     public function tolak($id){
         $ssh = UsulanSsh::find($id);
+        $data = [
+            'status' => '0'
+        ];
+        $ssh->update($data);
+        return response()->json('usulan SSH berhasil dikembalikan',200);
+    }
+
+    public function rincianTolak($id){
+        $ssh = dataSsh::find($id);
         $data = [
             'status' => '0'
         ];

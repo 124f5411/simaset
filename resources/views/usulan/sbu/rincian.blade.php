@@ -160,7 +160,7 @@
 
         function editSbu(url, id){
             $('#modalSbu').modal('show');
-            $('#modalSbu .modal-title').text('Ubah Usulan SBUs');
+            $('#modalSbu .modal-title').text('Ubah Usulan SBU');
 
             $('#modalSbu form')[0].reset();
             $('#modalSbu form').attr('action',url);

@@ -18,12 +18,18 @@ class SbuController extends Controller
 {
     public function index(){
         if(Auth::user()->level == 'aset'){
+            $kode_barang = KodeBarang::where('kelompok','=','2')->get();
+            $rekening = RekeningBelanja::all();
+            $satuan = DataSatuan::all();
             $instansi = DataOpd::all();
             return view('usulan.sbu.aset',[
                 'title' => 'Usulan',
                 'page' => 'SBU',
                 'drops' => [
-                    'instansi' => $instansi
+                    'kode_barang' => $kode_barang,
+                    'rekening' => $rekening,
+                    'instansi' => $instansi,
+                    'satuan' => $satuan
                 ]
             ]);
         }
@@ -39,7 +45,7 @@ class SbuController extends Controller
         $rekening = RekeningBelanja::all();
         $satuan = DataSatuan::all();
         $instansi = DataOpd::all();
-        return view('usulan.asb.rincian',[
+        return view('usulan.sbu.rincian',[
             'title' => 'Usulan',
             'page' => 'SBU',
             'drops' => [
@@ -53,18 +59,24 @@ class SbuController extends Controller
     }
 
     public function datas(){
-        $sbu = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status')
+        $sbu = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',2)
-                        ->whereIn('usulan_ssh.status',['1','2'])->get();
+                        ->whereIn('_data_ssh.status',['1','2'])->get();
 
         return datatables()->of($sbu)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($sbu) {
                     return getValue("opd","data_opd","id = ".$sbu->id_opd);
                 })
-                ->addColumn('uraian',function($sbu) {
-                    return getValue("uraian","referensi_kode_barang","id = ".$sbu->id_kode);
+                ->addColumn('uraian',function($ssh) {
+                    return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('kode_barang',function($ssh) {
+                    return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('rekening_belanja',function($ssh) {
+                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->id_rekening);
                 })
                 ->addColumn('satuan',function($sbu){
                     return getValue("nm_satuan","data_satuan","id = ".$sbu->id_satuan);
@@ -93,7 +105,11 @@ class SbuController extends Controller
                             ';
                         }
                         if($sbu->s_status == '2'){
-                            $aksi = 'Valid';
+                            $aksi = '
+                            <div class="btn-group">
+                                <a href="javascript:void(0)" onclick="editSbu(`'.route('sbu.rincianUpdate',$sbu->id_ssh).'`,'.$sbu->id_ssh.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                            </div>
+                            ';
                         }
                     }
                     return $aksi;
@@ -143,7 +159,7 @@ class SbuController extends Controller
     }
 
     public function data(){
-        $sbu = UsulanSsh::where('id_kelompok','=','3')->where('id_opd','=',Auth::user()->id_opd)->get();
+        $sbu = UsulanSsh::where('id_kelompok','=','2')->where('id_opd','=',Auth::user()->id_opd)->get();
         return datatables()->of($sbu)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($sbu) {
@@ -240,7 +256,7 @@ class SbuController extends Controller
         ];
 
         UsulanSsh::create($data);
-        return response()->json('ASB berhasil dibuat',200);
+        return response()->json('SBU berhasil dibuat',200);
     }
 
     public function rincianStore(Request $request,$id){
@@ -393,6 +409,15 @@ class SbuController extends Controller
         return response()->json('usulan SBU berhasil dikembalikan',200);
     }
 
+    public function rincianTolak($id){
+        $sbu = dataSbu::find($id);
+        $data = [
+            'status' => '0'
+        ];
+        $sbu->update($data);
+        return response()->json('usulan SBU berhasil dikembalikan',200);
+    }
+
     public function exportPDF($id){
         $sbu = dataSbu::where('id_usulan','=',decrypt($id))->get();
         $tahun = getValue("tahun","usulan_ssh"," id = ".decrypt($id));
@@ -406,7 +431,7 @@ class SbuController extends Controller
             'ttd' => $ttd,
             'opd' => $opd
         ];
-        $pdf = PDF::loadView('pdf.asb',$data);
+        $pdf = PDF::loadView('pdf.sbu',$data);
         $pdf->setPaper('F4', 'landscape');
         return $pdf->stream('sbu-'.Auth::user()->id_opd.'-TA-'.$tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }

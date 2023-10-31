@@ -19,12 +19,18 @@ class AsbController extends Controller
 {
     public function index(){
         if(Auth::user()->level == 'aset'){
+            $kode_barang = KodeBarang::where('kelompok','=','3')->get();
+            $rekening = RekeningBelanja::all();
+            $satuan = DataSatuan::all();
             $instansi = DataOpd::all();
             return view('usulan.asb.aset',[
                 'title' => 'Usulan',
                 'page' => 'ASB',
                 'drops' => [
-                    'instansi' => $instansi
+                    'kode_barang' => $kode_barang,
+                    'rekening' => $rekening,
+                    'instansi' => $instansi,
+                    'satuan' => $satuan
                 ]
             ]);
         }
@@ -54,18 +60,24 @@ class AsbController extends Controller
     }
 
     public function datas(){
-        $asb = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status')
+        $asb = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',3)
-                        ->whereIn('usulan_ssh.status',['1','2'])->get();
+                        ->whereIn('_data_ssh.status',['1','2'])->get();
 
         return datatables()->of($asb)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($asb) {
                     return getValue("opd","data_opd","id = ".$asb->id_opd);
                 })
-                ->addColumn('uraian',function($asb) {
-                    return getValue("uraian","referensi_kode_barang","id = ".$asb->id_kode);
+                ->addColumn('uraian',function($ssh) {
+                    return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('kode_barang',function($ssh) {
+                    return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('rekening_belanja',function($ssh) {
+                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->id_rekening);
                 })
                 ->addColumn('satuan',function($asb){
                     return getValue("nm_satuan","data_satuan","id = ".$asb->id_satuan);
@@ -94,7 +106,11 @@ class AsbController extends Controller
                             ';
                         }
                         if($asb->s_status == '2'){
-                            $aksi = 'Valid';
+                            $aksi = '
+                            <div class="btn-group">
+                                <a href="javascript:void(0)" onclick="editAsb(`'.route('asb.rincianUpdate',$asb->id_ssh).'`,'.$asb->id_ssh.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                            </div>
+                            ';
                         }
                     }
                     return $aksi;
@@ -385,8 +401,25 @@ class AsbController extends Controller
         return response()->json($respon,200);
     }
 
+    public function rincianValidasi($id){
+        $asb = dataSsh::find($id);
+        $verif = ['status' => '2'];
+        $respon = 'usulan ASB telah diterima';
+        $asb->update($verif);
+        return response()->json($respon,200);
+    }
+
     public function tolak($id){
         $asb = UsulanSsh::find($id);
+        $data = [
+            'status' => '0'
+        ];
+        $asb->update($data);
+        return response()->json('usulan ASB berhasil dikembalikan',200);
+    }
+
+    public function rincianTolak($id){
+        $asb = dataAsb::find($id);
         $data = [
             'status' => '0'
         ];

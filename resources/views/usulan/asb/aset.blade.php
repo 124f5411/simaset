@@ -11,7 +11,7 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">ANALISIS STANDA BELANJA (ASB)</h6>
+                <h6 class="m-0 font-weight-bold text-primary">RINCIAN ANALISIS STANDA BELANJA (ASB)</h6>
             </div>
             <div class="card-body">
                 @if (Auth::user()->level == 'aset')
@@ -42,10 +42,12 @@
                             <tr>
                                 <th>#</th>
                                 <th>OPD</th>
+                                <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th>Harga</th>
+                                <th>Rekening Belanja</th>
                                 <th>Tahun</th>
                                 <th>Dokumen</th>
                                 <th>Aksi</th>
@@ -58,7 +60,7 @@
 
     </div>
 </div>
-{{-- @includeIf('form.usulan.ssh.rincian') --}}
+@includeIf('form.usulan.asb.rincian')
 @endsection
 
 @push('css')
@@ -76,6 +78,7 @@
     <script src="{{ asset('js/validator.min.js') }}"></script>
 
     <script>
+        let user_akses = "{{ Auth::user()->level }}";
         let table;
         $(document).ready(function() {
             $('#id_kode').select2({
@@ -93,15 +96,17 @@
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('ssh.datas') }}',
+                    url: '{{ route('asb.datas') }}',
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
                     {data:'q_opd'},
+                    {data:'kode_barang'},
                     {data:'uraian'},
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
+                    {data:'rekening_belanja'},
                     {data:'tahun'},
                     {data:'dokumen', searchable:false, sortable:false},
                     {data:'aksi', searchable:false, sortable:false},
@@ -130,9 +135,9 @@
                 }
             });
 
-            $('#modalSsh').validator().on('submit', function (e){
+            $('#modalAsb').validator().on('submit', function (e){
                 if(! e.preventDefault()){
-                    $.post($('#modalSsh form').attr('action'), $('#modalSsh form').serialize())
+                    $.post($('#modalAsb form').attr('action'), $('#modalAsb form').serialize())
                     .done((response) => {
                         $(".alert" ).addClass( "alert-success" );
                         $(".alert").show();
@@ -140,10 +145,11 @@
                         setTimeout(function(){
                             $(".alert" ).removeClass( "alert-success" );
                             $("#massages").empty();
-                            $('#modalSsh [name=id_kode]').val('').trigger('change');
-                            $('#modalSsh [name=id_satuan]').val('').trigger('change');
-                            $('#modalSsh form')[0].reset();
-                            $('#modalSsh').modal('hide');
+                            $('#modalAsb [name=id_kode]').val('').trigger('change');
+                            $('#modalAsb [name=id_satuan]').val('').trigger('change');
+                            $('#modalAsb [name=id_rekening]').val('').trigger('change');
+                            $('#modalAsb form')[0].reset();
+                            $('#modalAsb').modal('hide');
                         }, 1000);
                         table.ajax.reload();
                     })
@@ -157,9 +163,9 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
-                                // $('#modalSsh [name=id_kontrak]').val('').trigger('change');
-                                // $('#modalSsh form')[0].reset();
-                                // $('#modalSsh').modal('hide');
+                                // $('#modalAsb [name=id_kontrak]').val('').trigger('change');
+                                // $('#modalAsb form')[0].reset();
+                                // $('#modalAsb').modal('hide');
                             }, 3000);
                         });
                     });
@@ -167,6 +173,71 @@
             });
 
         });
+
+        function editAsb(url, id){
+            $('#modalAsb').modal('show');
+            $('#modalAsb .modal-title').text('Ubah Usulan ASB');
+
+            $('#modalAsb form')[0].reset();
+            $('#modalAsb form').attr('action',url);
+            $('#modalAsb [name=_method]').val('put');
+            $('#modalAsb [name=jenis]').val('');
+            $('#modalAsb').on('shown.bs.modal', function () {
+                $('#id_kode').focus();
+            })
+
+            let show = "{{route('asb.rincianShow', '')}}"+"/"+id;
+            $.get(show)
+            .done((response) => {
+                $('#modalAsb [name=id_kode]').val(response.id_kode).trigger('change');
+                $('#modalAsb [name=id_rekening]').val(response.id_rekening).trigger('change');
+                $('#modalAsb [name=spesifikasi]').val(response.spesifikasi);
+                $('#modalAsb [name=id_satuan]').val(response.id_satuan).trigger('change');
+                $('#modalAsb [name=harga]').val(response.harga);
+            })
+            .fail((errors) => {
+                alert('Gagl tampil data');
+                return;
+            })
+        }
+
+        function verifAsb(url){
+            let pesan;
+            if(user_akses == 'operator'){
+                pesan = 'Yakin? data akan dikirimka untuk validasi.';
+            }else if(user_akses == 'aset'){
+                pesan = 'yakin data usulan telah benar?';
+            }
+            if (confirm(pesan)) {
+                    $.post(url, {
+                            '_token': $('[name=csrf-token]').attr('content'),
+                            '_method': 'put'
+                        })
+                        .done((response) => {
+                            table.ajax.reload();
+                        })
+                        .fail((errors) => {
+                            alert('Gagal kirim data');
+                            return;
+                        });
+                }
+        }
+
+        function tolakAsb(url){
+        if (confirm('Yakin? Data akan ditolak atau dikembalikan.')) {
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'put'
+                    })
+                    .done((response) => {
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        alert('Gagal tolak data');
+                        return;
+                    });
+            }
+        }
 
 
     </script>

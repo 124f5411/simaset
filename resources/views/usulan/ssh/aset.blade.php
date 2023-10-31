@@ -42,10 +42,12 @@
                             <tr>
                                 <th>#</th>
                                 <th>OPD</th>
+                                <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th>Harga</th>
+                                <th>Rekening Belanja</th>
                                 <th>Tahun</th>
                                 <th>Dokumen</th>
                                 <th>Aksi</th>
@@ -58,7 +60,7 @@
 
     </div>
 </div>
-{{-- @includeIf('form.usulan.ssh.rincian') --}}
+@includeIf('form.usulan.ssh.rincian')
 @endsection
 
 @push('css')
@@ -99,10 +101,12 @@
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
                     {data:'q_opd'},
+                    {data:'kode_barang'},
                     {data:'uraian'},
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
+                    {data:'rekening_belanja'},
                     {data:'tahun'},
                     {data:'dokumen', searchable:false, sortable:false},
                     {data:'aksi', searchable:false, sortable:false},
@@ -143,6 +147,7 @@
                             $("#massages").empty();
                             $('#modalSsh [name=id_kode]').val('').trigger('change');
                             $('#modalSsh [name=id_satuan]').val('').trigger('change');
+                            $('#modalSsh [name=id_rekening]').val('').trigger('change');
                             $('#modalSsh form')[0].reset();
                             $('#modalSsh').modal('hide');
                         }, 1000);
@@ -166,8 +171,50 @@
                     });
                 }
             });
-
         });
+
+        function editSsh(url, id){
+            $('#modalSsh').modal('show');
+            $('#modalSsh .modal-title').text('Ubah Usulan SSH');
+
+            $('#modalSsh form')[0].reset();
+            $('#modalSsh form').attr('action',url);
+            $('#modalSsh [name=_method]').val('put');
+            $('#modalSsh [name=jenis]').val('');
+            $('#modalSsh').on('shown.bs.modal', function () {
+                $('#id_kode').focus();
+            })
+
+            let show = "{{route('ssh.rincianShow', '')}}"+"/"+id;
+            $.get(show)
+            .done((response) => {
+                $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');
+                $('#modalSsh [name=id_rekening]').val(response.id_rekening).trigger('change');
+                $('#modalSsh [name=spesifikasi]').val(response.spesifikasi);
+                $('#modalSsh [name=id_satuan]').val(response.id_satuan).trigger('change');
+                $('#modalSsh [name=harga]').val(response.harga);
+            })
+            .fail((errors) => {
+                alert('Gagl tampil data');
+                return;
+            })
+        }
+
+        function hapusSsh(url){
+            if (confirm('Yakin ingin menghapus data terpilih?')) {
+                    $.post(url, {
+                            '_token': $('[name=csrf-token]').attr('content'),
+                            '_method': 'delete'
+                        })
+                        .done((response) => {
+                            table.ajax.reload();
+                        })
+                        .fail((errors) => {
+                            alert('Gagal hapus data');
+                            return;
+                        });
+                }
+        }
 
         function verifSsh(url){
             let pesan;

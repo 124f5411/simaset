@@ -18,12 +18,18 @@ class HspkController extends Controller
 {
     public function index(){
         if(Auth::user()->level == 'aset'){
+            $kode_barang = KodeBarang::where('kelompok','=','4')->get();
+            $rekening = RekeningBelanja::all();
+            $satuan = DataSatuan::all();
             $instansi = DataOpd::all();
             return view('usulan.hspk.aset',[
                 'title' => 'Usulan',
                 'page' => 'HSPK',
                 'drops' => [
-                    'instansi' => $instansi
+                    'kode_barang' => $kode_barang,
+                    'rekening' => $rekening,
+                    'instansi' => $instansi,
+                    'satuan' => $satuan
                 ]
             ]);
         }
@@ -53,18 +59,24 @@ class HspkController extends Controller
     }
 
     public function datas(){
-        $hspk = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status')
+        $hspk = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',4)
-                        ->whereIn('usulan_ssh.status',['1','2'])->get();
+                        ->whereIn('_data_ssh.status',['1','2'])->get();
 
         return datatables()->of($hspk)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($hspk) {
                     return getValue("opd","data_opd","id = ".$hspk->id_opd);
                 })
-                ->addColumn('uraian',function($hspk) {
-                    return getValue("uraian","referensi_kode_barang","id = ".$hspk->id_kode);
+                ->addColumn('uraian',function($ssh) {
+                    return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('kode_barang',function($ssh) {
+                    return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
+                })
+                ->addColumn('rekening_belanja',function($ssh) {
+                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->id_rekening);
                 })
                 ->addColumn('satuan',function($hspk){
                     return getValue("nm_satuan","data_satuan","id = ".$hspk->id_satuan);
@@ -93,7 +105,11 @@ class HspkController extends Controller
                             ';
                         }
                         if($hspk->s_status == '2'){
-                            $aksi = 'Valid';
+                            $aksi = '
+                            <div class="btn-group">
+                                <a href="javascript:void(0)" onclick="editHspk(`'.route('hspk.rincianUpdate',$hspk->id_ssh).'`,'.$hspk->id_ssh.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                            </div>
+                            ';
                         }
                     }
                     return $aksi;
@@ -386,6 +402,15 @@ class HspkController extends Controller
 
     public function tolak($id){
         $hspk = UsulanSsh::find($id);
+        $data = [
+            'status' => '0'
+        ];
+        $hspk->update($data);
+        return response()->json('usulan HSPK berhasil dikembalikan',200);
+    }
+
+    public function rincianTolak($id){
+        $hspk = dataHspk::find($id);
         $data = [
             'status' => '0'
         ];

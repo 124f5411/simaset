@@ -11,7 +11,7 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">STANDAR BIAYA UMUM (SBU)</h6>
+                <h6 class="m-0 font-weight-bold text-primary">RINCIAN STANDAR BIAYA UMUM (SBU)</h6>
             </div>
             <div class="card-body">
                 @if (Auth::user()->level == 'aset')
@@ -42,10 +42,12 @@
                             <tr>
                                 <th>#</th>
                                 <th>OPD</th>
+                                <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th>Harga</th>
+                                <th>Rekening Belanja</th>
                                 <th>Tahun</th>
                                 <th>Dokumen</th>
                                 <th>Aksi</th>
@@ -58,7 +60,7 @@
 
     </div>
 </div>
-{{-- @includeIf('form.usulan.ssh.rincian') --}}
+@includeIf('form.usulan.sbu.rincian')
 @endsection
 
 @push('css')
@@ -93,15 +95,17 @@
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('ssh.datas') }}',
+                    url: '{{ route('sbu.datas') }}',
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
                     {data:'q_opd'},
+                    {data:'kode_barang'},
                     {data:'uraian'},
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
+                    {data:'rekening_belanja'},
                     {data:'tahun'},
                     {data:'dokumen', searchable:false, sortable:false},
                     {data:'aksi', searchable:false, sortable:false},
@@ -130,9 +134,9 @@
                 }
             });
 
-            $('#modalSsh').validator().on('submit', function (e){
+            $('#modalSbu').validator().on('submit', function (e){
                 if(! e.preventDefault()){
-                    $.post($('#modalSsh form').attr('action'), $('#modalSsh form').serialize())
+                    $.post($('#modalSbu form').attr('action'), $('#modalSbu form').serialize())
                     .done((response) => {
                         $(".alert" ).addClass( "alert-success" );
                         $(".alert").show();
@@ -140,10 +144,10 @@
                         setTimeout(function(){
                             $(".alert" ).removeClass( "alert-success" );
                             $("#massages").empty();
-                            $('#modalSsh [name=id_kode]').val('').trigger('change');
-                            $('#modalSsh [name=id_satuan]').val('').trigger('change');
-                            $('#modalSsh form')[0].reset();
-                            $('#modalSsh').modal('hide');
+                            $('#modalSbu [name=id_kode]').val('').trigger('change');
+                            $('#modalSbu [name=id_satuan]').val('').trigger('change');
+                            $('#modalSbu form')[0].reset();
+                            $('#modalSbu').modal('hide');
                         }, 1000);
                         table.ajax.reload();
                     })
@@ -157,9 +161,9 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
-                                // $('#modalSsh [name=id_kontrak]').val('').trigger('change');
-                                // $('#modalSsh form')[0].reset();
-                                // $('#modalSsh').modal('hide');
+                                // $('#modalSbu [name=id_kontrak]').val('').trigger('change');
+                                // $('#modalSbu form')[0].reset();
+                                // $('#modalSbu').modal('hide');
                             }, 3000);
                         });
                     });
@@ -167,6 +171,87 @@
             });
 
         });
+
+        function editSbu(url, id){
+            $('#modalSbu').modal('show');
+            $('#modalSbu .modal-title').text('Ubah Usulan SBU');
+
+            $('#modalSbu form')[0].reset();
+            $('#modalSbu form').attr('action',url);
+            $('#modalSbu [name=_method]').val('put');
+            $('#modalSbu [name=jenis]').val('');
+            $('#modalSbu').on('shown.bs.modal', function () {
+                $('#id_kode').focus();
+            })
+
+            let show = "{{route('sbu.rincianShow', '')}}"+"/"+id;
+            $.get(show)
+            .done((response) => {
+                $('#modalSbu [name=id_kode]').val(response.id_kode).trigger('change');
+                $('#modalSbu [name=id_rekening]').val(response.id_rekening).trigger('change');
+                $('#modalSbu [name=spesifikasi]').val(response.spesifikasi);
+                $('#modalSbu [name=id_satuan]').val(response.id_satuan).trigger('change');
+                $('#modalSbu [name=harga]').val(response.harga);
+            })
+            .fail((errors) => {
+                alert('Gagl tampil data');
+                return;
+            })
+        }
+
+        function hapusSbu(url){
+            if (confirm('Yakin ingin menghapus data terpilih?')) {
+                    $.post(url, {
+                            '_token': $('[name=csrf-token]').attr('content'),
+                            '_method': 'delete'
+                        })
+                        .done((response) => {
+                            table.ajax.reload();
+                        })
+                        .fail((errors) => {
+                            alert('Gagal hapus data');
+                            return;
+                        });
+                }
+        }
+
+        function verifSbu(url){
+            let pesan;
+            if(user_akses == 'operator'){
+                pesan = 'Yakin? data akan dikirimkan untuk validasi.';
+            }else if(user_akses == 'aset'){
+                pesan = 'yakin data usulan telah benar?';
+            }
+            if (confirm(pesan)) {
+                    $.post(url, {
+                            '_token': $('[name=csrf-token]').attr('content'),
+                            '_method': 'put'
+                        })
+                        .done((response) => {
+                            table.ajax.reload();
+                        })
+                        .fail((errors) => {
+                            alert('Gagal kirim data');
+                            return;
+                        });
+                }
+        }
+
+        function tolakSbu(url){
+        if (confirm('Yakin? Data akan ditolak atau dikembalikan.')) {
+                $.post(url, {
+                        '_token': $('[name=csrf-token]').attr('content'),
+                        '_method': 'put'
+                    })
+                    .done((response) => {
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        alert('Gagal tolak data');
+                        return;
+                    });
+            }
+        }
 
 
     </script>
