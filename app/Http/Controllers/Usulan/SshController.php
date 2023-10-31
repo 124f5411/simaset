@@ -166,6 +166,20 @@ class SshController extends Controller
                 ->addColumn('q_opd',function($ssh) {
                     return getValue("opd","data_opd","id = ".$ssh->id_opd);
                 })
+                ->addColumn('usulan',function($ssh) {
+                    if(is_null($ssh->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($ssh->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($ssh->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
+                })
                 ->addColumn('dokumen',function($ssh) {
                     if(is_null($ssh->ssd_dokumen)){
                         $aksi = '
@@ -243,15 +257,18 @@ class SshController extends Controller
     public function store(Request $request){
         $field = [
             'tahun' => ['required'],
+            'induk_perubahan' => ['required']
         ];
 
         $pesan = [
             'tahun.required' => 'Tahun SSH tidak boleh kosong <br />',
+            'induk_perubahan.required' => 'Jenis usulan tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
+            'induk_perubahan' => $request->induk_perubahan,
             'id_kelompok' => 1,
             'status' => '0'
         ];
@@ -304,16 +321,19 @@ class SshController extends Controller
     public function update(Request $request,$id){
         $ssh = UsulanSsh::find($id);
         $field = [
-            'tahun' => ['required']
+            'tahun' => ['required'],
+            'induk_perubahan' => ['required']
         ];
 
         $pesan = [
-            'tahun.required' => 'Tahun SSH boleh kosong <br />'
+            'tahun.required' => 'Tahun SSH tidak boleh kosong <br />',
+            'induk_perubahan.required' => 'Jenis usulan tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_opd' => Auth::user()->id_opd,
             'tahun' => $request->tahun,
+            'induk_perubahan' => $request->induk_perubahan,
             'id_kelompok' => 1,
             'status' => '0'
         ];
@@ -430,20 +450,22 @@ class SshController extends Controller
 
     public function exportPDF($id){
         $ssh = dataSsh::where('id_usulan','=',decrypt($id))->get();
+        $usulan = UsulanSsh::find(decrypt($id));
+        $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $tahun = getValue("tahun","usulan_ssh"," id = ".decrypt($id));
         $ttd = TtdSetting::where('id_opd','=',Auth::user()->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".Auth::user()->id_opd);
         $data = [
-            'tahun' => $tahun,
+            'tahun' => $usulan->tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
-            'title' => "USULAN STANDAR SATUAN HARGA TAHUN ANGGARAN",
+            'title' => "USULAN ".strtoupper($jenis)." STANDAR SATUAN HARGA TAHUN ANGGARAN",
             'ssh' => $ssh,
             'ttd' => $ttd,
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.ssh',$data);
         $pdf->setPaper('F4', 'landscape');
-        return $pdf->stream('ssh-'.Auth::user()->id_opd.'-TA-'.$tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('ssh-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
 }
