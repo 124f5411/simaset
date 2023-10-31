@@ -400,6 +400,14 @@ class SbuController extends Controller
         return response()->json($respon,200);
     }
 
+    public function rincianValidasi($id){
+        $sbu = dataSbu::find($id);
+        $verif = ['status' => '2'];
+        $respon = 'usulan SBU telah diterima';
+        $sbu->update($verif);
+        return response()->json($respon,200);
+    }
+
     public function tolak($id){
         $sbu = UsulanSsh::find($id);
         $data = [
