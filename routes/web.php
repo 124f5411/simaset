@@ -254,6 +254,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('sbu/valid/{id}',[SbuController::class,'validasi'])->name('sbu.validasi');
     Route::put('sbu/tolak/{id}',[SbuController::class,'tolak'])->name('sbu.reject');
 
+    Route::get('hspk/datas',[HspkController::class,'datas'])->name('hspk.datas');
     Route::get('hspk/data',[HspkController::class,'data'])->name('hspk.data');
     Route::get('hspk/{id}',[HspkController::class,'show'])->name('hspk.show');
     Route::post('hspk',[HspkController::class,'store'])->name('hspk.store');
@@ -261,4 +262,15 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('hspk/{id}',[HspkController::class,'destroy'])->name('hspk.destroy');
     Route::put('hspk/valid/{id}',[HspkController::class,'validasi'])->name('hspk.validasi');
     Route::put('hspk/tolak/{id}',[HspkController::class,'tolak'])->name('hspk.reject');
+    Route::put('hspk/upload/{id}',[HspkController::class,'upload'])->name('hspk.upload');
+    Route::get('hspk/pdf/{id}',[HspkController::class,'exportPDF'])->name('hspk.export');
+
+    Route::get('hspk/rincian/{id}',[HspkController::class,'data_rincian'])->name('hspk.data_rincian');
+    Route::get('hspk/rincian/item/{id}',[HspkController::class,'rincian'])->name('hspk.rincian');
+    Route::get('hspk/rincian/show/{id}',[HspkController::class,'rincianShow'])->name('hspk.rincianShow');
+    Route::post('hspk/rincian/{id}',[HspkController::class,'rincianStore'])->name('hspk.rincianStore');
+    Route::put('hspk/rincian/{id}',[HspkController::class,'rincianUpdate'])->name('hspk.rincianUpdate');
+    Route::delete('hspk/rincian/{id}',[HspkController::class,'rincianDestroy'])->name('hspk.rincianDestroy');
+    Route::put('hspk/rincian/valid/{id}',[HspkController::class,'rincianValidasi'])->name('hspk.rincianValidasi');
+    Route::put('hspk/rincian/tolak/{id}',[HspkController::class,'rincianTolak'])->name('hspk.rincianReject');
 });
