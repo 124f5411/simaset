@@ -216,6 +216,14 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('ssh/pdf/{id}',[SshController::class,'exportPDF'])->name('ssh.export');
 
 
+    Route::get('ssh/opd/{id}',[SshController::class,'instansi'])->name('ssh.instansi');
+    Route::get('ssh/opd/rinci/{id}',[SshController::class,'asetRinci'])->name('ssh.asetRinci');
+    Route::get('ssh/opd/rincian/{id}',[SshController::class,'rincianAset'])->name('ssh.rincianAset');
+    Route::get('ssh/opd/aset/{id}',[SshController::class,'asetInstansi'])->name('ssh.asetInstansi');
+    Route::post('ssh/export',[SshController::class,'export'])->name('ssh.exportForm');
+    Route::get('ssh/opd/aset/export/{id}',[SshController::class,'exportAsetInstansi'])->name('ssh.exportAsetInstansi');
+    Route::get('ssh/export/pdf/{tahun}/{jenis}',[SshController::class,'exportAset'])->name('ssh.exportAset');
+
     Route::get('ssh/rincian/{id}',[SshController::class,'data_rincian'])->name('ssh.data_rincian');
     Route::get('ssh/rincian/item/{id}',[SshController::class,'rincian'])->name('ssh.rincian');
     Route::get('ssh/rincian/show/{id}',[SshController::class,'rincianShow'])->name('ssh.rincianShow');
@@ -236,6 +244,14 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('asb/tolak/{id}',[AsbController::class,'tolak'])->name('asb.reject');
     Route::put('asb/upload/{id}',[AsbController::class,'upload'])->name('asb.upload');
     Route::get('asb/pdf/{id}',[AsbController::class,'exportPDF'])->name('asb.export');
+
+    Route::get('asb/opd/{id}',[AsbController::class,'instansi'])->name('asb.instansi');
+    Route::get('asb/opd/rinci/{id}',[AsbController::class,'asetRinci'])->name('asb.asetRinci');
+    Route::get('asb/opd/rincian/{id}',[AsbController::class,'rincianAset'])->name('asb.rincianAset');
+    Route::get('asb/opd/aset/{id}',[AsbController::class,'asetInstansi'])->name('asb.asetInstansi');
+    Route::post('asb/export',[AsbController::class,'export'])->name('asb.exportForm');
+    Route::get('asb/opd/aset/export/{id}',[AsbController::class,'exportAsetInstansi'])->name('asb.exportAsetInstansi');
+    Route::get('asb/export/pdf/{tahun}/{jenis}',[AsbController::class,'exportAset'])->name('asb.exportAset');
 
     Route::get('asb/rincian/{id}',[AsbController::class,'data_rincian'])->name('asb.data_rincian');
     Route::get('asb/rincian/item/{id}',[AsbController::class,'rincian'])->name('asb.rincian');
