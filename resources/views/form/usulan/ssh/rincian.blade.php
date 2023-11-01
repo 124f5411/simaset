@@ -21,6 +21,10 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="uraian">Uraian</label>
+                        <input type="text" class="form-control" id="uraian" name="uraian" required>
+                    </div>
+                    <div class="form-group">
                         <label for="spesifikasi">Spesifikasi</label>
                         <input type="text" class="form-control" id="spesifikasi" name="spesifikasi" required>
                     </div>

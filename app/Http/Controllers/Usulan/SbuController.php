@@ -84,7 +84,7 @@ class SbuController extends Controller
                     return $usulan;
                 })
                 ->addColumn('uraian',function($ssh) {
-                    return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
+                    return getValue("uraian_id","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
                 ->addColumn('kode_barang',function($ssh) {
                     return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
@@ -139,7 +139,7 @@ class SbuController extends Controller
         $sbu = dataSbu::where('id_usulan','=',$id)->get();
         return datatables()->of($sbu)
                 ->addIndexColumn()
-                ->addColumn('uraian',function($sbu) {
+                ->addColumn('uraian_id',function($sbu) {
                     return getValue("uraian","referensi_kode_barang","id = ".$sbu->id_kode);
                 })
                 ->addColumn('kode_barang',function($sbu) {
@@ -315,6 +315,7 @@ class SbuController extends Controller
             'id_kode' => ['required'],
             'id_rekening' => ['required'],
             'spesifikasi' => ['required'],
+            'uraian' => ['required'],
             'id_satuan' => ['required'],
             'harga' => ['required']
         ];
@@ -323,6 +324,7 @@ class SbuController extends Controller
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
             'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
+            'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
         ];
@@ -332,6 +334,7 @@ class SbuController extends Controller
             'id_rekening' => $request->id_rekening,
             'id_usulan' => $id,
             'spesifikasi' => $request->spesifikasi,
+            'uraian' => $request->uraian,
             'harga' => $request->harga,
             'id_satuan' => $request->id_satuan,
             'status' => '0'
@@ -379,6 +382,7 @@ class SbuController extends Controller
             'id_kode' => ['required'],
             'id_rekening' => ['required'],
             'spesifikasi' => ['required'],
+            'uraian' => ['required'],
             'id_satuan' => ['required'],
             'harga' => ['required']
         ];
@@ -387,6 +391,8 @@ class SbuController extends Controller
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
             'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
+            'uraian.required' => 'Uraian tidak boleh kosong <br />',
+            'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
         ];
@@ -395,6 +401,7 @@ class SbuController extends Controller
             'id_kode' => $request->id_kode,
             'id_rekening' => $request->id_rekening,
             'spesifikasi' => $request->spesifikasi,
+            'uraian' => $request->uraian,
             'harga' => $request->harga,
             'id_satuan' => $request->id_satuan
         ];

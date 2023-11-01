@@ -37,6 +37,7 @@
                                 <th>#</th>
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
+                                <th>Uraian</th>
                                 <th style="width: 200px">Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th style="width: 150px">Harga</th>
@@ -103,6 +104,7 @@
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
                     {data:'kode_barang'},
+                    {data:'uraian_id'},
                     {data:'uraian'},
                     {data:'spesifikasi'},
                     {data:'satuan'},
@@ -183,6 +185,7 @@
                 $('#modalSbu [name=id_kode]').val(response.id_kode).trigger('change');
                 $('#modalSbu [name=id_rekening]').val(response.id_rekening).trigger('change');
                 $('#modalSbu [name=spesifikasi]').val(response.spesifikasi);
+                $('#modalSbu [name=uraian]').val(response.uraian);
                 $('#modalSbu [name=id_satuan]').val(response.id_satuan).trigger('change');
                 $('#modalSbu [name=harga]').val(response.harga);
             })

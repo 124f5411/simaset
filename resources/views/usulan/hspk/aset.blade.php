@@ -52,6 +52,7 @@
                                 <th>OPD</th>
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
+                                <th>Uraian</th>
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th style="width: 150px">Harga</th>
@@ -116,6 +117,7 @@
                     {data:'DT_RowIndex', searchable:false, sortable:false},
                     {data:'q_opd'},
                     {data:'kode_barang'},
+                    {data:'uraian_id'},
                     {data:'uraian'},
                     {data:'spesifikasi'},
                     {data:'satuan'},
@@ -146,7 +148,7 @@
                 //     table.ajax.reload();
                 // }
                 if($(this).val() != ''){
-                    table.column(8).search($(this).val()).draw();
+                    table.column(9).search($(this).val()).draw();
                 }
             });
             $('#usulan').change(function() {
@@ -156,7 +158,7 @@
                 //     table.ajax.reload();
                 // }
                 if($(this).val() != ''){
-                    table.column(9).search($(this).val()).draw();
+                    table.column(10).search($(this).val()).draw();
                 }
             });
 
@@ -247,6 +249,7 @@
                 $('#modalHspk [name=id_kode]').val(response.id_kode).trigger('change');
                 $('#modalHspk [name=id_rekening]').val(response.id_rekening).trigger('change');
                 $('#modalHspk [name=spesifikasi]').val(response.spesifikasi);
+                $('#modalHspk [name=uraian]').val(response.uraian);
                 $('#modalHspk [name=id_satuan]').val(response.id_satuan).trigger('change');
                 $('#modalHspk [name=harga]').val(response.harga);
             })

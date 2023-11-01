@@ -83,7 +83,7 @@ class SshController extends Controller
                     }
                     return $usulan;
                 })
-                ->addColumn('uraian',function($ssh) {
+                ->addColumn('uraian_id',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
                 ->addColumn('kode_barang',function($ssh) {
@@ -139,7 +139,7 @@ class SshController extends Controller
         $ssh = dataSsh::where('id_usulan','=',$id)->get();
         return datatables()->of($ssh)
                 ->addIndexColumn()
-                ->addColumn('uraian',function($ssh) {
+                ->addColumn('uraian_id',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
                 ->addColumn('kode_barang',function($ssh) {
@@ -315,6 +315,7 @@ class SshController extends Controller
         $field = [
             'id_kode' => ['required'],
             'id_rekening' => ['required'],
+            'uraian' => ['required'],
             'spesifikasi' => ['required'],
             'id_satuan' => ['required'],
             'harga' => ['required']
@@ -323,6 +324,7 @@ class SshController extends Controller
         $pesan = [
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
             'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
+            'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
@@ -333,6 +335,7 @@ class SshController extends Controller
             'id_rekening' => $request->id_rekening,
             'id_usulan' => $id,
             'spesifikasi' => $request->spesifikasi,
+            'uraian' => $request->uraian,
             'harga' => $request->harga,
             'id_satuan' => $request->id_satuan,
             'status' => '0'
@@ -380,6 +383,7 @@ class SshController extends Controller
             'id_kode' => ['required'],
             'id_rekening' => ['required'],
             'spesifikasi' => ['required'],
+            'uraian' => ['required'],
             'id_satuan' => ['required'],
             'harga' => ['required']
         ];
@@ -389,6 +393,7 @@ class SshController extends Controller
             'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
+            'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
@@ -396,6 +401,7 @@ class SshController extends Controller
             'id_kode' => $request->id_kode,
             'id_rekening' => $request->id_rekening,
             'spesifikasi' => $request->spesifikasi,
+            'uraian' => $request->uraian,
             'harga' => $request->harga,
             'id_satuan' => $request->id_satuan
         ];
