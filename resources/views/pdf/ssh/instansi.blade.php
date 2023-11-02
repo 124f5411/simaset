@@ -39,7 +39,7 @@
                 <td>{{ $value->uraian }}</td>
                 <td style="width: 200px">{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
-                <td>Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
+                <td style="width: 200px">Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
                 <td>{{ getValue("kode_akun","referensi_rekening_belanja","id = ".$value->id_rekening); }}</td>
             </tr>
 

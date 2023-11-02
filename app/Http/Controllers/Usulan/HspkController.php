@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Usulan;
 
 use App\Http\Controllers\Controller;
+use App\Models\dataAsb;
 use App\Models\dataHspk;
 use App\Models\DataOpd;
 use App\Models\DataSatuan;
@@ -17,19 +18,33 @@ use Illuminate\Support\Facades\Auth;
 class HspkController extends Controller
 {
     public function index(){
+        // if(Auth::user()->level == 'aset'){
+        //     $kode_barang = KodeBarang::where('kelompok','=','4')->get();
+        //     $rekening = RekeningBelanja::all();
+        //     $satuan = DataSatuan::all();
+        //     $instansi = DataOpd::all();
+        //     return view('usulan.hspk.aset',[
+        //         'title' => 'Usulan',
+        //         'page' => 'HSPK',
+        //         'drops' => [
+        //             'kode_barang' => $kode_barang,
+        //             'rekening' => $rekening,
+        //             'instansi' => $instansi,
+        //             'satuan' => $satuan
+        //         ]
+        //     ]);
+        // }
         if(Auth::user()->level == 'aset'){
-            $kode_barang = KodeBarang::where('kelompok','=','4')->get();
-            $rekening = RekeningBelanja::all();
-            $satuan = DataSatuan::all();
             $instansi = DataOpd::all();
-            return view('usulan.hspk.aset',[
+            $tahun  = UsulanSsh::select('tahun')->where('id_kelompok','=','4')->where('status','=','1')->groupBy('tahun')->get();
+            $jenis  = UsulanSsh::select('induk_perubahan')->where('id_kelompok','=','4')->where('status','=','1')->groupBy('induk_perubahan')->get();
+            return view('usulan.hspk.aset.index',[
                 'title' => 'Usulan',
                 'page' => 'HSPK',
                 'drops' => [
-                    'kode_barang' => $kode_barang,
-                    'rekening' => $rekening,
                     'instansi' => $instansi,
-                    'satuan' => $satuan
+                    'tahun' => $tahun,
+                    'jenis' => $jenis
                 ]
             ]);
         }
@@ -459,6 +474,14 @@ class HspkController extends Controller
         return response()->json($respon,200);
     }
 
+    public function rincianValidasi($id){
+        $hspk = dataHspk::find($id);
+        $verif = ['status' => '2'];
+        $respon = 'usulan HSPK telah diterima';
+        $hspk->update($verif);
+        return response()->json($respon,200);
+    }
+
     public function tolak($id){
         $hspk = UsulanSsh::find($id);
         $data = [
@@ -510,4 +533,189 @@ class HspkController extends Controller
         $pdf->setPaper('F4', 'landscape');
         return $pdf->stream('hspk-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
+
+    public function instansi($id){
+        return view('usulan.hspk.aset.instansi',[
+            'title' => 'Usulan',
+            'page' => 'HSPK',
+            'opd' => strtoupper(getValue("opd","data_opd"," id = ".decrypt($id)))
+        ]);
+    }
+
+    public function asetInstansi($id){
+        $hspk = UsulanSsh::where('id_kelompok','=','4')->where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
+        return datatables()->of($hspk)
+                ->addIndexColumn()
+                ->addColumn('usulan',function($hspk) {
+                    if(is_null($hspk->induk_perubahan)){
+                        $usulan = "Mohon diubah";
+                    }
+
+                    if($hspk->induk_perubahan == "1"){
+                        $usulan = "Induk";
+                    }
+
+                    if($hspk->induk_perubahan == "2"){
+                        $usulan = "Perubahan";
+                    }
+                    return $usulan;
+                })
+                ->addColumn('dokumen',function($hspk){
+                    $dok = '
+                    <div class="btn-group">
+                        <a href="'.asset('upload/hspk/'.$hspk->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-file-pdf"></i>
+                            </span>
+                            <span class="text">PDF</span>
+                        </a>
+                    </div>
+                    ';
+                    return $dok;
+                })
+                ->addColumn('rincian',function($hspk) {
+                    return '
+                    <a href="'.route('hspk.asetRinci',encrypt($hspk->id)).'" class="btn btn-sm btn-success btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                        <span class="text">Rincian</span>
+                    </a>
+                    ';
+                })
+                ->addColumn('export', function($hspk){
+                    $aksi = '
+                    <a href="javascript:void(0)" onclick="window.open(`'.route('hspk.exportAsetInstansi',encrypt($hspk->id)).'`,`Title`,`directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720`)" class="btn btn-sm btn-danger btn-icon-split mt-2 float-right">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span class="text">EXPORT</span>
+                    </a>
+                    ';
+                    return $aksi;
+                })
+                ->rawColumns(['export','rincian','dokumen'])
+                ->make(true);
+    }
+
+    public function rincianAset($id){
+        $hspk = dataHspk::where('id_usulan','=',decrypt($id))->whereIn('status',['1','2'])->get();
+        return datatables()->of($hspk)
+                ->addIndexColumn()
+                ->addColumn('uraian_id',function($hspk) {
+                    return getValue("uraian","referensi_kode_barang","id = ".$hspk->id_kode);
+                })
+                ->addColumn('kode_barang',function($hspk) {
+                    return getValue("kode_barang","referensi_kode_barang","id = ".$hspk->id_kode);
+                })
+                ->addColumn('rekening_belanja',function($hspk) {
+                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$hspk->id_rekening);
+                })
+                ->addColumn('satuan',function($hspk){
+                    return getValue("nm_satuan","data_satuan","id = ".$hspk->id_satuan);
+                })
+                ->addColumn('harga',function($hspk) {
+                    return "Rp. ".number_format($hspk->harga, 2, ",", ".");
+                })
+                ->addColumn('aksi', function($hspk){
+                    if($hspk->status == '1'){
+                        $aksi = '
+                            <div class="btn-group">
+                                <a href="javascript:void(0)" onclick="verifHspk(`'.route('hspk.rincianValidasi',$hspk->id).'`)" class="btn btn-sm btn-primary" title="Validasi"><i class="fas fa-paper-plane"></i></a>
+                                <a href="javascript:void(0)" onclick="tolakHspk(`'.route('hspk.rincianReject',$hspk->id).'`)" class="btn btn-sm btn-danger" title="Tolak"><i class="fas fa-redo"></i></a>
+                            </div>
+                        ';
+                    }
+                    if($hspk->status == '2'){
+                        $aksi = '
+                        <div class="btn-group">
+                            <a href="javascript:void(0)" onclick="editHspk(`'.route('hspk.rincianUpdate',$hspk->id).'`,'.$hspk->id.')" class="btn btn-sm btn-warning" title="Ubah" ><i class="fas fa-edit"></i></a>
+                        </div>
+                        ';
+                    }
+                    return $aksi;
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+    }
+
+    public function asetRinci($id){
+        $usulan = UsulanSsh::find(decrypt($id));
+        $opd = getValue("opd","data_opd"," id = ".$usulan->id_opd);
+        $jenis = ($usulan->induk_perubahan == '1') ? "Induk" : "Perubahan";
+        $kode_barang = KodeBarang::where('kelompok','=','4')->get();
+        $rekening = RekeningBelanja::all();
+        $satuan = DataSatuan::all();
+        $instansi = DataOpd::all();
+        return view('usulan.hspk.aset.rincian',[
+            'title' => 'Usulan',
+            'page' => 'HSPK',
+            'drops' => [
+                'kode_barang' => $kode_barang,
+                'rekening' => $rekening,
+                'instansi' => $instansi,
+                'satuan' => $satuan,
+            ],
+            'opd' => $opd,
+            'tahun' => $usulan->tahun,
+            'jenis' => $jenis
+        ]);
+    }
+
+    public function exportAsetInstansi($id){
+        $ssh = dataHspk::where('id_usulan','=',decrypt($id))->get();
+        $usulan = UsulanSsh::find(decrypt($id));
+        $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
+        $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
+        $opd = getValue("opd","data_opd"," id =".$usulan->id_opd);
+        $data = [
+            'tahun' => $usulan->tahun,
+            'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
+            'title' => "USULAN ".strtoupper($jenis)." HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
+            'hspk' => $ssh,
+            'ttd' => $ttd,
+            'opd' => $opd
+        ];
+        $pdf = PDF::loadView('pdf.hspk.instansi',$data);
+        $pdf->setPaper('F4', 'landscape');
+        return $pdf->stream('hspk-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
+    }
+
+    public function export(Request $request){
+        $filter = [
+            'tahun' => 'required',
+            'jenis' => 'required'
+        ];
+        $pesan = [
+            'tahun.required' => 'Tahun tidak boleh kosong <br />',
+            'jenis.required' => 'Jenis usulan tidak boleh kosong <br />'
+        ];
+        $this->validate($request, $filter, $pesan);
+        $data = [
+            'tahun' => $request->tahun,
+            'jenis' => $request->jenis
+        ];
+        return response()->json($data);
+    }
+
+    public function exportAset($tahun,$jenis){
+        $hspk = dataHspk::select('_data_ssh.*','usulan_ssh.id as usulan_id','usulan_ssh.induk_perubahan','usulan_ssh.tahun','usulan_ssh.induk_perubahan')
+                        ->join('usulan_ssh','_data_ssh.id_usulan','=','usulan_ssh.id')
+                        ->where('usulan_ssh.id_kelompok','=','4')
+                        ->where('_data_ssh.status','=','2')
+                        ->where('usulan_ssh.tahun','like','%'.$tahun.'%')
+                        ->where('usulan_ssh.induk_perubahan','=',$jenis)
+                        ->get();
+        $jenis = ($jenis == "1") ? "induk" : "perubahan";
+        $data = [
+            'tahun' => $tahun,
+            'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
+            'title' => "USULAN ".strtoupper($jenis)." HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
+            'hspk' => $hspk,
+        ];
+        $pdf = PDF::loadView('pdf.hspk.aset',$data);
+        $pdf->setPaper('F4', 'landscape');
+        return $pdf->stream('hspk-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
+    }
+
 }

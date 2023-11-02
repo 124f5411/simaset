@@ -35,8 +35,8 @@ class SshController extends Controller
         // }
         if(Auth::user()->level == 'aset'){
             $instansi = DataOpd::all();
-            $tahun  = UsulanSsh::select('tahun')->groupBy('tahun')->get();
-            $jenis  = UsulanSsh::select('induk_perubahan')->groupBy('induk_perubahan')->get();
+            $tahun  = UsulanSsh::select('tahun')->where('id_kelompok','=','1')->where('status','=','1')->groupBy('tahun')->get();
+            $jenis  = UsulanSsh::select('induk_perubahan')->where('id_kelompok','=','1')->where('status','=','1')->groupBy('induk_perubahan')->get();
             return view('usulan.ssh.aset.index',[
                 'title' => 'Usulan',
                 'page' => 'SSH',

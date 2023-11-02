@@ -12,8 +12,8 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
-                    RINCIAN ANALISIS STANDA BELANJA (ASB)
-                    <a href="#" onclick="pilihTahun('{{ route('asb.exportForm') }}')" class="btn btn-sm btn-danger btn-icon-split mt-2 float-right">
+                    RINCIAN HARGA SATUAN POKOK KEGIATAN (HSPK)
+                    <a href="#" onclick="pilihTahun('{{ route('hspk.exportForm') }}')" class="btn btn-sm btn-danger btn-icon-split mt-2 float-right">
                         <span class="icon text-white-50">
                             <i class="fas fa-file-pdf"></i>
                         </span>
@@ -34,7 +34,7 @@
                 <div id="results" class="row">
                     @foreach ($drops['instansi'] as $value)
                         <div id="result" class="col-xl-6 col-md-6 mb-4">
-                            <a href="{{ route('asb.instansi',encrypt($value->id)) }}" class="btn btn-block btn-outline-primary">
+                            <a href="{{ route('hspk.instansi',encrypt($value->id)) }}" class="btn btn-block btn-outline-primary">
                                 <div class="card border-left-primary shadow h-100 py-2">
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
@@ -86,7 +86,7 @@
                     $.post($('#modalExport form').attr('action'), $('#modalExport form').serialize())
                     .done((response) => {
                         console.log(response);
-                        window.open("{{route('asb.exportAset', ['',''])}}"+"/"+response.tahun+"/"+response.jenis,'Title','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720');
+                        window.open("{{route('hspk.exportAset', ['',''])}}"+"/"+response.tahun+"/"+response.jenis,'Title','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720');
                         setTimeout(function(){
                             $('#modalExport').modal('hide');
                         },1000);

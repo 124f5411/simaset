@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>SSH {{ $tahun }}</title>
+    <title>ASB {{ $tahun }}</title>
     <link href="{{ asset('themes/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <style>
         .table td, .table th {
@@ -39,7 +39,7 @@
                 <td>{{ $value->uraian }}</td>
                 <td style="width: 200px">{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
-                <td>Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
+                <td style="width: 200px">Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
                 <td>{{ getValue("kode_akun","referensi_rekening_belanja","id = ".$value->id_rekening); }}</td>
             </tr>
 

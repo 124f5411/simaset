@@ -274,6 +274,14 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('sbu/upload/{id}',[SbuController::class,'upload'])->name('sbu.upload');
     Route::get('sbu/pdf/{id}',[SbuController::class,'exportPDF'])->name('sbu.export');
 
+    Route::get('sbu/opd/{id}',[SbuController::class,'instansi'])->name('sbu.instansi');
+    Route::get('sbu/opd/rinci/{id}',[SbuController::class,'asetRinci'])->name('sbu.asetRinci');
+    Route::get('sbu/opd/rincian/{id}',[SbuController::class,'rincianAset'])->name('sbu.rincianAset');
+    Route::get('sbu/opd/aset/{id}',[SbuController::class,'asetInstansi'])->name('sbu.asetInstansi');
+    Route::post('sbu/export',[SbuController::class,'export'])->name('sbu.exportForm');
+    Route::get('sbu/opd/aset/export/{id}',[SbuController::class,'exportAsetInstansi'])->name('sbu.exportAsetInstansi');
+    Route::get('sbu/export/pdf/{tahun}/{jenis}',[SbuController::class,'exportAset'])->name('sbu.exportAset');
+
     Route::get('sbu/rincian/{id}',[SbuController::class,'data_rincian'])->name('sbu.data_rincian');
     Route::get('sbu/rincian/item/{id}',[SbuController::class,'rincian'])->name('sbu.rincian');
     Route::get('sbu/rincian/show/{id}',[SbuController::class,'rincianShow'])->name('sbu.rincianShow');
@@ -293,6 +301,14 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('hspk/tolak/{id}',[HspkController::class,'tolak'])->name('hspk.reject');
     Route::put('hspk/upload/{id}',[HspkController::class,'upload'])->name('hspk.upload');
     Route::get('hspk/pdf/{id}',[HspkController::class,'exportPDF'])->name('hspk.export');
+
+    Route::get('hspk/opd/{id}',[HspkController::class,'instansi'])->name('hspk.instansi');
+    Route::get('hspk/opd/rinci/{id}',[HspkController::class,'asetRinci'])->name('hspk.asetRinci');
+    Route::get('hspk/opd/rincian/{id}',[HspkController::class,'rincianAset'])->name('hspk.rincianAset');
+    Route::get('hspk/opd/aset/{id}',[HspkController::class,'asetInstansi'])->name('hspk.asetInstansi');
+    Route::post('hspk/export',[HspkController::class,'export'])->name('hspk.exportForm');
+    Route::get('hspk/opd/aset/export/{id}',[HspkController::class,'exportAsetInstansi'])->name('hspk.exportAsetInstansi');
+    Route::get('hspk/export/pdf/{tahun}/{jenis}',[HspkController::class,'exportAset'])->name('hspk.exportAset');
 
     Route::get('hspk/rincian/{id}',[HspkController::class,'data_rincian'])->name('hspk.data_rincian');
     Route::get('hspk/rincian/item/{id}',[HspkController::class,'rincian'])->name('hspk.rincian');
