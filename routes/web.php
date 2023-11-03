@@ -6,6 +6,7 @@ use App\Http\Controllers\Barang\TanahController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KontrakController;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\MonitorController;
 use App\Http\Controllers\Pengaturan\AdminAsetController;
 use App\Http\Controllers\Pengaturan\AdminController;
 use App\Http\Controllers\Pengaturan\BendaharaController;
@@ -57,7 +58,8 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('profil/password/{id}',[ProfilController::class,'password'])->name('profil.password');
 
     Route::get('/kontrak',[KontrakController::class,'index'])->name('kontrak.index');
-    Route::get('/kontrak/data',[KontrakController::class,'data'])->name('kontrak.data');
+    Route::get('/kontrak/opd/data',[KontrakController::class,'data_opd'])->name('kontrak.opd');
+
     Route::get('/kontrak/{id}',[KontrakController::class,'show'])->name('kontrak.show');
     Route::post('kontrak',[KontrakController::class,'store'])->name('kontrak.store');
     Route::put('/kontrak/{id}',[KontrakController::class,'update'])->name('kontrak.update');
@@ -318,4 +320,8 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('hspk/rincian/{id}',[HspkController::class,'rincianDestroy'])->name('hspk.rincianDestroy');
     Route::put('hspk/rincian/valid/{id}',[HspkController::class,'rincianValidasi'])->name('hspk.rincianValidasi');
     Route::put('hspk/rincian/tolak/{id}',[HspkController::class,'rincianTolak'])->name('hspk.rincianReject');
+
+
+    Route::get('monitor/{any}',[MonitorController::class,'index'])->name('monitor.index');
+    Route::get('monitor/data/{any}',[MonitorController::class,'getData'])->name('monitor.data');
 });

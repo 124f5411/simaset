@@ -10,41 +10,71 @@ use Illuminate\Support\Facades\Auth;
 class KontrakController extends Controller
 {
     public function index(){
-        $instansi = DataOpd::all();
-        return view('kontrak.index',[
-            'title' => 'Kontrak',
-            'page' => 'Kontrak',
-            'drops' => $instansi
-        ]);
+        if(Auth::user()->level == 'aset'){
+            return view('kontrak.aset.index',[
+                'title' => 'Kontrak',
+                'page' => 'Kontrak'
+            ]);
+        }
+
+        if(Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara'){
+            return view('kontrak.opd.index',[
+                'title' => 'Kontrak',
+                'page' => 'Kontrak'
+            ]);
+        }
+
     }
 
-    public function data(){
-        if(Auth::user()->level == 'admin'){
-            $kontrak = DataKontrak::all();
-        }else{
-            $kontrak = DataKontrak::where([
-                ['opd','=',Auth::user()->id_opd]
-            ])->get();
-        }
+    public function data_aset(){
+
+    }
+
+    public function data_opd(){
+        $kontrak = DataKontrak::where([
+            ['opd','=',Auth::user()->id_opd]
+        ])->get();
         return datatables()->of($kontrak)
                 ->addIndexColumn()
                 ->addColumn('tanggal', function($kontrak) {
                     return indo_date($kontrak->t_kontrak);
                 })
-                ->addColumn('instansi',function($kontrak) {
-                    return getValue("opd"," data_opd","id = ".$kontrak->opd);
+                ->addColumn('rincian', function($kontrak){
+                    return '
+                    <a href="#" class="btn btn-success btn-icon-split" title="Lihat Rincian">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                        <span class="text">Rincian</span>
+                    </a>
+                    ';
                 })
                 ->addColumn('aksi', function($kontrak){
                     return '
                     <div class="btn-group">
-                        <a href="javascript:void(0)" onclick="editKontrak(`'.route('kontrak.update',$kontrak->id).'`,'.$kontrak->id.')" class="btn btn-warning" ><i class="fas fa-edit"></i></a>
-                        <a href="javascript:void(0)" onclick="hapusKontrak(`'.route('kontrak.destroy',$kontrak->id).'`)" class="btn btn-danger" ><i class="fas fa-trash"></i></i></a>
+                        <a href="javascript:void(0)" onclick="editKontrak(`'.route('kontrak.update',$kontrak->id).'`,'.$kontrak->id.')" class="btn btn-warning" title="Ubah Kontrak" ><i class="fas fa-edit"></i></a>
+                        <a href="javascript:void(0)" onclick="hapusKontrak(`'.route('kontrak.destroy',$kontrak->id).'`)" class="btn btn-danger" title="Hapus Kontrak" ><i class="fas fa-trash"></i></a>
                     </div>
                     ';
                 })
-                ->rawColumns(['aksi'])
+                ->rawColumns(['aksi','rincian'])
                 ->make(true);
+    }
 
+    public function rincian($id){
+        if(Auth::user()->level == 'aset'){
+            return view('kontrak.aset.rincian',[
+                'title' => 'Kontrak',
+                'page' => 'Kontrak'
+            ]);
+        }
+
+        if(Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara'){
+            return view('kontrak.opd.rincian',[
+                'title' => 'Kontrak',
+                'page' => 'Kontrak'
+            ]);
+        }
     }
 
     public function store(Request $request){
@@ -61,22 +91,23 @@ class KontrakController extends Controller
             'tahun.required' => 'Tahun kontrak tidak boleh kosong <br />',
             't_kontrak.required' => 'Tanggal kontrak tidak boleh kosong <br />'
         ];
-        if(Auth::user()->level == 'admin'){
-            $field['opd'] = ['required'];
-            $pesan['opd.required'] = 'Instansi / OPD tidak boleh kosong <br />';
-        }
+        // if(Auth::user()->level == 'admin'){
+        //     $field['opd'] = ['required'];
+        //     $pesan['opd.required'] = 'Instansi / OPD tidak boleh kosong <br />';
+        // }
         $this->validate($request, $field, $pesan);
         $data = [
             'no_kontrak' => $request->no_kontrak,
             'nm_kontrak' => $request->nm_kontrak,
             'tahun' => $request->tahun,
             't_kontrak' => $request->t_kontrak,
+            'opd' => Auth::user()->id_opd
         ];
-        if(Auth::user()->level == 'admin'){
-            $data['opd'] = $request->opd;
-        }else{
-            $data['opd'] = Auth::user()->id_opd;
-        }
+        // if(Auth::user()->level == 'admin'){
+        //     $data['opd'] = $request->opd;
+        // }else{
+        //     $data['opd'] = Auth::user()->id_opd;
+        // }
         DataKontrak::create($data);
         return response()->json('Kontrak berhasil ditambahkan',200);
     }

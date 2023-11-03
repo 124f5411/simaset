@@ -122,13 +122,13 @@
             <div id="collapseCog" class="collapse {{ ($title == "Pengaturan") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     @if (Auth::user()->level == "admin")
-                        <a class="collapse-item" href="{{ route('admin.index') }}">Admin</a>
-                        <a class="collapse-item" href="{{ route('adminaset.index') }}">Admin Aset</a>
-                        <a class="collapse-item" href="{{ route('bendahara.index') }}">Bendahara</a>
+                        <a class="collapse-item {{ ($page == "Admin") ? "active" : "" }}" href="{{ route('admin.index') }}">Admin</a>
+                        <a class="collapse-item {{ ($page == "Admin Aset") ? "active" : "" }}" href="{{ route('adminaset.index') }}">Admin Aset</a>
+                        <a class="collapse-item {{ ($page == "Bendahara") ? "active" : "" }}" href="{{ route('bendahara.index') }}">Bendahara</a>
                         <a class="collapse-item {{ ($page == "Instansi") ? "active" : "" }}" href="{{ route('instansi.index') }}">Instansi</a>
                     @endif
                     @if (Auth::user()->level == "admin" || Auth::user()->level == "bendahara")
-                        <a class="collapse-item" href="{{ route('operator.index') }}">Operator</a>
+                        <a class="collapse-item {{ ($page == "Operator") ? "active" : "" }}" href="{{ route('operator.index') }}">Operator</a>
                     @endif
                     @if (Auth::user()->level == "bendahara")
                         <a class="collapse-item {{ ($page == "PB") ? "active" : "" }}" href="{{ route('pb.index') }}">Pengguna Barang</a>
@@ -136,6 +136,25 @@
                 </div>
             </div>
         </li>
+    @endif
+
+    @if (Auth::user()->level == "aset")
+    <li class="nav-item {{ ($title == "Pantau") ? "active" : "" }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMon"
+            aria-expanded="true" aria-controls="collapseMon">
+
+            <i class="fas fa-cog"></i>
+            <span>Pantau Usulan</span>
+        </a>
+        <div id="collapseMon" class="collapse {{ ($title == "Pantau") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item {{ ($page == "PANTAUSSH") ? "active" : "" }}" href="{{ route('monitor.index','ssh') }}">SSH</a>
+                    <a class="collapse-item {{ ($page == "PANTAUASB") ? "active" : "" }}" href="{{ route('monitor.index','asb') }}">ASB</a>
+                    <a class="collapse-item {{ ($page == "PANTAUHSPK") ? "active" : "" }}" href="{{ route('monitor.index','hspk') }}">HSPK</a>
+                    <a class="collapse-item {{ ($page == "PANTAUSBU") ? "active" : "" }}" href="{{ route('monitor.index','sbu') }}">SBU</a>
+            </div>
+        </div>
+    </li>
     @endif
 
 
