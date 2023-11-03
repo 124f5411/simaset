@@ -23,7 +23,7 @@ class MonitorController extends Controller
 
 
         return view($view[$any],[
-            'title' => 'Pantau',
+            'title' => 'MONITORING',
             'page' => $page[$any]
         ]);
     }

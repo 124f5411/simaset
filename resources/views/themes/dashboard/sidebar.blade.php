@@ -146,7 +146,7 @@
             <i class="fas fa-cog"></i>
             <span>Pantau Usulan</span>
         </a>
-        <div id="collapseMon" class="collapse {{ ($title == "Pantau") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapseMon" class="collapse {{ ($title == "MONITORING") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item {{ ($page == "PANTAUSSH") ? "active" : "" }}" href="{{ route('monitor.index','ssh') }}">SSH</a>
                     <a class="collapse-item {{ ($page == "PANTAUASB") ? "active" : "" }}" href="{{ route('monitor.index','asb') }}">ASB</a>
