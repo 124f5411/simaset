@@ -61,11 +61,13 @@
             </div>
         </div>
     </li>
-    <li class="nav-item {{ ($title == "Kontrak") ? "active" : "" }}">
-        <a class="nav-link" href="{{ route('kontrak.index') }}">
-            <i class="fas fa-file"></i>
-            <span>Kontrak</span></a>
-    </li>
+    @if (Auth::user()->level != 'admin' || Auth::user()->level != 'aset')
+        <li class="nav-item {{ ($title == "Kontrak") ? "active" : "" }}">
+            <a class="nav-link" href="{{ route('kontrak.index') }}">
+                <i class="fas fa-file"></i>
+                <span>Kontrak</span></a>
+        </li>
+    @endif
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
