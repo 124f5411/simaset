@@ -11,23 +11,32 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">STANDAR BIAYA UMUM (SBU)</h6>
-                <h6 class="m-0 font-weight-bold text-primary mt-2">USULAN {{ strtoupper($jenis) }} {{ strtoupper($opd) }} TAHUN {{ $tahun }} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">Usulan</h6>
+                <a href="{{ asset('download/dokumen/SURAT-PERNYATAAN-USULAN.docx') }}" target="_blank" class="btn btn-primary btn-icon-split mt-2">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-file-word"></i>
+                    </span>
+                    <span class="text">Pakta Integritas</span>
+                </a>
+                <a href="#" onclick="addSsh('{{ route('usulan.store') }}')" class="btn btn-primary btn-icon-split float-right">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-plus-circle"></i>
+                    </span>
+                    <span class="text">{{ $page }}</span>
+                </a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-sm table-bordered" id="dataUsulan" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataSsh" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Kode Barang</th>
-                                <th>Nama Barang</th>
-                                <th>Uraian</th>
-                                <th>Spesfikasi</th>
-                                <th>Satuan</th>
-                                <th style="width: 150px">Harga</th>
-                                <th>Rekening Belanja</th>
-                                <th>Aksi</th>
+                                <th>No</th>
+                                <th>OPD</th>
+                                <th>Tahun</th>
+                                <th>Usulan</th>
+                                <th style="width: 200px">Upload Pakta</th>
+                                <th style="width: 100px">Rincian</th>
+                                <th style="width: 150px">Aksi</th>
                             </tr>
                         </thead>
                     </table>
@@ -37,8 +46,8 @@
 
     </div>
 </div>
-@includeIf('form.usulan.sbu.rincian')
-@includeIf('form.usulan.sbu.tolak')
+@includeIf('form.input.usulan')
+@includeIf('form.input.upload')
 @endsection
 
 @push('css')
@@ -46,11 +55,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
-<style>
-    .table td, .table th {
-        font-size: 10pt;
-    }
-</style>
+
 @endpush
 
 @push('scripits')
@@ -61,38 +66,25 @@
 
     <script>
         let table;
-        let id_usulan = "{{ Request::segment(4) }}";
         $(document).ready(function() {
-            $('#id_kode').select2({
-                theme: 'bootstrap4',
-            });
-            $('#id_rekening').select2({
-                theme: 'bootstrap4',
-            });
-            $('#id_satuan').select2({
-                theme: 'bootstrap4',
-            });
-            table = $('#dataUsulan').DataTable({
+            table = $('#dataSsh').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('sbu.rincianAset','') }}'+'/'+id_usulan,
+                    url: '{{ route('usulan.data') }}'
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
-                    {data:'kode_barang'},
-                    {data:'uraian_id'},
-                    {data:'uraian'},
-                    {data:'spesifikasi'},
-                    {data:'satuan'},
-                    {data:'harga'},
-                    {data:'rekening_belanja'},
+                    {data:'q_opd'},
+                    {data:'tahun'},
+                    {data:'usulan'},
+                    {data:'dokumen'},
+                    {data:'rincian', searchable:false, sortable:false},
                     {data:'aksi', searchable:false, sortable:false},
                 ]
-            });
-
+            }).column(1).visible(false);
 
             $('#modalSsh').validator().on('submit', function (e){
                 if(! e.preventDefault()){
@@ -104,9 +96,6 @@
                         setTimeout(function(){
                             $(".alert" ).removeClass( "alert-success" );
                             $("#massages").empty();
-                            $('#modalSsh [name=id_kode]').val('').trigger('change');
-                            $('#modalSsh [name=id_satuan]').val('').trigger('change');
-                            $('#modalSsh [name=id_rekening]').val('').trigger('change');
                             $('#modalSsh form')[0].reset();
                             $('#modalSsh').modal('hide');
                         }, 1000);
@@ -122,18 +111,23 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
-                                // $('#modalSsh [name=id_kontrak]').val('').trigger('change');
-                                // $('#modalSsh form')[0].reset();
-                                // $('#modalSsh').modal('hide');
                             }, 3000);
                         });
                     });
                 }
             });
 
-            $('#modalTolak').validator().on('submit', function (e){
+            $('#modalUpload').validator().on('submit', function (e){
                 if(! e.preventDefault()){
-                    $.post($('#modalTolak form').attr('action'), $('#modalTolak form').serialize())
+                    let url_upload = $('#modalUpload form').attr('action');
+                    $.ajax({
+                                url : url_upload,
+                                type : 'POST',
+                                data : new FormData($('.form-import')[0]),
+                                async : false,
+                                processData : false,
+                                contentType : false,
+                            })
                     .done((response) => {
                         $(".alert" ).addClass( "alert-success" );
                         $(".alert").show();
@@ -141,9 +135,9 @@
                         setTimeout(function(){
                             $(".alert" ).removeClass( "alert-success" );
                             $("#massages-imp").empty();
-                            $('#modalTolak form')[0].reset();
-                            $('#modalTolak').modal('hide');
-                        }, 1000);
+                            $('#modalUpload form')[0].reset();
+                            $('#modalUpload').modal('hide');
+                        }, 3000);
                         table.ajax.reload();
                     })
                     .fail((errors) => {
@@ -156,34 +150,59 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages-imp").empty();
-                            }, 3000);
+                                $('#modalUpload form')[0].reset();
+                                $('#modalUpload').modal('hide');
+                            }, 5000);
                         });
                     });
                 }
             });
+
         });
 
-        function editSbu(url, id){
+        function addSsh(url){
             $('#modalSsh').modal('show');
-            $('#modalSsh .modal-title').text('Ubah Usulan SBU');
+            $('#modalSsh .modal-title').text('Tambah Usulan');
+
+            $('#modalSsh form')[0].reset();
+            $('#modalSsh form').attr('action',url);
+            $('#modalSsh [name=_method]').val('post');
+            $('#modalSsh [name=jenis]').val('');
+            $('#modalSsh').on('shown.bs.modal', function () {
+                $('#tahun').focus();
+            })
+        }
+
+        function sshUpload(url){
+            $('#modalUpload').modal('show');
+            $('#modalUpload .modal-title').text('Upload dokumen Pakta & Usulan');
+
+            $('#modalUpload form')[0].reset();
+            $('#modalUpload form').attr('action',url);
+            $('#modalUpload [name=_method]').val('put');
+            $('#modalUpload [name=ssd_dokumen]').val('');
+            $('#modalUpload').on('shown.bs.modal', function () {
+                $('#ssd_dokumen').focus();
+            })
+        }
+
+        function editSsh(url, id){
+            $('#modalSsh').modal('show');
+            $('#modalSsh .modal-title').text('Ubah Usulan');
 
             $('#modalSsh form')[0].reset();
             $('#modalSsh form').attr('action',url);
             $('#modalSsh [name=_method]').val('put');
-            $('#modalSsh [name=jenis]').val('');
+            $('#modalSsh [name=tahun]').val('');
             $('#modalSsh').on('shown.bs.modal', function () {
-                $('#id_kode').focus();
+                $('#tahun').focus();
             })
 
-            let show = "{{route('ssh.rincianShow', '')}}"+"/"+id;
+            let show = "{{route('usulan.show', '')}}"+"/"+id;
             $.get(show)
             .done((response) => {
-                $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');
-                $('#modalSsh [name=id_rekening]').val(response.id_rekening).trigger('change');
-                $('#modalSsh [name=spesifikasi]').val(response.spesifikasi);
-                $('#modalSsh [name=uraian]').val(response.uraian);
-                $('#modalSsh [name=id_satuan]').val(response.id_satuan).trigger('change');
-                $('#modalSsh [name=harga]').val(response.harga);
+                $('#modalSsh [name=tahun]').val(response.tahun);
+                $('#modalSsh [name=induk_perubahan]').val(response.induk_perubahan);
             })
             .fail((errors) => {
                 alert('Gagl tampil data');
@@ -191,7 +210,7 @@
             })
         }
 
-        function hapusSbu(url){
+        function hapusSsh(url){
             if (confirm('Yakin ingin menghapus data terpilih?')) {
                     $.post(url, {
                             '_token': $('[name=csrf-token]').attr('content'),
@@ -207,9 +226,8 @@
                 }
         }
 
-        function verifSbu(url){
-
-            if (confirm('yakin data usulan telah benar?')) {
+        function verifSsh(url){
+            if (confirm('Yakin? data akan dikirimkan untuk validasi.')) {
                     $.post(url, {
                             '_token': $('[name=csrf-token]').attr('content'),
                             '_method': 'put'
@@ -223,19 +241,5 @@
                         });
                 }
         }
-
-        function tolakSbu(url){
-            $('#modalTolak').modal('show');
-            $('#modalTolak .modal-title').text('Tolak rincian SBU');
-            $('#modalTolak form')[0].reset();
-            $('#modalTolak form').attr('action',url);
-            $('#modalTolak [name=_method]').val('put');
-            $('#modalTolak [name=keterangan]').val('');
-            $('#modalTolak').on('shown.bs.modal', function () {
-                $('#keterangan').focus();
-            })
-        }
-
-
     </script>
 @endpush

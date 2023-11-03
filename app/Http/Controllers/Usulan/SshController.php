@@ -35,8 +35,8 @@ class SshController extends Controller
         // }
         if(Auth::user()->level == 'aset'){
             $instansi = DataOpd::all();
-            $tahun  = UsulanSsh::select('tahun')->where('id_kelompok','=','1')->where('status','=','1')->groupBy('tahun')->get();
-            $jenis  = UsulanSsh::select('induk_perubahan')->where('id_kelompok','=','1')->where('status','=','1')->groupBy('induk_perubahan')->get();
+            $tahun  = UsulanSsh::select('tahun')->where('status','=','1')->groupBy('tahun')->get();
+            $jenis  = UsulanSsh::select('induk_perubahan')->where('status','=','1')->groupBy('induk_perubahan')->get();
             return view('usulan.ssh.aset.index',[
                 'title' => 'Usulan',
                 'page' => 'SSH',
@@ -490,6 +490,7 @@ class SshController extends Controller
     }
 
     public function rincianTolak(Request $request,$id){
+        $id_usulan = getValue("id_usulan","_data_ssh"," id = ".$id);
         $ssh = dataSsh::find($id);
         $filter = [
             'keterangan' => 'required'
@@ -498,14 +499,18 @@ class SshController extends Controller
             'keterangan.required' => 'Keterangan tolak tidak boleh kosong <br />'
         ];
         $this->validate($request, $filter, $pesan);
+
         $data = [
-            'status' => '0',
             'keterangan' => $request->keterangan
         ];
         $ssh->update($data);
+
+        dataSsh::where('id_usulan','=',$id_usulan)->update(['status' => '0']);
+
         $usulan = [
             'status' => '3'
         ];
+
         UsulanSsh::where('id','=',$ssh->id_usulan)->update($usulan);
         return response()->json('usulan SSH berhasil dikembalikan',200);
     }
@@ -538,7 +543,7 @@ class SshController extends Controller
     }
 
     public function asetInstansi($id){
-        $ssh = UsulanSsh::where('id_kelompok','=','1')->where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
+        $ssh = UsulanSsh::where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
         return datatables()->of($ssh)
                 ->addIndexColumn()
                 ->addColumn('usulan',function($ssh) {
@@ -558,7 +563,7 @@ class SshController extends Controller
                 ->addColumn('dokumen',function($ssh){
                     $dok = '
                     <div class="btn-group">
-                        <a href="'.asset('upload/ssh/'.$ssh->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
+                        <a href="'.asset('upload/usulan/'.$ssh->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
                             <span class="icon text-white-50">
                                 <i class="fas fa-file-pdf"></i>
                             </span>
@@ -594,7 +599,7 @@ class SshController extends Controller
     }
 
     public function rincianAset($id){
-        $ssh = dataSsh::where('id_usulan','=',decrypt($id))->whereIn('status',['1','2'])->get();
+        $ssh = dataSsh::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','1')->whereIn('status',['1','2'])->get();
         return datatables()->of($ssh)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($ssh) {
@@ -658,7 +663,7 @@ class SshController extends Controller
     }
 
     public function exportAsetInstansi($id){
-        $ssh = dataSsh::where('id_usulan','=',decrypt($id))->get();
+        $ssh = dataSsh::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','1')->whereIn('status',['2'])->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
@@ -696,7 +701,7 @@ class SshController extends Controller
     public function exportAset($tahun,$jenis){
         $ssh = dataSsh::select('_data_ssh.*','usulan_ssh.id as usulan_id','usulan_ssh.induk_perubahan','usulan_ssh.tahun','usulan_ssh.induk_perubahan')
                         ->join('usulan_ssh','_data_ssh.id_usulan','=','usulan_ssh.id')
-                        ->where('usulan_ssh.id_kelompok','=','1')
+                        ->where('_data_ssh.id_kelompok','=','1')
                         ->where('_data_ssh.status','=','2')
                         ->where('usulan_ssh.tahun','like','%'.$tahun.'%')
                         ->where('usulan_ssh.induk_perubahan','=',$jenis)

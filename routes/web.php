@@ -4,6 +4,8 @@ use App\Http\Controllers\Barang\KdpController;
 use App\Http\Controllers\Barang\PeralatanController;
 use App\Http\Controllers\Barang\TanahController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Input\RincianController;
+use App\Http\Controllers\Input\UsulanController;
 use App\Http\Controllers\KontrakController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\MonitorController;
@@ -324,4 +326,22 @@ Route::group(['middleware' => 'auth'], function (){
 
     Route::get('monitor/{any}',[MonitorController::class,'index'])->name('monitor.index');
     Route::get('monitor/data/{any}',[MonitorController::class,'getData'])->name('monitor.data');
+
+    Route::get('usulan',[UsulanController::class,'index'])->name('usulan.index');
+    Route::get('usulan/data',[UsulanController::class,'data'])->name('usulan.data');
+    Route::post('usulan',[UsulanController::class,'store'])->name('usulan.store');
+    Route::get('usulan/{id}',[UsulanController::class,'show'])->name('usulan.show');
+    Route::put('usulan/{id}',[UsulanController::class,'update'])->name('usulan.update');
+    Route::delete('usulan/{id}',[UsulanController::class,'destroy'])->name('usulan.destroy');
+    Route::put('usulan/upload/{id}',[UsulanController::class,'upload'])->name('usulan.upload');
+    Route::put('usulan/valid/{id}',[UsulanController::class,'validasi'])->name('usulan.validasi');
+
+    Route::get('rincian/{id}',[RincianController::class,'index'])->name('rincian.index');
+    Route::get('usulan/rincian/data/{id}',[RincianController::class,'data'])->name('rincian.data');
+    Route::post('usulan/rincian/{id}',[RincianController::class,'store'])->name('rincian.store');
+    Route::get('usulan/rincian/{id}',[RincianController::class,'show'])->name('rincian.show');
+    Route::put('usulan/rincian/{id}',[RincianController::class,'update'])->name('rincian.update');
+    Route::delete('usulan/rincian/{id}',[RincianController::class,'destroy'])->name('rincian.destroy');
+    Route::get('usulan/rincian/pdf/{id}',[RincianController::class,'export'])->name('rincian.export');
+
 });

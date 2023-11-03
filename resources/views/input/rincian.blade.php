@@ -11,23 +11,40 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">STANDAR BIAYA UMUM (SBU)</h6>
-                <h6 class="m-0 font-weight-bold text-primary mt-2">USULAN {{ strtoupper($jenis) }} {{ strtoupper($opd) }} TAHUN {{ $tahun }} </h6>
+                <h6 class="m-0 font-weight-bold text-primary">RINCIAN USULAN</h6>
+                    <a href="#" onclick="window.open('{{ route('rincian.export',Request::segment(2)) }}','Title','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720');"
+                    class="btn btn-sm btn-danger btn-icon-split mt-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span class="text">EXPORT</span>
+                    </a>
+                    @if ($usulan_status == '0')
+                        <a href="#" onclick="addSsh('{{ route('rincian.store',decrypt(Request::segment(2))) }}')"
+                        class="btn btn-sm btn-primary btn-icon-split float-right mt-2">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-plus-circle"></i>
+                            </span>
+                            <span class="text">RINCIAN</span>
+                        </a>
+                    @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-sm table-bordered" id="dataUsulan" width="100%" cellspacing="0">
+                    <table class="table table-sm table-bordered" id="dataSsh" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Uraian</th>
-                                <th>Spesfikasi</th>
+                                <th style="width: 200px">Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th style="width: 150px">Harga</th>
                                 <th>Rekening Belanja</th>
+                                <th style="width: 100px">Keterangan</th>
                                 <th>Aksi</th>
+                                <th>Jenis</th>
                             </tr>
                         </thead>
                     </table>
@@ -37,8 +54,7 @@
 
     </div>
 </div>
-@includeIf('form.usulan.sbu.rincian')
-@includeIf('form.usulan.sbu.tolak')
+@includeIf('form.input.rincian')
 @endsection
 
 @push('css')
@@ -60,8 +76,8 @@
     <script src="{{ asset('js/validator.min.js') }}"></script>
 
     <script>
+        let id_usulan = '{{decrypt(Request::segment(2))}}';
         let table;
-        let id_usulan = "{{ Request::segment(4) }}";
         $(document).ready(function() {
             $('#id_kode').select2({
                 theme: 'bootstrap4',
@@ -72,13 +88,14 @@
             $('#id_satuan').select2({
                 theme: 'bootstrap4',
             });
-            table = $('#dataUsulan').DataTable({
+
+            table = $('#dataSsh').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('sbu.rincianAset','') }}'+'/'+id_usulan,
+                    url: '{{ route('rincian.data','') }}'+'/'+id_usulan,
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
@@ -89,10 +106,11 @@
                     {data:'satuan'},
                     {data:'harga'},
                     {data:'rekening_belanja'},
+                    {data:'keterangan'},
                     {data:'aksi', searchable:false, sortable:false},
+                    {data:'jenis'},
                 ]
             });
-
 
             $('#modalSsh').validator().on('submit', function (e){
                 if(! e.preventDefault()){
@@ -122,50 +140,30 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
-                                // $('#modalSsh [name=id_kontrak]').val('').trigger('change');
-                                // $('#modalSsh form')[0].reset();
-                                // $('#modalSsh').modal('hide');
                             }, 3000);
                         });
                     });
                 }
             });
 
-            $('#modalTolak').validator().on('submit', function (e){
-                if(! e.preventDefault()){
-                    $.post($('#modalTolak form').attr('action'), $('#modalTolak form').serialize())
-                    .done((response) => {
-                        $(".alert" ).addClass( "alert-success" );
-                        $(".alert").show();
-                        $("#massages-imp").append(response);
-                        setTimeout(function(){
-                            $(".alert" ).removeClass( "alert-success" );
-                            $("#massages-imp").empty();
-                            $('#modalTolak form')[0].reset();
-                            $('#modalTolak').modal('hide');
-                        }, 1000);
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        let err = errors.responseJSON.errors;
-                        $(".alert" ).addClass( "alert-danger" );
-                        $(".alert").show();
-                        $.each(err, function(key, val) {
-                            $("#massages-imp").append(val);
-                            setTimeout(function(){
-                                $(".alert").hide();
-                                $(".alert" ).removeClass( "alert-danger" );
-                                $("#massages-imp").empty();
-                            }, 3000);
-                        });
-                    });
-                }
-            });
         });
 
-        function editSbu(url, id){
+        function addSsh(url){
             $('#modalSsh').modal('show');
-            $('#modalSsh .modal-title').text('Ubah Usulan SBU');
+            $('#modalSsh .modal-title').text('Tambah Rincian Usulan');
+
+            $('#modalSsh form')[0].reset();
+            $('#modalSsh form').attr('action',url);
+            $('#modalSsh [name=_method]').val('post');
+            $('#modalSsh [name=jenis]').val('');
+            $('#modalSsh').on('shown.bs.modal', function () {
+                $('#id_kode').focus();
+            })
+        }
+
+        function editSsh(url, id){
+            $('#modalSsh').modal('show');
+            $('#modalSsh .modal-title').text('Ubah Rincian Usulan');
 
             $('#modalSsh form')[0].reset();
             $('#modalSsh form').attr('action',url);
@@ -175,7 +173,7 @@
                 $('#id_kode').focus();
             })
 
-            let show = "{{route('ssh.rincianShow', '')}}"+"/"+id;
+            let show = "{{route('rincian.show', '')}}"+"/"+id;
             $.get(show)
             .done((response) => {
                 $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');
@@ -191,7 +189,7 @@
             })
         }
 
-        function hapusSbu(url){
+        function hapusSsh(url){
             if (confirm('Yakin ingin menghapus data terpilih?')) {
                     $.post(url, {
                             '_token': $('[name=csrf-token]').attr('content'),
@@ -206,36 +204,5 @@
                         });
                 }
         }
-
-        function verifSbu(url){
-
-            if (confirm('yakin data usulan telah benar?')) {
-                    $.post(url, {
-                            '_token': $('[name=csrf-token]').attr('content'),
-                            '_method': 'put'
-                        })
-                        .done((response) => {
-                            table.ajax.reload();
-                        })
-                        .fail((errors) => {
-                            alert('Gagal kirim data');
-                            return;
-                        });
-                }
-        }
-
-        function tolakSbu(url){
-            $('#modalTolak').modal('show');
-            $('#modalTolak .modal-title').text('Tolak rincian SBU');
-            $('#modalTolak form')[0].reset();
-            $('#modalTolak form').attr('action',url);
-            $('#modalTolak [name=_method]').val('put');
-            $('#modalTolak [name=keterangan]').val('');
-            $('#modalTolak').on('shown.bs.modal', function () {
-                $('#keterangan').focus();
-            })
-        }
-
-
     </script>
 @endpush

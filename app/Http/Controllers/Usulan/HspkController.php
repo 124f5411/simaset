@@ -492,6 +492,7 @@ class HspkController extends Controller
     }
 
     public function rincianTolak(Request $request,$id){
+        $id_usulan = getValue("id_usulan","_data_ssh"," id = ".$id);
         $hspk = dataHspk::find($id);
         $filter = [
             'keterangan' => 'required'
@@ -500,11 +501,13 @@ class HspkController extends Controller
             'keterangan.required' => 'Keterangan tolak tidak boleh kosong <br />'
         ];
         $this->validate($request, $filter, $pesan);
+
         $data = [
-            'status' => '0',
             'keterangan' => $request->keterangan
         ];
         $hspk->update($data);
+
+        dataHspk::where('id_usulan','=',$id_usulan)->update(['status' => '0']);
 
         $usulan = [
             'status' => '3'
@@ -563,7 +566,7 @@ class HspkController extends Controller
                 ->addColumn('dokumen',function($hspk){
                     $dok = '
                     <div class="btn-group">
-                        <a href="'.asset('upload/hspk/'.$hspk->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
+                        <a href="'.asset('upload/usulan/'.$hspk->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
                             <span class="icon text-white-50">
                                 <i class="fas fa-file-pdf"></i>
                             </span>
@@ -599,7 +602,7 @@ class HspkController extends Controller
     }
 
     public function rincianAset($id){
-        $hspk = dataHspk::where('id_usulan','=',decrypt($id))->whereIn('status',['1','2'])->get();
+        $hspk = dataHspk::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','4')->whereIn('status',['1','2'])->get();
         return datatables()->of($hspk)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($hspk) {
@@ -663,7 +666,7 @@ class HspkController extends Controller
     }
 
     public function exportAsetInstansi($id){
-        $ssh = dataHspk::where('id_usulan','=',decrypt($id))->get();
+        $hspk = dataHspk::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','4')->whereIn('status',['2'])->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
@@ -672,7 +675,7 @@ class HspkController extends Controller
             'tahun' => $usulan->tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
-            'hspk' => $ssh,
+            'hspk' => $hspk,
             'ttd' => $ttd,
             'opd' => $opd
         ];
@@ -701,7 +704,7 @@ class HspkController extends Controller
     public function exportAset($tahun,$jenis){
         $hspk = dataHspk::select('_data_ssh.*','usulan_ssh.id as usulan_id','usulan_ssh.induk_perubahan','usulan_ssh.tahun','usulan_ssh.induk_perubahan')
                         ->join('usulan_ssh','_data_ssh.id_usulan','=','usulan_ssh.id')
-                        ->where('usulan_ssh.id_kelompok','=','4')
+                        ->where('_data_ssh.id_kelompok','=','4')
                         ->where('_data_ssh.status','=','2')
                         ->where('usulan_ssh.tahun','like','%'.$tahun.'%')
                         ->where('usulan_ssh.induk_perubahan','=',$jenis)

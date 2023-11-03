@@ -493,6 +493,7 @@ class AsbController extends Controller
     }
 
     public function rincianTolak(Request $request,$id){
+        $id_usulan = getValue("id_usulan","_data_ssh"," id = ".$id);
         $asb = dataAsb::find($id);
         $filter = [
             'keterangan' => 'required'
@@ -501,11 +502,13 @@ class AsbController extends Controller
             'keterangan.required' => 'Keterangan tolak tidak boleh kosong <br />'
         ];
         $this->validate($request, $filter, $pesan);
+
         $data = [
-            'status' => '0',
             'keterangan' => $request->keterangan
         ];
         $asb->update($data);
+
+        dataAsb::where('id_usulan','=',$id_usulan)->update(['status' => '0']);
 
         $usulan = [
             'status' => '3'
@@ -564,7 +567,7 @@ class AsbController extends Controller
                 ->addColumn('dokumen',function($asb){
                     $dok = '
                     <div class="btn-group">
-                        <a href="'.asset('upload/asb/'.$asb->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
+                        <a href="'.asset('upload/usulan/'.$asb->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
                             <span class="icon text-white-50">
                                 <i class="fas fa-file-pdf"></i>
                             </span>
@@ -600,7 +603,7 @@ class AsbController extends Controller
     }
 
     public function rincianAset($id){
-        $asb = dataAsb::where('id_usulan','=',decrypt($id))->whereIn('status',['1','2'])->get();
+        $asb = dataAsb::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','3')->whereIn('status',['1','2'])->get();
         return datatables()->of($asb)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($asb) {
@@ -664,7 +667,7 @@ class AsbController extends Controller
     }
 
     public function exportAsetInstansi($id){
-        $asb = dataSsh::where('id_usulan','=',decrypt($id))->whereIn('status',['2'])->get();
+        $asb = dataSsh::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','3')->whereIn('status',['2'])->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();

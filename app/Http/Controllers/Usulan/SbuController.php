@@ -492,6 +492,7 @@ class SbuController extends Controller
     }
 
     public function rincianTolak(Request $request,$id){
+        $id_usulan = getValue("id_usulan","_data_ssh"," id = ".$id);
         $sbu = dataSbu::find($id);
         $filter = [
             'keterangan' => 'required'
@@ -502,11 +503,11 @@ class SbuController extends Controller
         $this->validate($request, $filter, $pesan);
 
         $data = [
-            'status' => '0',
             'keterangan' => $request->keterangan
         ];
-
         $sbu->update($data);
+
+        dataSbu::where('id_usulan','=',$id_usulan)->update(['status' => '0']);
 
         $usulan = [
             'status' => '3'
@@ -545,7 +546,7 @@ class SbuController extends Controller
     }
 
     public function asetInstansi($id){
-        $sbu = UsulanSsh::where('id_kelompok','=','2')->where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
+        $sbu = UsulanSsh::where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
         return datatables()->of($sbu)
                 ->addIndexColumn()
                 ->addColumn('usulan',function($sbu) {
@@ -565,7 +566,7 @@ class SbuController extends Controller
                 ->addColumn('dokumen',function($sbu){
                     $dok = '
                     <div class="btn-group">
-                        <a href="'.asset('upload/sbu/'.$sbu->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
+                        <a href="'.asset('upload/usulan/'.$sbu->ssd_dokumen).'" target="_blank" class="btn btn-sm btn-danger btn-icon-split">
                             <span class="icon text-white-50">
                                 <i class="fas fa-file-pdf"></i>
                             </span>
@@ -601,7 +602,7 @@ class SbuController extends Controller
     }
 
     public function rincianAset($id){
-        $sbu = dataSbu::where('id_usulan','=',decrypt($id))->whereIn('status',['1','2'])->get();
+        $sbu = dataSbu::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','2')->whereIn('status',['1','2'])->get();
         return datatables()->of($sbu)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($sbu) {
@@ -665,7 +666,7 @@ class SbuController extends Controller
     }
 
     public function exportAsetInstansi($id){
-        $sbu = dataSbu::where('id_usulan','=',decrypt($id))->get();
+        $sbu = dataSbu::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','2')->whereIn('status',['2'])->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
@@ -703,7 +704,7 @@ class SbuController extends Controller
     public function exportAset($tahun,$jenis){
         $sbu = dataSbu::select('_data_ssh.*','usulan_ssh.id as usulan_id','usulan_ssh.induk_perubahan','usulan_ssh.tahun','usulan_ssh.induk_perubahan')
                         ->join('usulan_ssh','_data_ssh.id_usulan','=','usulan_ssh.id')
-                        ->where('usulan_ssh.id_kelompok','=','2')
+                        ->where('_data_ssh.id_kelompok','=','2')
                         ->where('_data_ssh.status','=','2')
                         ->where('usulan_ssh.tahun','like','%'.$tahun.'%')
                         ->where('usulan_ssh.induk_perubahan','=',$jenis)

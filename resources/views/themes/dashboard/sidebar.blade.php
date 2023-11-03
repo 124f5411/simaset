@@ -25,6 +25,7 @@
     <div class="sidebar-heading">
         Data
     </div>
+    @if (Auth::user()->level == 'aset')
     <li class="nav-item {{ ($title == "Usulan") ? "active" : "" }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSSH"
             aria-expanded="true" aria-controls="collapseSSH">
@@ -41,6 +42,18 @@
             </div>
         </div>
     </li>
+    @endif
+
+    <div class="sidebar-heading">
+        Input
+    </div>
+    @if (Auth::user()->level == 'opertor' || Auth::user()->level == 'bendahara')
+    <li class="nav-item {{ ($title == "Input") ? "active" : "" }}">
+        <a class="nav-link" href="{{ route('usulan.index') }}">
+            <i class="fas fa-arrow-right"></i>
+            <span>Usulan</span></a>
+    </li>
+    @endif
 
     <!-- Nav Item - Pages Collapse Menu -->
     @if (Auth::user()->level != 'admin')
