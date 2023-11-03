@@ -61,7 +61,7 @@
             </div>
         </div>
     </li>
-    @if (Auth::user()->level != 'admin' || Auth::user()->level != 'aset')
+    @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
         <li class="nav-item {{ ($title == "Kontrak") ? "active" : "" }}">
             <a class="nav-link" href="{{ route('kontrak.index') }}">
                 <i class="fas fa-file"></i>
