@@ -47,7 +47,7 @@
     <div class="sidebar-heading">
         Input
     </div>
-    @if (Auth::user()->level == 'opertor' || Auth::user()->level == 'bendahara')
+    @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
     <li class="nav-item {{ ($title == "Input") ? "active" : "" }}">
         <a class="nav-link" href="{{ route('usulan.index') }}">
             <i class="fas fa-arrow-right"></i>
