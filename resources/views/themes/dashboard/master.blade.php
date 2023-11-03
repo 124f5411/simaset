@@ -43,7 +43,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Sistem Informasi Manajemen Aset Provinsi Papua Barat Daya (BPKAD) {{ date('Y') }}</span>
+                        <span>Copyright &copy; Sistem Informasi Manajemen Aset Provinsi Papua Barat Daya (BPPKAD) {{ date('Y') }}</span>
                     </div>
                 </div>
             </footer>
