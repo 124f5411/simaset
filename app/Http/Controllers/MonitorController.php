@@ -42,7 +42,7 @@ class MonitorController extends Controller
             '_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as status_ssh','_data_ssh.keterangan'
             )
             ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-            ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$any])
+            ->where('_data_ssh.id_kelompok','=',$id_kelompok[$any])
             ->get();
         return datatables()->of($data)
                 ->addIndexColumn()
