@@ -51,14 +51,14 @@ class DashboardController extends Controller
         ];
         if(Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara'){
             $usulan = UsulanSsh::join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                                ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$j])
+                                ->where('_data_ssh.id_kelompok','=',$id_kelompok[$j])
                                 ->where('usulan_ssh.id_opd','=',Auth::user()->id_opd)
                                 ->get();
         }
 
         if(Auth::user()->level == 'aset' || Auth::user()->level == 'admin'){
             $usulan = UsulanSsh::join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                                ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$j])
+                                ->where('_data_ssh.id_kelompok','=',$id_kelompok[$j])
                                 ->get();
         }
         return $usulan->count();
@@ -74,7 +74,7 @@ class DashboardController extends Controller
         ];
         if(Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara'){
             $proses = UsulanSsh::join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                                ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$j])
+                                ->where('_data_ssh.id_kelompok','=',$id_kelompok[$j])
                                 ->where('_data_ssh.status','=','1')
                                 ->where('usulan_ssh.id_opd','=',Auth::user()->id_opd)
                                 ->get();
@@ -82,7 +82,7 @@ class DashboardController extends Controller
 
         if(Auth::user()->level == 'aset' || Auth::user()->level == 'admin'){
             $proses = UsulanSsh::join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                                ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$j])
+                                ->where('_data_ssh.id_kelompok','=',$id_kelompok[$j])
                                 ->where('_data_ssh.status','=','1')
                                 ->get();
         }
@@ -98,7 +98,7 @@ class DashboardController extends Controller
         ];
         if(Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara'){
             $terima = UsulanSsh::join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                                ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$j])
+                                ->where('_data_ssh.id_kelompok','=',$id_kelompok[$j])
                                 ->where('_data_ssh.status','=','2')
                                 ->where('usulan_ssh.id_opd','=',Auth::user()->id_opd)
                                 ->get();
@@ -106,7 +106,7 @@ class DashboardController extends Controller
 
         if(Auth::user()->level == 'aset' || Auth::user()->level == 'admin'){
             $terima = UsulanSsh::join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                                ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$j])
+                                ->where('_data_ssh.id_kelompok','=',$id_kelompok[$j])
                                 ->where('_data_ssh.status','=','2')
                                 ->get();
         }
@@ -122,7 +122,7 @@ class DashboardController extends Controller
         ];
         if(Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara'){
             $tolak = UsulanSsh::join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                                ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$j])
+                                ->where('_data_ssh.id_kelompok','=',$id_kelompok[$j])
                                 ->where('_data_ssh.status','=','3')
                                 ->where('usulan_ssh.id_opd','=',Auth::user()->id_opd)
                                 ->get();
@@ -130,7 +130,7 @@ class DashboardController extends Controller
 
         if(Auth::user()->level == 'aset' || Auth::user()->level == 'admin'){
             $tolak = UsulanSsh::join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-                                ->where('usulan_ssh.id_kelompok','=',$id_kelompok[$j])
+                                ->where('_data_ssh.id_kelompok','=',$id_kelompok[$j])
                                 ->where('_data_ssh.status','=','3')
                                 ->get();
         }
