@@ -62,7 +62,7 @@
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('monitor.data','') }}'+'/asb'
+                    url: '{{ route('monitor.data','') }}'+'/sbu'
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
