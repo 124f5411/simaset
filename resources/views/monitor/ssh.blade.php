@@ -18,7 +18,7 @@
                     <table class="table table-bordered" id="dataSsh" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>OPD</th>
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
