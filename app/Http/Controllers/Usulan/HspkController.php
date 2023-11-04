@@ -7,6 +7,7 @@ use App\Models\dataAsb;
 use App\Models\dataHspk;
 use App\Models\DataOpd;
 use App\Models\DataSatuan;
+use App\Models\DetailRincianUsulan;
 use App\Models\KodeBarang;
 use App\Models\RekeningBelanja;
 use App\Models\TtdSetting;
@@ -612,7 +613,12 @@ class HspkController extends Controller
                     return getValue("kode_barang","referensi_kode_barang","id = ".$hspk->id_kode);
                 })
                 ->addColumn('rekening_belanja',function($hspk) {
-                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$hspk->id_rekening);
+                    $details = DetailRincianUsulan::where('id_ssh','=',$hspk->id)->get();
+                    $show = "";
+                        foreach($details as $detail){
+                            $show .= getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun).'<br>';
+                        }
+                    return $show;
                 })
                 ->addColumn('satuan',function($hspk){
                     return getValue("nm_satuan","data_satuan","id = ".$hspk->id_satuan);
@@ -638,7 +644,7 @@ class HspkController extends Controller
                     }
                     return $aksi;
                 })
-                ->rawColumns(['aksi'])
+                ->rawColumns(['aksi','rekening_belanja'])
                 ->make(true);
     }
 

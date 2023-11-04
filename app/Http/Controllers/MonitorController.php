@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetailRincianUsulan;
 use App\Models\UsulanSsh;
 use Illuminate\Http\Request;
 
@@ -45,7 +46,6 @@ class MonitorController extends Controller
             ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
             ->where('_data_ssh.id_kelompok','=',$id_kelompok[$any])
             ->get();
-            // dd($data);
         return datatables()->of($data)
                 ->addIndexColumn()
                 ->addColumn('opd', function($data){
@@ -61,7 +61,12 @@ class MonitorController extends Controller
                     return getValue("nm_satuan","data_satuan"," id = ".$data->id_satuan);
                 })
                 ->addColumn('rekening',function($data){
-                    return getValue("kode_akun","referensi_rekening_belanja"," id = ".$data->id_rekening);
+                    $details = DetailRincianUsulan::where('id_ssh','=',$data->id_ssh)->get();
+                    $show = "";
+                    foreach($details as $detail){
+                        $show .= getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun).'<br>';
+                    }
+                    return $show;
                 })
                 ->addColumn('status_ssh', function($data){
                     $status = [
@@ -71,6 +76,7 @@ class MonitorController extends Controller
                     ];
                     return $status[$data->status_ssh];
                 })
+                ->rawColumns(['rekening'])
                 ->make(true);
 
 

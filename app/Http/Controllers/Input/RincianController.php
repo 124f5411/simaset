@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Input;
 use App\Http\Controllers\Controller;
 use App\Models\DataSatuan;
 use App\Models\dataSsh;
+use App\Models\DetailRincianUsulan;
 use App\Models\KelompokSsh;
 use App\Models\KodeBarang;
 use App\Models\RekeningBelanja;
@@ -46,7 +47,31 @@ class RincianController extends Controller
                     return getValue("kode_barang","referensi_kode_barang","id = ".$rincian->id_kode);
                 })
                 ->addColumn('rekening_belanja',function($rincian) {
-                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->id_rekening);
+                    $details = DetailRincianUsulan::where('id_ssh','=',$rincian->id)->get();
+                    $show = '
+                        <a href="javascript:void(0)" onclick="addRekening(`'.route('rincian.rekening.store',$rincian->id).'`)" class="btn btn-sm btn-primary btn-icon-split mb-2">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-plus-circle"></i>
+                            </span>
+                            <span class="text">Rekening</span>
+                        </a><br>
+                        ';
+                    if($details->count() > 0){
+                        foreach($details as $detail){
+                            $show .='
+                            <a href="javascript:void(0)" onclick="hapusRekening(`'.route('rincian.rekening.destroy',$detail->id).'`)" class="btn btn-sm btn-danger btn-icon-split mb-2">
+                                <span class="text">'.getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun).'</span>
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                            </a>
+                            ';
+                        }
+                    }else{
+                        $show .= "";
+                    }
+                    // return getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->id_rekening);
+                    return $show;
                 })
                 ->addColumn('satuan',function($rincian){
                     return getValue("nm_satuan","data_satuan","id = ".$rincian->id_satuan);
@@ -71,7 +96,7 @@ class RincianController extends Controller
                 ->addColumn('jenis', function($rincian){
                     return getValue("kelompok","_kelompok_ssh"," id = ".$rincian->id_kelompok);
                 })
-                ->rawColumns(['aksi'])
+                ->rawColumns(['aksi','rekening_belanja'])
                 ->make(true);
     }
 
@@ -97,7 +122,7 @@ class RincianController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            'id_rekening' => $request->id_rekening,
+            // 'id_rekening' => $request->id_rekening,
             'id_usulan' => $id,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
@@ -107,7 +132,15 @@ class RincianController extends Controller
             'status' => '0'
         ];
 
-        dataSsh::create($data);
+        $insert = dataSsh::create($data);
+
+        foreach($request->id_rekening as $rekening){
+            DetailRincianUsulan::create([
+                'id_ssh' => $insert->id,
+                'kode_akun' => $rekening
+            ]);
+        }
+
         return response()->json('Rincian Usulan berhasil ditambahkan',200);
     }
 
@@ -116,12 +149,17 @@ class RincianController extends Controller
         return response()->json($rincian);
     }
 
+    public function showRekening($id){
+        $details = DetailRincianUsulan::where('id_ssh','=',$id)->get();
+        return response()->json($details);
+    }
+
     public function update(Request $request,$id){
         $rincian = dataSsh::find($id);
         $id_kelompok = getValue("kelompok","referensi_kode_barang"," id = ".$request->id_kode);
         $field = [
             'id_kode' => ['required'],
-            'id_rekening' => ['required'],
+            // 'id_rekening' => ['required'],
             'spesifikasi' => ['required'],
             'uraian' => ['required'],
             'id_satuan' => ['required'],
@@ -130,7 +168,7 @@ class RincianController extends Controller
 
         $pesan = [
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
-            'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
+            // 'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'uraian.required' => 'Uraian tidak boleh kosong <br />',
@@ -139,7 +177,7 @@ class RincianController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            'id_rekening' => $request->id_rekening,
+            // 'id_rekening' => $request->id_rekening,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,
@@ -174,6 +212,32 @@ class RincianController extends Controller
         $usulan = dataSsh::find($id);
         $usulan->delete();
         return response()->json('Rincian usulan berhasil dihapus', 204);
+    }
+
+    public function detailStore(Request $request,$id){
+        $field = [
+            'id_rekenings' => ['required'],
+        ];
+
+        $pesan = [
+            'id_rekenings.required' => 'Rekening belanja tidak boleh kosong <br />',
+        ];
+
+        $this->validate($request, $field, $pesan);
+
+        foreach($request->id_rekenings as $rekening){
+            DetailRincianUsulan::create([
+                'id_ssh' => $id,
+                'kode_akun' => $rekening
+            ]);
+        }
+        return response()->json('Rekening belanja berhasil ditambahkan',200);
+    }
+
+    public function detailDestroy($id){
+        $detail = DetailRincianUsulan::find($id);
+        $detail->delete();
+        return response()->json('Rekening belanja berhasil dihapus', 204);
     }
 
 

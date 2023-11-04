@@ -40,7 +40,11 @@
                 <td style="width: 200px">{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
                 <td style="width: 200px">Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
-                <td>{{ getValue("kode_akun","referensi_rekening_belanja","id = ".$value->id_rekening); }}</td>
+                <td>
+                    @foreach (App\Models\DetailRincianUsulan::where('id_ssh','=',$value->id)->get() as $detail )
+                        {{ getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun); }} <br>
+                    @endforeach
+                </td>
             </tr>
 
             @endforeach

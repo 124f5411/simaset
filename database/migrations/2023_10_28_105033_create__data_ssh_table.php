@@ -16,8 +16,8 @@ class CreateDataSshTable extends Migration
         Schema::create('_data_ssh', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('id_kode');
-            $table->bigInteger('id_rekening');
             $table->bigInteger('id_usulan');
+            $table->bigInteger('id_kelompok')->nullable();
             $table->string('spesifikasi');
             $table->string('uraian')->nullable();
             $table->bigInteger('id_satuan');

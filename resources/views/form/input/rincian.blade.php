@@ -1,5 +1,5 @@
 <div class="modal fade" id="modalSsh"  aria-labelledby="modalSshLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form class="form-laporan" enctype="multipart/form-data">
                 @csrf
@@ -14,7 +14,7 @@
                     <div class="form-group">
                         <label for="id_kode">Barang</label>
                         <select class="form-control" id="id_kode" name="id_kode">
-                            <option value="">Cari Barang</option>
+                            <option>Cari Barang</option>
                                 @foreach ($drops['kode_barang'] as $value)
                                     <option value="{{ $value->id }}">{{ $value->uraian }}</option>
                                 @endforeach
@@ -31,7 +31,7 @@
                     <div class="form-group">
                         <label for="id_satuan">Satuan</label>
                         <select class="form-control" id="id_satuan" name="id_satuan">
-                            <option value="">Cari Satuan</option>
+                            <option>Cari Satuan</option>
                                 @foreach ($drops['satuan'] as $value)
                                     <option value="{{ $value->id }}">{{ $value->nm_satuan }}</option>
                                 @endforeach
@@ -42,13 +42,15 @@
                         <input type="number" class="form-control" id="harga" name="harga" required>
                     </div>
                     <div class="form-group">
-                        <label for="id_rekening">Rekening Belanja</label>
-                        <select class="form-control" id="id_rekening" name="id_rekening">
-                            <option value="">Cari Akun Belanja</option>
-                                @foreach ($drops['rekening'] as $value)
-                                    <option value="{{ $value->id }}">{{ $value->nm_akun }}</option>
-                                @endforeach
-                        </select>
+                        <div class="update">
+                            <label for="id_rekening">Rekening Belanja</label>
+                            <select class="js-example-basic-multiple js-states form-control id_rekening" id="id_rekening[]" name="id_rekening[]" multiple="multiple">
+                                <option>Cari Akun Belanja</option>
+                                    @foreach ($drops['rekening'] as $value)
+                                        <option value="{{ $value->id }}">{{ $value->nm_akun }}</option>
+                                    @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="alert" role="alert" style="display: none">
                         <p id="massages"></p>

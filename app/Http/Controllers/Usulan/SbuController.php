@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DataOpd;
 use App\Models\DataSatuan;
 use App\Models\dataSbu;
+use App\Models\DetailRincianUsulan;
 use App\Models\KodeBarang;
 use App\Models\RekeningBelanja;
 use App\Models\TtdSetting;
@@ -612,7 +613,12 @@ class SbuController extends Controller
                     return getValue("kode_barang","referensi_kode_barang","id = ".$sbu->id_kode);
                 })
                 ->addColumn('rekening_belanja',function($sbu) {
-                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$sbu->id_rekening);
+                    $details = DetailRincianUsulan::where('id_ssh','=',$sbu->id)->get();
+                    $show = "";
+                        foreach($details as $detail){
+                            $show .= getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun).'<br>';
+                        }
+                    return $show;
                 })
                 ->addColumn('satuan',function($sbu){
                     return getValue("nm_satuan","data_satuan","id = ".$sbu->id_satuan);
@@ -638,7 +644,7 @@ class SbuController extends Controller
                     }
                     return $aksi;
                 })
-                ->rawColumns(['aksi'])
+                ->rawColumns(['aksi','rekening_belanja'])
                 ->make(true);
     }
 

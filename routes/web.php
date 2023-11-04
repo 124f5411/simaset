@@ -344,4 +344,9 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('usulan/rincian/{id}',[RincianController::class,'destroy'])->name('rincian.destroy');
     Route::get('usulan/rincian/pdf/{id}',[RincianController::class,'export'])->name('rincian.export');
 
+    Route::get('rincian/rekening/{id}',[RincianController::class,'showRekening'])->name('rincian.rekening');
+
+    Route::post('usulan/rekening/{id}',[RincianController::class,'detailStore'])->name('rincian.rekening.store');
+    Route::delete('usulan/rekening/{id}',[RincianController::class,'detailDestroy'])->name('rincian.rekening.destroy');
+
 });

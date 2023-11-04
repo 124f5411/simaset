@@ -41,7 +41,7 @@
                                 <th style="width: 200px">Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th style="width: 150px">Harga</th>
-                                <th>Rekening Belanja</th>
+                                <th style="width: 150px">Rekening Belanja</th>
                                 <th style="width: 100px">Keterangan</th>
                                 <th>Aksi</th>
                                 <th>Jenis</th>
@@ -55,6 +55,7 @@
     </div>
 </div>
 @includeIf('form.input.rincian')
+@includeIf('form.input.rekening')
 @endsection
 
 @push('css')
@@ -65,6 +66,11 @@
 <style>
     .table td, .table th {
         font-size: 10pt;
+    }
+
+    .select2-selection--multiple{
+        overflow: hidden !important;
+        height: auto !important;
     }
 </style>
 @endpush
@@ -82,8 +88,10 @@
             $('#id_kode').select2({
                 theme: 'bootstrap4',
             });
-            $('#id_rekening').select2({
+            $('.id_rekening').select2({
                 theme: 'bootstrap4',
+                width: 'resolve',
+                maximumSelectionLength: 10
             });
             $('#id_satuan').select2({
                 theme: 'bootstrap4',
@@ -105,7 +113,7 @@
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
-                    {data:'rekening_belanja'},
+                    {data:'rekening_belanja',searchable:false, sortable:false},
                     {data:'keterangan'},
                     {data:'aksi', searchable:false, sortable:false},
                     {data:'jenis'},
@@ -146,6 +154,37 @@
                 }
             });
 
+            $('#modalRekening').validator().on('submit', function (e){
+                if(! e.preventDefault()){
+                    $.post($('#modalRekening form').attr('action'), $('#modalRekening form').serialize())
+                    .done((response) => {
+                        $(".alert" ).addClass( "alert-success" );
+                        $(".alert").show();
+                        $("#rek-massages").append(response);
+                        setTimeout(function(){
+                            $(".alert" ).removeClass( "alert-success" );
+                            $("#rek-massages").empty();
+                            $('#modalRekening form')[0].reset();
+                            $('#modalRekening').modal('hide');
+                        }, 1000);
+                        table.ajax.reload();
+                    })
+                    .fail((errors) => {
+                        let err = errors.responseJSON.errors;
+                        $(".alert" ).addClass( "alert-danger" );
+                        $(".alert").show();
+                        $.each(err, function(key, val) {
+                            $("#rek-massages").append(val);
+                            setTimeout(function(){
+                                $(".alert").hide();
+                                $(".alert" ).removeClass( "alert-danger" );
+                                $("#rek-massages").empty();
+                            }, 3000);
+                        });
+                    });
+                }
+            });
+
         });
 
         function addSsh(url){
@@ -158,6 +197,24 @@
             $('#modalSsh [name=jenis]').val('');
             $('#modalSsh').on('shown.bs.modal', function () {
                 $('#id_kode').focus();
+            })
+        }
+
+        function addRekening(url){
+            $('#modalRekening').modal('show');
+            $('#modalRekening .modal-title').text('Tambah Rekening');
+
+            $('#modalRekening form')[0].reset();
+            $('#modalRekening form').attr('action',url);
+            $('#modalRekening [name=_method]').val('post');
+            $('#modalRekening [class=id_rekening]').val('');
+            $('#modalRekening').on('shown.bs.modal', function () {
+                $('.id_rekenings').select2({
+                    theme: 'bootstrap4',
+                    width: 'resolve',
+                    maximumSelectionLength: 10
+                });
+                $('.id_rekenings').focus();
             })
         }
 
@@ -177,7 +234,13 @@
             $.get(show)
             .done((response) => {
                 $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');
-                $('#modalSsh [name=id_rekening]').val(response.id_rekening).trigger('change');
+                // $('#modalSsh [name=id_rekening]').val(response.id_rekening).trigger('change');
+                $('.update').hide();
+                $('.id_rekening').remove();
+                // $('.id_rekening').select2({
+                //     disabled:true
+                // });
+
                 $('#modalSsh [name=spesifikasi]').val(response.spesifikasi);
                 $('#modalSsh [name=uraian]').val(response.uraian);
                 $('#modalSsh [name=id_satuan]').val(response.id_satuan).trigger('change');
@@ -191,6 +254,22 @@
 
         function hapusSsh(url){
             if (confirm('Yakin ingin menghapus data terpilih?')) {
+                    $.post(url, {
+                            '_token': $('[name=csrf-token]').attr('content'),
+                            '_method': 'delete'
+                        })
+                        .done((response) => {
+                            table.ajax.reload();
+                        })
+                        .fail((errors) => {
+                            alert('Gagal hapus data');
+                            return;
+                        });
+                }
+        }
+
+        function hapusRekening(url){
+            if (confirm('Yakin ingin menghapus rekening terpilih?')) {
                     $.post(url, {
                             '_token': $('[name=csrf-token]').attr('content'),
                             '_method': 'delete'
