@@ -60,6 +60,9 @@ class MonitorController extends Controller
                 ->addColumn('satuan', function($data){
                     return getValue("nm_satuan","data_satuan"," id = ".$data->id_satuan);
                 })
+                ->addColumn('tkdn', function($data){
+                    return (!is_null($data->tkdn)) ? $data->tkdn : "";
+                })
                 ->addColumn('rekening',function($data){
                     $details = DetailRincianUsulan::where('id_ssh','=',$data->id_ssh)->get();
                     $show = "";

@@ -26,6 +26,7 @@
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th>Harga</th>
+                                <th>T K D N</th>
                                 <th>Rekening</th>
                                 <th>Status</th>
                             </tr>
@@ -73,6 +74,7 @@
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
+                    {data:'tkdn'},
                     {data:'rekening'},
                     {data:'status_ssh'},
                 ]
