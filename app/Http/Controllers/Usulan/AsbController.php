@@ -687,6 +687,16 @@ class AsbController extends Controller
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $detail = DetailRincianUsulan::where('id_ssh','=',$asb[0]->id)->get();
+        $rek1 = (isset($detail[0]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[0]->kode_akun) : "";
+        $rek2 = (isset($detail[1]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[1]->kode_akun) : "";
+        $rek3 = (isset($detail[2]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[2]->kode_akun) : "";
+        $rek4 = (isset($detail[3]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[3]->kode_akun) : "";
+        $rek5 = (isset($detail[4]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[4]->kode_akun) : "";
+        $rek6 = (isset($detail[5]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[5]->kode_akun) : "";
+        $rek7 = (isset($detail[6]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[6]->kode_akun) : "";
+        $rek8 = (isset($detail[7]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[7]->kode_akun) : "";
+        $rek9 = (isset($detail[8]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[8]->kode_akun) : "";
+        $rek10 = (isset($detail[9]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[9]->kode_akun) : "";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".$usulan->id_opd);
         $data = [
@@ -697,7 +707,16 @@ class AsbController extends Controller
             'ttd' => $ttd,
             'opd' => $opd,
             'id_ssh' => $asb[0]->id,
-            'detail' => $detail->count()
+            'rek1' =>$rek1,
+            'rek2' =>$rek2,
+            'rek3' =>$rek3,
+            'rek4' =>$rek4,
+            'rek5' =>$rek5,
+            'rek6' =>$rek6,
+            'rek7' =>$rek7,
+            'rek8' =>$rek8,
+            'rek9' =>$rek9,
+            'rek10' =>$rek10,
         ];
         $pdf = PDF::loadView('pdf.asb.instansi',$data);
         $pdf->setPaper('legal', 'landscape');
@@ -731,13 +750,32 @@ class AsbController extends Controller
                         ->get();
         $jenis = ($jenis == "1") ? "induk" : "perubahan";
         $detail = DetailRincianUsulan::where('id_ssh','=',$asb[0]->id)->get();
+        $rek1 = (isset($detail[0]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[0]->kode_akun) : "";
+        $rek2 = (isset($detail[1]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[1]->kode_akun) : "";
+        $rek3 = (isset($detail[2]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[2]->kode_akun) : "";
+        $rek4 = (isset($detail[3]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[3]->kode_akun) : "";
+        $rek5 = (isset($detail[4]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[4]->kode_akun) : "";
+        $rek6 = (isset($detail[5]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[5]->kode_akun) : "";
+        $rek7 = (isset($detail[6]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[6]->kode_akun) : "";
+        $rek8 = (isset($detail[7]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[7]->kode_akun) : "";
+        $rek9 = (isset($detail[8]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[8]->kode_akun) : "";
+        $rek10 = (isset($detail[9]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[9]->kode_akun) : "";
         $data = [
             'tahun' => $tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." ANALISIS STANDA BELANJA TAHUN ANGGARAN",
             'asb' => $asb,
             'id_ssh' => $asb[0]->id,
-            'detail' => $detail->count()
+            'rek1' =>$rek1,
+            'rek2' =>$rek2,
+            'rek3' =>$rek3,
+            'rek4' =>$rek4,
+            'rek5' =>$rek5,
+            'rek6' =>$rek6,
+            'rek7' =>$rek7,
+            'rek8' =>$rek8,
+            'rek9' =>$rek9,
+            'rek10' =>$rek10,
         ];
         $pdf = PDF::loadView('pdf.asb.aset',$data);
         $pdf->setPaper('legal', 'landscape');

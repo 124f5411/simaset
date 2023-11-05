@@ -19,20 +19,23 @@
     </div>
     <table class="table table-sm table-bordered mt-4 text-dark" width="100%" cellspacing="0">
         <tr>
-            <th>#</th>
+            <th>No</th>
             <th>Kode Barang</th>
             <th>Nama Barang</th>
             <th>Uraian</th>
             <th>Spesfikasi</th>
             <th>Satuan</th>
             <th>Harga</th>
-                @if ($detail <= '1')
-                    <th>Rekening Belanja</th>
-                @else
-                    <?php $n=0; foreach(App\Models\DetailRincianUsulan::where('id_ssh','=',$id_ssh)->get() as $th): $n++?>
-                        <th>Rekening <?=$n?></th>
-                    <?php endforeach;?>
-                @endif
+            <th>Rek 1</th>
+            <th>Rek 2</th>
+            <th>Rek 3</th>
+            <th>Rek 4</th>
+            <th>Rek 5</th>
+            <th>Rek 6</th>
+            <th>Rek 7</th>
+            <th>Rek 8</th>
+            <th>Rek 9</th>
+            <th>Rek 10</th>
             <th>T  K D N</th>
         </tr>
         <tbody>
@@ -44,22 +47,20 @@
                 <td>{{ getValue("kode_barang","referensi_kode_barang","id = ".$value->id_kode); }}</td>
                 <td>{{ getValue("uraian","referensi_kode_barang","id = ".$value->id_kode); }}</td>
                 <td>{{ $value->uraian }}</td>
-                <td style="width: 200px">{{ $value->spesifikasi }}</td>
+                <td>{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
-                <td style="width: 200px">Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
-                @if ($detail <= '1')
-                    <td>
-                        @foreach (App\Models\DetailRincianUsulan::where('id_ssh','=',$value->id)->get() as $detail )
-                            {{ getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun); }}
-                        @endforeach
-                    </td>
-                @else
-                    @foreach (App\Models\DetailRincianUsulan::where('id_ssh','=',$value->id)->get() as $detail )
-                        <td>
-                                {{ getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun); }} <br>
-                        </td>
-                    @endforeach
-                @endif
+                <td>{{ number_format($value->harga, 2, ",", ".") }}</td>
+                <td>{{ $rek1 }}</td>
+                <td>{{ $rek2 }}</td>
+                <td>{{ $rek3 }}</td>
+                <td>{{ $rek4 }}</td>
+                <td>{{ $rek5 }}</td>
+                <td>{{ $rek6 }}</td>
+                <td>{{ $rek7 }}</td>
+                <td>{{ $rek8 }}</td>
+                <td>{{ $rek9 }}</td>
+                <td>{{ $rek10 }}</td>
+
                 <td>{{ (!is_null($value->tkdn)) ? $value->tkdn : "" }}</td>
             </tr>
 

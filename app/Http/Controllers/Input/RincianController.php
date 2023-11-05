@@ -197,7 +197,17 @@ class RincianController extends Controller
 
     public function export($id){
         $rincian = dataSsh::where('id_usulan','=',decrypt($id))->get();
-        $detail = DetailRincianUsulan::where('id_ssh','=',$rincian[0]->id)->get();
+        $detail = DetailRincianUsulan::select('kode_akun')->where('id_ssh','=',$rincian[0]->id)->get();
+        $rek1 = (isset($detail[0]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[0]->kode_akun) : "";
+        $rek2 = (isset($detail[1]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[1]->kode_akun) : "";
+        $rek3 = (isset($detail[2]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[2]->kode_akun) : "";
+        $rek4 = (isset($detail[3]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[3]->kode_akun) : "";
+        $rek5 = (isset($detail[4]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[4]->kode_akun) : "";
+        $rek6 = (isset($detail[5]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[5]->kode_akun) : "";
+        $rek7 = (isset($detail[6]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[6]->kode_akun) : "";
+        $rek8 = (isset($detail[7]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[7]->kode_akun) : "";
+        $rek9 = (isset($detail[8]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[8]->kode_akun) : "";
+        $rek10 = (isset($detail[9]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[9]->kode_akun) : "";
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
@@ -210,7 +220,16 @@ class RincianController extends Controller
             'ttd' => $ttd,
             'opd' => $opd,
             'id_ssh' => $rincian[0]->id,
-            'detail' => $detail->count()
+            'rek1' =>$rek1,
+            'rek2' =>$rek2,
+            'rek3' =>$rek3,
+            'rek4' =>$rek4,
+            'rek5' =>$rek5,
+            'rek6' =>$rek6,
+            'rek7' =>$rek7,
+            'rek8' =>$rek8,
+            'rek9' =>$rek9,
+            'rek10' =>$rek10,
         ];
         $pdf = PDF::loadView('pdf.usulan.rincian',$data);
         $pdf->setPaper('legal', 'landscape');
