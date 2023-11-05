@@ -4,8 +4,7 @@
     </IfModule>
 
     RewriteEngine On
-    LimitRequestLine 1000000
-    LimitRequestFieldSize 1000000
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} -d [OR]
     RewriteCond %{REQUEST_FILENAME} -f
@@ -18,4 +17,6 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ server.php [L]
+    LimitRequestLine 1000000
+    LimitRequestFieldSize 1000000
 </IfModule>
