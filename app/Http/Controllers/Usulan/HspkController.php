@@ -114,6 +114,9 @@ class HspkController extends Controller
                 ->addColumn('harga',function($hspk) {
                     return "Rp. ".number_format($hspk->harga, 2, ",", ".");
                 })
+                ->addColumn('tkdn',function($hspk) {
+                    return (!is_null($hspk->tkdn)) ? $hspk->tkdn : "";
+                })
                 ->addColumn('dokumen',function($hspk){
                     $dok = '
                     <div class="btn-group">
@@ -169,6 +172,9 @@ class HspkController extends Controller
                 })
                 ->addColumn('harga',function($hspk) {
                     return "Rp. ".number_format($hspk->harga, 2, ",", ".");
+                })
+                ->addColumn('tkdn',function($hspk) {
+                    return (!is_null($hspk->tkdn)) ? $hspk->tkdn : "";
                 })
                 ->addColumn('aksi', function($hspk){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){

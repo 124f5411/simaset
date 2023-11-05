@@ -113,6 +113,9 @@ class SshController extends Controller
                 ->addColumn('harga',function($ssh) {
                     return "Rp. ".number_format($ssh->harga, 2, ",", ".");
                 })
+                ->addColumn('tkdn',function($ssh) {
+                    return (!is_null($ssh->tkdn)) ? $ssh->tkdn : "";
+                })
                 ->addColumn('dokumen',function($ssh){
                     $dok = '
                     <div class="btn-group">
@@ -166,6 +169,9 @@ class SshController extends Controller
                 })
                 ->addColumn('harga',function($ssh) {
                     return "Rp. ".number_format($ssh->harga, 2, ",", ".");
+                })
+                ->addColumn('tkdn',function($ssh) {
+                    return (!is_null($ssh->tkdn)) ? $ssh->tkdn : "";
                 })
                 ->addColumn('aksi', function($ssh){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){

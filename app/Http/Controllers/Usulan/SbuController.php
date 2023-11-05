@@ -113,6 +113,9 @@ class SbuController extends Controller
                 ->addColumn('harga',function($sbu) {
                     return "Rp. ".number_format($sbu->harga, 2, ",", ".");
                 })
+                ->addColumn('tkdn',function($sbu) {
+                    return (!is_null($sbu->tkdn)) ? $sbu->tkdn : "";
+                })
                 ->addColumn('dokumen',function($sbu){
                     $dok = '
                     <div class="btn-group">
@@ -168,6 +171,9 @@ class SbuController extends Controller
                 })
                 ->addColumn('harga',function($sbu) {
                     return "Rp. ".number_format($sbu->harga, 2, ",", ".");
+                })
+                ->addColumn('tkdn',function($sbu) {
+                    return (!is_null($sbu->tkdn)) ? $sbu->tkdn : "";
                 })
                 ->addColumn('aksi', function($sbu){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){

@@ -115,6 +115,9 @@ class AsbController extends Controller
                 ->addColumn('harga',function($asb) {
                     return "Rp. ".number_format($asb->harga, 2, ",", ".");
                 })
+                ->addColumn('tkdn',function($asb) {
+                    return (!is_null($asb->tkdn)) ? $asb->tkdn : "";
+                })
                 ->addColumn('dokumen',function($asb){
                     $dok = '
                     <div class="btn-group">
@@ -170,6 +173,9 @@ class AsbController extends Controller
                 })
                 ->addColumn('harga',function($asb) {
                     return "Rp. ".number_format($asb->harga, 2, ",", ".");
+                })
+                ->addColumn('tkdn',function($asb) {
+                    return (!is_null($asb->tkdn)) ? $asb->tkdn : "";
                 })
                 ->addColumn('aksi', function($asb){
                     if((Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')){
