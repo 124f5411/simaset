@@ -26,10 +26,14 @@
             <th>Spesfikasi</th>
             <th>Satuan</th>
             <th>Harga</th>
-            <th>T K D N</th>
-            <?php $n=0; foreach(App\Models\DetailRincianUsulan::where('id_ssh','=',$id_ssh)->get() as $th): $n++?>
-                <th>Rekening <?=$n?></th>
-            <?php endforeach;?>
+            @if ($detail <= '1')
+                <th>Rekening Belanja</th>
+            @else
+                <?php $n=0; foreach(App\Models\DetailRincianUsulan::where('id_ssh','=',$id_ssh)->get() as $th): $n++?>
+                    <th>Rekening <?=$n?></th>
+                <?php endforeach;?>
+            @endif
+            <th>T  K D N</th>
         </tr>
         <tbody>
             <?php $i=0;?>
@@ -44,11 +48,20 @@
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
                 <td style="width: 200px">Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
                 <td>{{ (!is_null($value->tkdn)) ? $value->tkdn : "" }}</td>
-                @foreach (App\Models\DetailRincianUsulan::where('id_ssh','=',$value->id)->get() as $detail )
+                @if ($detail <= '1')
                     <td>
-                        {{ getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun); }} <br>
+                        @foreach (App\Models\DetailRincianUsulan::where('id_ssh','=',$value->id)->get() as $detail )
+                            {{ getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun); }}
+                        @endforeach
                     </td>
-                @endforeach
+                @else
+                    @foreach (App\Models\DetailRincianUsulan::where('id_ssh','=',$value->id)->get() as $detail )
+                        <td>
+                                {{ getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun); }} <br>
+                        </td>
+                    @endforeach
+                @endif
+                <td>{{ (!is_null($value->tkdn)) ? $value->tkdn : "" }}</td>
             </tr>
 
             @endforeach

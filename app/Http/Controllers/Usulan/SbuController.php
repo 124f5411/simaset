@@ -687,6 +687,7 @@ class SbuController extends Controller
         $sbu = dataSbu::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','2')->whereIn('status',['2'])->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
+        $detail = DetailRincianUsulan::where('id_ssh','=',$sbu[0]->id)->get();
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".$usulan->id_opd);
         $data = [
@@ -696,7 +697,8 @@ class SbuController extends Controller
             'sbu' => $sbu,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $sbu[0]->id
+            'id_ssh' => $sbu[0]->id,
+            'detail' => $detail->count()
         ];
         $pdf = PDF::loadView('pdf.sbu.instansi',$data);
         $pdf->setPaper('legal', 'landscape');
@@ -729,12 +731,14 @@ class SbuController extends Controller
                         ->where('usulan_ssh.induk_perubahan','=',$jenis)
                         ->get();
         $jenis = ($jenis == "1") ? "induk" : "perubahan";
+        $detail = DetailRincianUsulan::where('id_ssh','=',$sbu[0]->id)->get();
         $data = [
             'tahun' => $tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." STANDAR BIAYA UMUM TAHUN ANGGARAN",
             'sbu' => $sbu,
-            'id_ssh' => $sbu[0]->id
+            'id_ssh' => $sbu[0]->id,
+            'detail' => $detail->count()
         ];
         $pdf = PDF::loadView('pdf.sbu.aset',$data);
         $pdf->setPaper('legal', 'landscape');

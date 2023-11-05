@@ -685,6 +685,7 @@ class HspkController extends Controller
         $hspk = dataHspk::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','4')->whereIn('status',['2'])->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
+        $detail = DetailRincianUsulan::where('id_ssh','=',$hspk[0]->id)->get();
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".$usulan->id_opd);
         $data = [
@@ -694,7 +695,8 @@ class HspkController extends Controller
             'hspk' => $hspk,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $hspk[0]->id
+            'id_ssh' => $hspk[0]->id,
+            'detail' => $detail->count()
         ];
         $pdf = PDF::loadView('pdf.hspk.instansi',$data);
         $pdf->setPaper('legal', 'landscape');
@@ -727,12 +729,14 @@ class HspkController extends Controller
                         ->where('usulan_ssh.induk_perubahan','=',$jenis)
                         ->get();
         $jenis = ($jenis == "1") ? "induk" : "perubahan";
+        $detail = DetailRincianUsulan::where('id_ssh','=',$hspk[0]->id)->get();
         $data = [
             'tahun' => $tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
             'hspk' => $hspk,
-            'id_ssh' => $hspk[0]->id
+            'id_ssh' => $hspk[0]->id,
+            'detail' => $detail->count()
         ];
         $pdf = PDF::loadView('pdf.hspk.aset',$data);
         $pdf->setPaper('legal', 'landscape');

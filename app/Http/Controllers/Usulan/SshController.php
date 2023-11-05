@@ -683,6 +683,7 @@ class SshController extends Controller
         $ssh = dataSsh::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','1')->whereIn('status',['2'])->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
+        $detail = DetailRincianUsulan::where('id_ssh','=',$ssh[0]->id)->get();
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".$usulan->id_opd);
         $data = [
@@ -692,7 +693,8 @@ class SshController extends Controller
             'ssh' => $ssh,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $ssh[0]->id
+            'id_ssh' => $ssh[0]->id,
+            'detail' => $detail->count()
         ];
         $pdf = PDF::loadView('pdf.ssh.instansi',$data);
         $pdf->setPaper('legal', 'landscape');
@@ -725,12 +727,14 @@ class SshController extends Controller
                         ->where('usulan_ssh.induk_perubahan','=',$jenis)
                         ->get();
         $jenis = ($jenis == "1") ? "induk" : "perubahan";
+        $detail = DetailRincianUsulan::where('id_ssh','=',$ssh[0]->id)->get();
         $data = [
             'tahun' => $tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." STANDAR SATUAN HARGA TAHUN ANGGARAN",
             'ssh' => $ssh,
-            'id_ssh' => $ssh[0]->id
+            'id_ssh' => $ssh[0]->id,
+            'detail' => $detail->count()
         ];
         $pdf = PDF::loadView('pdf.ssh.aset',$data);
         $pdf->setPaper('legal', 'landscape');

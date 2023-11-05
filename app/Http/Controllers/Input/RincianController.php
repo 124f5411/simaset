@@ -197,6 +197,7 @@ class RincianController extends Controller
 
     public function export($id){
         $rincian = dataSsh::where('id_usulan','=',decrypt($id))->get();
+        $detail = DetailRincianUsulan::where('id_ssh','=',$rincian[0]->id)->get();
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
@@ -208,7 +209,8 @@ class RincianController extends Controller
             'rincian' => $rincian,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $rincian[0]->id
+            'id_ssh' => $rincian[0]->id,
+            'detail' => $detail->count()
         ];
         $pdf = PDF::loadView('pdf.usulan.rincian',$data);
         $pdf->setPaper('legal', 'landscape');
