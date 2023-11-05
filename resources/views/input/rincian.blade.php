@@ -139,7 +139,7 @@
                 autoWidth: false,
                 ajax:{
                     url: '{{ route('rincian.data','') }}'+'/'+id_usulan,
-                    type: 'POST',
+                    type: 'GET',
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
