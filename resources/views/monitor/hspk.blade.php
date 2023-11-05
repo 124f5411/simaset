@@ -68,6 +68,11 @@
     <script src="{{ asset('js/validator.min.js') }}"></script>
 
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         let table;
         $(document).ready(function() {
             table = $('#dataSsh').DataTable({
@@ -76,7 +81,8 @@
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('monitor.data','') }}'+'/hspk'
+                    url: '{{ route('monitor.data','') }}'+'/hspk',
+                    type: 'POST',
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
