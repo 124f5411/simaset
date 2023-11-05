@@ -77,7 +77,36 @@ class MonitorController extends Controller
                 ->addColumn('tkdn', function($data){
                     return (!is_null($data->tkdn)) ? $data->tkdn : "";
                 })
-
+                ->addColumn('rek_1',function($data){
+                    return (!is_null($data->rek_1)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_1) : "";
+                })
+                ->addColumn('rek_2',function($data){
+                    return (!is_null($data->rek_2)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_2) : "";
+                })
+                ->addColumn('rek_3',function($data){
+                    return (!is_null($data->rek_3)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_3) : "";
+                })
+                ->addColumn('rek_4',function($data){
+                    return (!is_null($data->rek_4)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_4) : "";
+                })
+                ->addColumn('rek_5',function($data){
+                    return (!is_null($data->rek_5)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_5) : "";
+                })
+                ->addColumn('rek_6',function($data){
+                    return (!is_null($data->rek_6)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_6) : "";
+                })
+                ->addColumn('rek_7',function($data){
+                    return (!is_null($data->rek_7)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_7) : "";
+                })
+                ->addColumn('rek_8',function($data){
+                    return (!is_null($data->rek_8)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_8) : "";
+                })
+                ->addColumn('rek_9',function($data){
+                    return (!is_null($data->rek_9)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_9) : "";
+                })
+                ->addColumn('rek_10',function($data){
+                    return (!is_null($data->rek_10)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_10) : "";
+                })
                 ->addColumn('status_ssh', function($data){
                     $status = [
                         '0' => 'Proses OPD',
