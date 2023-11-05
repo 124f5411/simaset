@@ -207,7 +207,8 @@ class RincianController extends Controller
             'title' => "USULAN ".strtoupper($jenis)." TAHUN ANGGARAN",
             'rincian' => $rincian,
             'ttd' => $ttd,
-            'opd' => $opd
+            'opd' => $opd,
+            'id_ssh' => $rincian->id
         ];
         $pdf = PDF::loadView('pdf.usulan.rincian',$data);
         $pdf->setPaper('F4', 'landscape');

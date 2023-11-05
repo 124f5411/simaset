@@ -691,7 +691,8 @@ class SshController extends Controller
             'title' => "USULAN ".strtoupper($jenis)." STANDAR SATUAN HARGA TAHUN ANGGARAN",
             'ssh' => $ssh,
             'ttd' => $ttd,
-            'opd' => $opd
+            'opd' => $opd,
+            'id_ssh' => $ssh->id
         ];
         $pdf = PDF::loadView('pdf.ssh.instansi',$data);
         $pdf->setPaper('F4', 'landscape');
@@ -729,6 +730,7 @@ class SshController extends Controller
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." STANDAR SATUAN HARGA TAHUN ANGGARAN",
             'ssh' => $ssh,
+            'id_ssh' => $ssh->id
         ];
         $pdf = PDF::loadView('pdf.ssh.aset',$data);
         $pdf->setPaper('F4', 'landscape');

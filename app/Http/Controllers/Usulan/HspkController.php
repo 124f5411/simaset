@@ -693,7 +693,8 @@ class HspkController extends Controller
             'title' => "USULAN ".strtoupper($jenis)." HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
             'hspk' => $hspk,
             'ttd' => $ttd,
-            'opd' => $opd
+            'opd' => $opd,
+            'id_ssh' => $hspk->id
         ];
         $pdf = PDF::loadView('pdf.hspk.instansi',$data);
         $pdf->setPaper('F4', 'landscape');
@@ -731,6 +732,7 @@ class HspkController extends Controller
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
             'hspk' => $hspk,
+            'id_ssh' => $hspk->id
         ];
         $pdf = PDF::loadView('pdf.hspk.aset',$data);
         $pdf->setPaper('F4', 'landscape');

@@ -694,7 +694,8 @@ class AsbController extends Controller
             'title' => "USULAN ".strtoupper($jenis)." ANALISIS STANDA BELANJA TAHUN ANGGARAN",
             'asb' => $asb,
             'ttd' => $ttd,
-            'opd' => $opd
+            'opd' => $opd,
+            'id_ssh' => $asb->id
         ];
         $pdf = PDF::loadView('pdf.asb.instansi',$data);
         $pdf->setPaper('F4', 'landscape');
@@ -732,6 +733,7 @@ class AsbController extends Controller
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." ANALISIS STANDA BELANJA TAHUN ANGGARAN",
             'asb' => $asb,
+            'id_ssh' => $asb->id
         ];
         $pdf = PDF::loadView('pdf.asb.aset',$data);
         $pdf->setPaper('F4', 'landscape');

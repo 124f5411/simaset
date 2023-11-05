@@ -695,7 +695,8 @@ class SbuController extends Controller
             'title' => "USULAN ".strtoupper($jenis)." STANDAR BIAYA UMUM TAHUN ANGGARAN",
             'sbu' => $sbu,
             'ttd' => $ttd,
-            'opd' => $opd
+            'opd' => $opd,
+            'id_ssh' => $sbu->id
         ];
         $pdf = PDF::loadView('pdf.sbu.instansi',$data);
         $pdf->setPaper('F4', 'landscape');
@@ -733,6 +734,7 @@ class SbuController extends Controller
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." STANDAR BIAYA UMUM TAHUN ANGGARAN",
             'sbu' => $sbu,
+            'id_ssh' => $sbu->id
         ];
         $pdf = PDF::loadView('pdf.sbu.aset',$data);
         $pdf->setPaper('F4', 'landscape');
