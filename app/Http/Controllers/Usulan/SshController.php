@@ -542,7 +542,7 @@ class SshController extends Controller
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.ssh',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('ssh-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -695,7 +695,7 @@ class SshController extends Controller
             'id_ssh' => $ssh->id
         ];
         $pdf = PDF::loadView('pdf.ssh.instansi',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('ssh-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -733,7 +733,7 @@ class SshController extends Controller
             'id_ssh' => $ssh->id
         ];
         $pdf = PDF::loadView('pdf.ssh.aset',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('ssh-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
     }
 

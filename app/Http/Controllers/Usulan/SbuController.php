@@ -546,7 +546,7 @@ class SbuController extends Controller
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.sbu',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('sbu-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -699,7 +699,7 @@ class SbuController extends Controller
             'id_ssh' => $sbu->id
         ];
         $pdf = PDF::loadView('pdf.sbu.instansi',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('sbu-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -737,7 +737,7 @@ class SbuController extends Controller
             'id_ssh' => $sbu->id
         ];
         $pdf = PDF::loadView('pdf.sbu.aset',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('sbu-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
     }
 }

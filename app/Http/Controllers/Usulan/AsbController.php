@@ -545,7 +545,7 @@ class AsbController extends Controller
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.asb',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('asb-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -698,7 +698,7 @@ class AsbController extends Controller
             'id_ssh' => $asb->id
         ];
         $pdf = PDF::loadView('pdf.asb.instansi',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('asb-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -736,7 +736,7 @@ class AsbController extends Controller
             'id_ssh' => $asb->id
         ];
         $pdf = PDF::loadView('pdf.asb.aset',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('asb-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
     }
 }

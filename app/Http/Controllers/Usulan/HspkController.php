@@ -544,7 +544,7 @@ class HspkController extends Controller
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.hspk',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('hspk-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -697,7 +697,7 @@ class HspkController extends Controller
             'id_ssh' => $hspk->id
         ];
         $pdf = PDF::loadView('pdf.hspk.instansi',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('hspk-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -735,7 +735,7 @@ class HspkController extends Controller
             'id_ssh' => $hspk->id
         ];
         $pdf = PDF::loadView('pdf.hspk.aset',$data);
-        $pdf->setPaper('F4', 'landscape');
+        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
         return $pdf->stream('hspk-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
     }
 
