@@ -68,6 +68,11 @@
     <script src="{{ asset('js/validator.min.js') }}"></script>
 
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         let table;
         $(document).ready(function() {
             table = $('#dataSsh').DataTable({
