@@ -26,6 +26,7 @@
             <th>Spesfikasi</th>
             <th>Satuan</th>
             <th>Harga</th>
+            <th>TKDN</th>
             <th>Rek 1</th>
             <th>Rek 2</th>
             <th>Rek 3</th>
@@ -36,7 +37,6 @@
             <th>Rek 8</th>
             <th>Rek 9</th>
             <th>Rek 10</th>
-            <th>T  K D N</th>
         </tr>
         <tbody>
             <?php $i=0;?>
@@ -50,18 +50,17 @@
                 <td>{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
                 <td>{{ number_format($value->harga, 2, ",", ".") }}</td>
-                <td>{{ $rek1 }}</td>
-                <td>{{ $rek2 }}</td>
-                <td>{{ $rek3 }}</td>
-                <td>{{ $rek4 }}</td>
-                <td>{{ $rek5 }}</td>
-                <td>{{ $rek6 }}</td>
-                <td>{{ $rek7 }}</td>
-                <td>{{ $rek8 }}</td>
-                <td>{{ $rek9 }}</td>
-                <td>{{ $rek10 }}</td>
-
                 <td>{{ (!is_null($value->tkdn)) ? $value->tkdn : "" }}</td>
+                <td>{{ (!is_null($value->rek_1)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_1) :""; }}</td>
+                <td>{{ (!is_null($value->rek_2)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_2) : ""; }}</td>
+                <td>{{ (!is_null($value->rek_3)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_3) : ""; }}</td>
+                <td>{{ (!is_null($value->rek_4)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_4) : ""; }}</td>
+                <td>{{ (!is_null($value->rek_5)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_5) : ""; }}</td>
+                <td>{{ (!is_null($value->rek_6)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_6) : ""; }}</td>
+                <td>{{ (!is_null($value->rek_7)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_7) : ""; }}</td>
+                <td>{{ (!is_null($value->rek_8)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_8) : ""; }}</td>
+                <td>{{ (!is_null($value->rek_9)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_9) : ""; }}</td>
+                <td>{{ (!is_null($value->rek_10)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_10): ""; }}</td>
             </tr>
 
             @endforeach

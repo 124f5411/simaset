@@ -39,7 +39,18 @@ class MonitorController extends Controller
 
         $data = UsulanSsh::select(
             'usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode',
-            '_data_ssh.id_rekening','_data_ssh.id_usulan','_data_ssh.uraian',
+            '_data_ssh.rek_1',
+            '_data_ssh.rek_2',
+            '_data_ssh.rek_3',
+            '_data_ssh.rek_4',
+            '_data_ssh.rek_5',
+            '_data_ssh.rek_6',
+            '_data_ssh.rek_7',
+            '_data_ssh.rek_8',
+            '_data_ssh.rek_9',
+            '_data_ssh.rek_10',
+            '_data_ssh.tkdn',
+            '_data_ssh.id_usulan','_data_ssh.uraian',
             '_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga',
             '_data_ssh.status as status_ssh','_data_ssh.keterangan','_data_ssh.id_kelompok'
             )
@@ -54,6 +65,9 @@ class MonitorController extends Controller
                 ->addColumn('kode_barang',function($data){
                     return getValue("kode_barang","referensi_kode_barang"," id = ".$data->id_kode);
                 })
+                ->addColumn('harga',function($data) {
+                    return number_format($data->harga, 2, ",", ".");
+                })
                 ->addColumn('nama_barang',function($data){
                     return getValue("uraian","referensi_kode_barang"," id = ".$data->id_kode);
                 })
@@ -63,13 +77,35 @@ class MonitorController extends Controller
                 ->addColumn('tkdn', function($data){
                     return (!is_null($data->tkdn)) ? $data->tkdn : "";
                 })
-                ->addColumn('rekening',function($data){
-                    $details = DetailRincianUsulan::where('id_ssh','=',$data->id_ssh)->get();
-                    $show = "";
-                    foreach($details as $detail){
-                        $show .= getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun).'<br>';
-                    }
-                    return $show;
+                ->addColumn('rek_1',function($data){
+                    return (!is_null($data->rek_1)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_1) : "";
+                })
+                ->addColumn('rek_2',function($data){
+                    return (!is_null($data->rek_2)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_2) : "";
+                })
+                ->addColumn('rek_3',function($data){
+                    return (!is_null($data->rek_3)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_3) : "";
+                })
+                ->addColumn('rek_4',function($data){
+                    return (!is_null($data->rek_4)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_4) : "";
+                })
+                ->addColumn('rek_5',function($data){
+                    return (!is_null($data->rek_5)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_5) : "";
+                })
+                ->addColumn('rek_6',function($data){
+                    return (!is_null($data->rek_6)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_6) : "";
+                })
+                ->addColumn('rek_7',function($data){
+                    return (!is_null($data->rek_7)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_7) : "";
+                })
+                ->addColumn('rek_8',function($data){
+                    return (!is_null($data->rek_8)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_8) : "";
+                })
+                ->addColumn('rek_9',function($data){
+                    return (!is_null($data->rek_9)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_9) : "";
+                })
+                ->addColumn('rek_10',function($data){
+                    return (!is_null($data->rek_10)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$data->rek_10) : "";
                 })
                 ->addColumn('status_ssh', function($data){
                     $status = [

@@ -25,9 +25,18 @@
                                 <th>Uraian</th>
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
-                                <th style="width: 150px">Harga</th>
-                                <th style="width: 150px">T K D N</th>
-                                <th>Rekening Belanja</th>
+                                <th>Harga</th>
+                                <th>TKDN</th>
+                                <th>Rek 1</th>
+                                <th>Rek 2</th>
+                                <th>Rek 3</th>
+                                <th>Rek 4</th>
+                                <th>Rek 5</th>
+                                <th>Rek 6</th>
+                                <th>Rek 7</th>
+                                <th>Rek 8</th>
+                                <th>Rek 9</th>
+                                <th>Rek 10</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -90,7 +99,16 @@
                     {data:'satuan'},
                     {data:'harga'},
                     {data:'tkdn'},
-                    {data:'rekening_belanja'},
+                    {data:'rek_1'},
+                    {data:'rek_2'},
+                    {data:'rek_3'},
+                    {data:'rek_4'},
+                    {data:'rek_5'},
+                    {data:'rek_6'},
+                    {data:'rek_7'},
+                    {data:'rek_8'},
+                    {data:'rek_9'},
+                    {data:'rek_10'},
                     {data:'aksi', searchable:false, sortable:false},
                 ]
             });

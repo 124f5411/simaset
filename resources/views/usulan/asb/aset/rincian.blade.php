@@ -88,7 +88,17 @@
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
-                    {data:'rekening_belanja'},
+                    {data:'tkdn'},
+                    {data:'rek_1'},
+                    {data:'rek_2'},
+                    {data:'rek_3'},
+                    {data:'rek_4'},
+                    {data:'rek_5'},
+                    {data:'rek_6'},
+                    {data:'rek_7'},
+                    {data:'rek_8'},
+                    {data:'rek_9'},
+                    {data:'rek_10'},
                     {data:'aksi', searchable:false, sortable:false},
                 ]
             });

@@ -46,38 +46,41 @@ class RincianController extends Controller
                 ->addColumn('kode_barang',function($rincian) {
                     return getValue("kode_barang","referensi_kode_barang","id = ".$rincian->id_kode);
                 })
-                ->addColumn('rekening_belanja',function($rincian) {
-                    $details = DetailRincianUsulan::where('id_ssh','=',$rincian->id)->get();
-                    $show = '
-                        <a href="javascript:void(0)" onclick="addRekening(`'.route('rincian.rekening.store',$rincian->id).'`)" class="btn btn-sm btn-primary btn-icon-split mb-2">
-                            <span class="icon text-white-50">
-                                <i class="fas fa-plus-circle"></i>
-                            </span>
-                            <span class="text">Rekening</span>
-                        </a><br>
-                        ';
-                    if($details->count() > 0){
-                        foreach($details as $detail){
-                            $show .='
-                            <a href="javascript:void(0)" onclick="hapusRekening(`'.route('rincian.rekening.destroy',$detail->id).'`)" class="btn btn-sm btn-danger btn-icon-split mb-2">
-                                <span class="text">'.getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun).'</span>
-                                <span class="icon text-white-50">
-                                    <i class="fas fa-trash"></i>
-                                </span>
-                            </a>
-                            ';
-                        }
-                    }else{
-                        $show .= "";
-                    }
-                    // return getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->id_rekening);
-                    return $show;
-                })
                 ->addColumn('satuan',function($rincian){
                     return getValue("nm_satuan","data_satuan","id = ".$rincian->id_satuan);
                 })
+                ->addColumn('rek_1',function($rincian){
+                    return (!is_null($rincian->rek_1)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_1) : "";
+                })
+                ->addColumn('rek_2',function($rincian){
+                    return (!is_null($rincian->rek_2)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_2) : "";
+                })
+                ->addColumn('rek_3',function($rincian){
+                    return (!is_null($rincian->rek_3)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_3) : "";
+                })
+                ->addColumn('rek_4',function($rincian){
+                    return (!is_null($rincian->rek_4)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_4) : "";
+                })
+                ->addColumn('rek_5',function($rincian){
+                    return (!is_null($rincian->rek_5)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_5) : "";
+                })
+                ->addColumn('rek_6',function($rincian){
+                    return (!is_null($rincian->rek_6)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_6) : "";
+                })
+                ->addColumn('rek_7',function($rincian){
+                    return (!is_null($rincian->rek_7)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_7) : "";
+                })
+                ->addColumn('rek_8',function($rincian){
+                    return (!is_null($rincian->rek_8)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_8) : "";
+                })
+                ->addColumn('rek_9',function($rincian){
+                    return (!is_null($rincian->rek_9)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_9) : "";
+                })
+                ->addColumn('rek_10',function($rincian){
+                    return (!is_null($rincian->rek_10)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$rincian->rek_10) : "";
+                })
                 ->addColumn('harga',function($rincian) {
-                    return "Rp. ".number_format($rincian->harga, 2, ",", ".");
+                    return number_format($rincian->harga, 2, ",", ".");
                 })
                 ->addColumn('aksi', function($rincian){
                     $aksi = [
@@ -104,7 +107,6 @@ class RincianController extends Controller
         $id_kelompok = getValue("kelompok","referensi_kode_barang"," id = ".$request->id_kode);
         $field = [
             'id_kode' => ['required'],
-            'id_rekening' => ['required'],
             'uraian' => ['required'],
             'spesifikasi' => ['required'],
             'id_satuan' => ['required'],
@@ -124,7 +126,6 @@ class RincianController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            // 'id_rekening' => $request->id_rekening,
             'id_usulan' => $id,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
@@ -132,18 +133,20 @@ class RincianController extends Controller
             'tkdn' => $request->tkdn,
             'id_satuan' => $request->id_satuan,
             'id_kelompok' => $id_kelompok,
+            'rek_1' => $request->rek_1,
+            'rek_2' => $request->rek_2,
+            'rek_3' => $request->rek_3,
+            'rek_4' => $request->rek_4,
+            'rek_5' => $request->rek_5,
+            'rek_6' => $request->rek_6,
+            'rek_7' => $request->rek_7,
+            'rek_8' => $request->rek_8,
+            'rek_9' => $request->rek_9,
+            'rek_10' => $request->rek_10,
             'status' => '0'
         ];
 
-        $insert = dataSsh::create($data);
-
-        foreach($request->id_rekening as $rekening){
-            DetailRincianUsulan::create([
-                'id_ssh' => $insert->id,
-                'kode_akun' => $rekening
-            ]);
-        }
-
+        dataSsh::create($data);
         return response()->json('Rincian Usulan berhasil ditambahkan',200);
     }
 
@@ -162,7 +165,6 @@ class RincianController extends Controller
         $id_kelompok = getValue("kelompok","referensi_kode_barang"," id = ".$request->id_kode);
         $field = [
             'id_kode' => ['required'],
-            // 'id_rekening' => ['required'],
             'spesifikasi' => ['required'],
             'uraian' => ['required'],
             'id_satuan' => ['required'],
@@ -172,7 +174,6 @@ class RincianController extends Controller
 
         $pesan = [
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
-            // 'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'uraian.required' => 'Uraian tidak boleh kosong <br />',
@@ -182,13 +183,12 @@ class RincianController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            // 'id_rekening' => $request->id_rekening,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,
             'tkdn' => $request->tkdn,
             'id_kelompok' => $id_kelompok,
-            'id_satuan' => $request->id_satuan
+            'id_satuan' => $request->id_satuan,
         ];
 
         $rincian->update($data);
@@ -197,17 +197,6 @@ class RincianController extends Controller
 
     public function export($id){
         $rincian = dataSsh::where('id_usulan','=',decrypt($id))->get();
-        $detail = DetailRincianUsulan::select('kode_akun')->where('id_ssh','=',$rincian[0]->id)->get();
-        $rek1 = (isset($detail[0]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[0]->kode_akun) : "";
-        $rek2 = (isset($detail[1]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[1]->kode_akun) : "";
-        $rek3 = (isset($detail[2]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[2]->kode_akun) : "";
-        $rek4 = (isset($detail[3]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[3]->kode_akun) : "";
-        $rek5 = (isset($detail[4]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[4]->kode_akun) : "";
-        $rek6 = (isset($detail[5]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[5]->kode_akun) : "";
-        $rek7 = (isset($detail[6]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[6]->kode_akun) : "";
-        $rek8 = (isset($detail[7]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[7]->kode_akun) : "";
-        $rek9 = (isset($detail[8]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[8]->kode_akun) : "";
-        $rek10 = (isset($detail[9]->kode_akun)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$detail[9]->kode_akun) : "";
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
@@ -220,16 +209,7 @@ class RincianController extends Controller
             'ttd' => $ttd,
             'opd' => $opd,
             'id_ssh' => $rincian[0]->id,
-            'rek1' =>$rek1,
-            'rek2' =>$rek2,
-            'rek3' =>$rek3,
-            'rek4' =>$rek4,
-            'rek5' =>$rek5,
-            'rek6' =>$rek6,
-            'rek7' =>$rek7,
-            'rek8' =>$rek8,
-            'rek9' =>$rek9,
-            'rek10' =>$rek10,
+
         ];
         $pdf = PDF::loadView('pdf.usulan.rincian',$data);
         $pdf->setPaper('legal', 'landscape');

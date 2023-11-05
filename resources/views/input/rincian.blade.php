@@ -38,12 +38,21 @@
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th>Uraian</th>
-                                <th style="width: 200px">Spesfikasi</th>
+                                <th>Spesfikasi</th>
                                 <th>Satuan</th>
-                                <th style="width: 150px">Harga</th>
-                                <th style="width: 150px">T K D N</th>
-                                <th style="width: 150px">Rekening Belanja</th>
-                                <th style="width: 100px">Keterangan</th>
+                                <th>Harga</th>
+                                <th>TKDN</th>
+                                <th>Rek 1</th>
+                                <th>Rek 2</th>
+                                <th>Rek 3</th>
+                                <th>Rek 4</th>
+                                <th>Rek 5</th>
+                                <th>Rek 6</th>
+                                <th>Rek 7</th>
+                                <th>Rek 8</th>
+                                <th>Rek 9</th>
+                                <th>Rek 10</th>
+                                <th>Keterangan</th>
                                 <th>Aksi</th>
                                 <th>Jenis</th>
                             </tr>
@@ -56,7 +65,7 @@
     </div>
 </div>
 @includeIf('form.input.rincian')
-@includeIf('form.input.rekening')
+{{-- @includeIf('form.input.rekening') --}}
 @endsection
 
 @push('css')
@@ -89,10 +98,35 @@
             $('#id_kode').select2({
                 theme: 'bootstrap4',
             });
-            $('.id_rekening').select2({
+            $('#rek_1').select2({
                 theme: 'bootstrap4',
-                width: 'resolve',
-                maximumSelectionLength: 10
+            });
+            $('#rek_2').select2({
+                theme: 'bootstrap4',
+            });
+            $('#rek_3').select2({
+                theme: 'bootstrap4',
+            });
+            $('#rek_4').select2({
+                theme: 'bootstrap4',
+            });
+            $('#rek_5').select2({
+                theme: 'bootstrap4',
+            });
+            $('#rek_6').select2({
+                theme: 'bootstrap4',
+            });
+            $('#rek_7').select2({
+                theme: 'bootstrap4',
+            });
+            $('#rek_8').select2({
+                theme: 'bootstrap4',
+            });
+            $('#rek_9').select2({
+                theme: 'bootstrap4',
+            });
+            $('#rek_10').select2({
+                theme: 'bootstrap4',
             });
             $('#id_satuan').select2({
                 theme: 'bootstrap4',
@@ -115,7 +149,16 @@
                     {data:'satuan'},
                     {data:'harga'},
                     {data:'tkdn'},
-                    {data:'rekening_belanja',searchable:false, sortable:false},
+                    {data:'rek_1'},
+                    {data:'rek_2'},
+                    {data:'rek_3'},
+                    {data:'rek_4'},
+                    {data:'rek_5'},
+                    {data:'rek_6'},
+                    {data:'rek_7'},
+                    {data:'rek_8'},
+                    {data:'rek_9'},
+                    {data:'rek_10'},
                     {data:'keterangan'},
                     {data:'aksi', searchable:false, sortable:false},
                     {data:'jenis'},
@@ -134,7 +177,16 @@
                             $("#massages").empty();
                             $('#modalSsh [name=id_kode]').val('').trigger('change');
                             $('#modalSsh [name=id_satuan]').val('').trigger('change');
-                            $('#modalSsh [name=id_rekening]').val('').trigger('change');
+                            $('#modalSsh [name=rek_1]').val('').trigger('change');
+                            $('#modalSsh [name=rek_2]').val('').trigger('change');
+                            $('#modalSsh [name=rek_3]').val('').trigger('change');
+                            $('#modalSsh [name=rek_4]').val('').trigger('change');
+                            $('#modalSsh [name=rek_5]').val('').trigger('change');
+                            $('#modalSsh [name=rek_6]').val('').trigger('change');
+                            $('#modalSsh [name=rek_7]').val('').trigger('change');
+                            $('#modalSsh [name=rek_8]').val('').trigger('change');
+                            $('#modalSsh [name=rek_9]').val('').trigger('change');
+                            $('#modalSsh [name=rek_10]').val('').trigger('change');
                             $('#modalSsh form')[0].reset();
                             $('#modalSsh').modal('hide');
                         }, 1000);
@@ -156,36 +208,6 @@
                 }
             });
 
-            $('#modalRekening').validator().on('submit', function (e){
-                if(! e.preventDefault()){
-                    $.post($('#modalRekening form').attr('action'), $('#modalRekening form').serialize())
-                    .done((response) => {
-                        $(".alert" ).addClass( "alert-success" );
-                        $(".alert").show();
-                        $("#rek-massages").append(response);
-                        setTimeout(function(){
-                            $(".alert" ).removeClass( "alert-success" );
-                            $("#rek-massages").empty();
-                            $('#modalRekening form')[0].reset();
-                            $('#modalRekening').modal('hide');
-                        }, 1000);
-                        table.ajax.reload();
-                    })
-                    .fail((errors) => {
-                        let err = errors.responseJSON.errors;
-                        $(".alert" ).addClass( "alert-danger" );
-                        $(".alert").show();
-                        $.each(err, function(key, val) {
-                            $("#rek-massages").append(val);
-                            setTimeout(function(){
-                                $(".alert").hide();
-                                $(".alert" ).removeClass( "alert-danger" );
-                                $("#rek-massages").empty();
-                            }, 3000);
-                        });
-                    });
-                }
-            });
 
         });
 
@@ -202,23 +224,7 @@
             })
         }
 
-        function addRekening(url){
-            $('#modalRekening').modal('show');
-            $('#modalRekening .modal-title').text('Tambah Rekening');
 
-            $('#modalRekening form')[0].reset();
-            $('#modalRekening form').attr('action',url);
-            $('#modalRekening [name=_method]').val('post');
-            $('#modalRekening [class=id_rekening]').val('');
-            $('#modalRekening').on('shown.bs.modal', function () {
-                $('.id_rekenings').select2({
-                    theme: 'bootstrap4',
-                    width: 'resolve',
-                    maximumSelectionLength: 10
-                });
-                $('.id_rekenings').focus();
-            })
-        }
 
         function editSsh(url, id){
             $('#modalSsh').modal('show');
@@ -236,13 +242,16 @@
             $.get(show)
             .done((response) => {
                 $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');
-                // $('#modalSsh [name=id_rekening]').val(response.id_rekening).trigger('change');
-                $('.update').hide();
-                $('.id_rekening').remove();
-                // $('.id_rekening').select2({
-                //     disabled:true
-                // });
-
+                $('#modalSsh [name=rek_1]').val(response.rek_1).trigger('change');
+                $('#modalSsh [name=rek_2]').val(response.rek_2).trigger('change');
+                $('#modalSsh [name=rek_3]').val(response.rek_3).trigger('change');
+                $('#modalSsh [name=rek_4]').val(response.rek_4).trigger('change');
+                $('#modalSsh [name=rek_5]').val(response.rek_5).trigger('change');
+                $('#modalSsh [name=rek_6]').val(response.rek_6).trigger('change');
+                $('#modalSsh [name=rek_7]').val(response.rek_7).trigger('change');
+                $('#modalSsh [name=rek_8]').val(response.rek_8).trigger('change');
+                $('#modalSsh [name=rek_9]').val(response.rek_9).trigger('change');
+                $('#modalSsh [name=rek_10]').val(response.rek_10).trigger('change');
                 $('#modalSsh [name=spesifikasi]').val(response.spesifikasi);
                 $('#modalSsh [name=uraian]').val(response.uraian);
                 $('#modalSsh [name=id_satuan]').val(response.id_satuan).trigger('change');

@@ -104,8 +104,38 @@ class SshController extends Controller
                 ->addColumn('kode_barang',function($ssh) {
                     return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
-                ->addColumn('rekening_belanja',function($ssh) {
-                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->id_rekening);
+                ->addColumn('rek_1',function($ssh){
+                    return (!is_null($ssh->rek_1)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_1) : "";
+                })
+                ->addColumn('rek_2',function($ssh){
+                    return (!is_null($ssh->rek_2)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_2) : "";
+                })
+                ->addColumn('rek_3',function($ssh){
+                    return (!is_null($ssh->rek_3)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_3) : "";
+                })
+                ->addColumn('rek_4',function($ssh){
+                    return (!is_null($ssh->rek_4)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_4) : "";
+                })
+                ->addColumn('rek_5',function($ssh){
+                    return (!is_null($ssh->rek_5)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_5) : "";
+                })
+                ->addColumn('rek_6',function($ssh){
+                    return (!is_null($ssh->rek_6)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_6) : "";
+                })
+                ->addColumn('rek_7',function($ssh){
+                    return (!is_null($ssh->rek_7)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_7) : "";
+                })
+                ->addColumn('rek_8',function($ssh){
+                    return (!is_null($ssh->rek_8)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_8) : "";
+                })
+                ->addColumn('rek_9',function($ssh){
+                    return (!is_null($ssh->rek_9)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_9) : "";
+                })
+                ->addColumn('rek_10',function($ssh){
+                    return (!is_null($ssh->rek_10)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_10) : "";
+                })
+                ->addColumn('satuan',function($ssh){
+                    return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
                 })
                 ->addColumn('satuan',function($ssh){
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
@@ -161,8 +191,38 @@ class SshController extends Controller
                 ->addColumn('kode_barang',function($ssh) {
                     return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
-                ->addColumn('rekening_belanja',function($ssh) {
-                    return getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->id_rekening);
+                ->addColumn('rek_1',function($ssh){
+                    return (!is_null($ssh->rek_1)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_1) : "";
+                })
+                ->addColumn('rek_2',function($ssh){
+                    return (!is_null($ssh->rek_2)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_2) : "";
+                })
+                ->addColumn('rek_3',function($ssh){
+                    return (!is_null($ssh->rek_3)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_3) : "";
+                })
+                ->addColumn('rek_4',function($ssh){
+                    return (!is_null($ssh->rek_4)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_4) : "";
+                })
+                ->addColumn('rek_5',function($ssh){
+                    return (!is_null($ssh->rek_5)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_5) : "";
+                })
+                ->addColumn('rek_6',function($ssh){
+                    return (!is_null($ssh->rek_6)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_6) : "";
+                })
+                ->addColumn('rek_7',function($ssh){
+                    return (!is_null($ssh->rek_7)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_7) : "";
+                })
+                ->addColumn('rek_8',function($ssh){
+                    return (!is_null($ssh->rek_8)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_8) : "";
+                })
+                ->addColumn('rek_9',function($ssh){
+                    return (!is_null($ssh->rek_9)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_9) : "";
+                })
+                ->addColumn('rek_10',function($ssh){
+                    return (!is_null($ssh->rek_10)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_10) : "";
+                })
+                ->addColumn('satuan',function($ssh){
+                    return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
                 })
                 ->addColumn('satuan',function($ssh){
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
@@ -333,7 +393,6 @@ class SshController extends Controller
     public function rincianStore(Request $request,$id){
         $field = [
             'id_kode' => ['required'],
-            'id_rekening' => ['required'],
             'uraian' => ['required'],
             'spesifikasi' => ['required'],
             'id_satuan' => ['required'],
@@ -343,7 +402,6 @@ class SshController extends Controller
 
         $pesan = [
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
-            'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
@@ -353,13 +411,22 @@ class SshController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            // 'id_rekening' => $request->id_rekening,
             'id_usulan' => $id,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,
             'tkdn' => $request->tkdn,
             'id_satuan' => $request->id_satuan,
+            'rek_1' => $request->rek_1,
+            'rek_2' => $request->rek_2,
+            'rek_3' => $request->rek_3,
+            'rek_4' => $request->rek_4,
+            'rek_5' => $request->rek_5,
+            'rek_6' => $request->rek_6,
+            'rek_7' => $request->rek_7,
+            'rek_8' => $request->rek_8,
+            'rek_9' => $request->rek_9,
+            'rek_10' => $request->rek_10,
             'status' => '0'
         ];
 
@@ -403,7 +470,6 @@ class SshController extends Controller
         $ssh = dataSsh::find($id);
         $field = [
             'id_kode' => ['required'],
-            'id_rekening' => ['required'],
             'spesifikasi' => ['required'],
             'uraian' => ['required'],
             'id_satuan' => ['required'],
@@ -413,7 +479,6 @@ class SshController extends Controller
 
         $pesan = [
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
-            'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'uraian.required' => 'Uraian tidak boleh kosong <br />',
@@ -422,12 +487,21 @@ class SshController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            // 'id_rekening' => $request->id_rekening,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,
             'tkdn' => $request->tkdn,
-            'id_satuan' => $request->id_satuan
+            'id_satuan' => $request->id_satuan,
+            'rek_1' => $request->rek_1,
+            'rek_2' => $request->rek_2,
+            'rek_3' => $request->rek_3,
+            'rek_4' => $request->rek_4,
+            'rek_5' => $request->rek_5,
+            'rek_6' => $request->rek_6,
+            'rek_7' => $request->rek_7,
+            'rek_8' => $request->rek_8,
+            'rek_9' => $request->rek_9,
+            'rek_10' => $request->rek_10,
         ];
 
         $ssh->update($data);
@@ -620,19 +694,41 @@ class SshController extends Controller
                 ->addColumn('kode_barang',function($ssh) {
                     return getValue("kode_barang","referensi_kode_barang","id = ".$ssh->id_kode);
                 })
-                ->addColumn('rekening_belanja',function($ssh) {
-                    $details = DetailRincianUsulan::where('id_ssh','=',$ssh->id)->get();
-                    $show = "";
-                    foreach($details as $detail){
-                        $show .= getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun).'<br>';
-                    }
-                    return $show;
+                ->addColumn('rek_1',function($ssh){
+                    return (!is_null($ssh->rek_1)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_1) : "";
+                })
+                ->addColumn('rek_2',function($ssh){
+                    return (!is_null($ssh->rek_2)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_2) : "";
+                })
+                ->addColumn('rek_3',function($ssh){
+                    return (!is_null($ssh->rek_3)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_3) : "";
+                })
+                ->addColumn('rek_4',function($ssh){
+                    return (!is_null($ssh->rek_4)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_4) : "";
+                })
+                ->addColumn('rek_5',function($ssh){
+                    return (!is_null($ssh->rek_5)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_5) : "";
+                })
+                ->addColumn('rek_6',function($ssh){
+                    return (!is_null($ssh->rek_6)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_6) : "";
+                })
+                ->addColumn('rek_7',function($ssh){
+                    return (!is_null($ssh->rek_7)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_7) : "";
+                })
+                ->addColumn('rek_8',function($ssh){
+                    return (!is_null($ssh->rek_8)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_8) : "";
+                })
+                ->addColumn('rek_9',function($ssh){
+                    return (!is_null($ssh->rek_9)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_9) : "";
+                })
+                ->addColumn('rek_10',function($ssh){
+                    return (!is_null($ssh->rek_10)) ? getValue("kode_akun","referensi_rekening_belanja","id = ".$ssh->rek_10) : "";
                 })
                 ->addColumn('satuan',function($ssh){
                     return getValue("nm_satuan","data_satuan","id = ".$ssh->id_satuan);
                 })
                 ->addColumn('harga',function($ssh) {
-                    return "Rp. ".number_format($ssh->harga, 2, ",", ".");
+                    return number_format($ssh->harga, 2, ",", ".");
                 })
                 ->addColumn('aksi', function($ssh){
                     if($ssh->status == '1'){

@@ -15,10 +15,10 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataSsh" width="100%" cellspacing="0">
+                    <table class="table table-sm table-bordered" id="dataSsh" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>No</th>
                                 <th>OPD</th>
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
@@ -26,8 +26,17 @@
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th>Harga</th>
-                                <th>T K D N</th>
-                                <th>Rekening</th>
+                                <th>TKDN</th>
+                                <th>Rek 1</th>
+                                <th>Rek 2</th>
+                                <th>Rek 3</th>
+                                <th>Rek 4</th>
+                                <th>Rek 5</th>
+                                <th>Rek 6</th>
+                                <th>Rek 7</th>
+                                <th>Rek 8</th>
+                                <th>Rek 9</th>
+                                <th>Rek 10</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -45,7 +54,11 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
-
+<style>
+    .table td, .table th {
+        font-size: 10pt;
+    }
+</style>
 @endpush
 
 @push('scripits')
@@ -75,7 +88,16 @@
                     {data:'satuan'},
                     {data:'harga'},
                     {data:'tkdn'},
-                    {data:'rekening'},
+                    {data:'rek_1'},
+                    {data:'rek_2'},
+                    {data:'rek_3'},
+                    {data:'rek_4'},
+                    {data:'rek_5'},
+                    {data:'rek_6'},
+                    {data:'rek_7'},
+                    {data:'rek_8'},
+                    {data:'rek_9'},
+                    {data:'rek_10'},
                     {data:'status_ssh'},
                 ]
             });
