@@ -92,6 +92,11 @@
     <script src="{{ asset('js/validator.min.js') }}"></script>
 
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         let id_usulan = '{{decrypt(Request::segment(2))}}';
         let table;
         $(document).ready(function() {
@@ -139,7 +144,7 @@
                 autoWidth: false,
                 ajax:{
                     url: '{{ route('rincian.data','') }}'+'/'+id_usulan,
-                    type: 'GET',
+                    type: 'POST',
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},

@@ -337,7 +337,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('usulan/valid/{id}',[UsulanController::class,'validasi'])->name('usulan.validasi');
 
     Route::get('rincian/{id}',[RincianController::class,'index'])->name('rincian.index');
-    Route::get('usulan/rincian/data/{id}',[RincianController::class,'data'])->name('rincian.data');
+    Route::post('usulan/rincian/data/{id}',[RincianController::class,'data'])->name('rincian.data');
     Route::post('usulan/rincian/{id}',[RincianController::class,'store'])->name('rincian.store');
     Route::get('usulan/rincian/{id}',[RincianController::class,'show'])->name('rincian.show');
     Route::put('usulan/rincian/{id}',[RincianController::class,'update'])->name('rincian.update');
