@@ -17,7 +17,7 @@
                             <select class="js-example-basic-multiple js-states form-control id_rekenings" id="id_rekenings[]" name="id_rekenings[]" multiple="multiple">
                                 <option>Cari Akun Belanja</option>
                                     @foreach ($drops['rekening'] as $value)
-                                        <option value="{{ $value->id }}">{{ $value->nm_akun }}</option>
+                                        <option value="{{ $value->id }}">{{ $value->kode_akun }} {{ $value->nm_akun }}</option>
                                     @endforeach
                             </select>
                         </div>

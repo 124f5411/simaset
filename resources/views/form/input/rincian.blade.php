@@ -16,7 +16,7 @@
                         <select class="form-control" id="id_kode" name="id_kode">
                             <option>Cari Barang</option>
                                 @foreach ($drops['kode_barang'] as $value)
-                                    <option value="{{ $value->id }}">{{ $value->uraian }}</option>
+                                    <option value="{{ $value->id }}">{{ $value->kode_barang }} {{ $value->uraian }}</option>
                                 @endforeach
                         </select>
                     </div>
@@ -47,7 +47,7 @@
                             <select class="js-example-basic-multiple js-states form-control id_rekening" id="id_rekening[]" name="id_rekening[]" multiple="multiple">
                                 <option>Cari Akun Belanja</option>
                                     @foreach ($drops['rekening'] as $value)
-                                        <option value="{{ $value->id }}">{{ $value->nm_akun }}</option>
+                                        <option value="{{ $value->id }}">{{ $value->kode_akun }} {{ $value->nm_akun }}</option>
                                     @endforeach
                             </select>
                         </div>
