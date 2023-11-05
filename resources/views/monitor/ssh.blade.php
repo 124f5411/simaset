@@ -77,7 +77,7 @@
                 autoWidth: false,
                 ajax:{
                     url: '{{ route('monitor.data','') }}'+'/ssh',
-                    type: 'GET',
+                    type: 'POST',
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},

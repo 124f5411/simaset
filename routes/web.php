@@ -325,7 +325,7 @@ Route::group(['middleware' => 'auth'], function (){
 
 
     Route::get('monitor/{any}',[MonitorController::class,'index'])->name('monitor.index');
-    Route::get('monitor/data/{any}',[MonitorController::class,'getData'])->name('monitor.data');
+    Route::post('monitor/data/{any}',[MonitorController::class,'getData'])->name('monitor.data');
 
     Route::get('usulan',[UsulanController::class,'index'])->name('usulan.index');
     Route::get('usulan/data',[UsulanController::class,'data'])->name('usulan.data');
