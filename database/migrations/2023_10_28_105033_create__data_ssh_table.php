@@ -22,6 +22,7 @@ class CreateDataSshTable extends Migration
             $table->string('uraian')->nullable();
             $table->bigInteger('id_satuan');
             $table->string('harga');
+            $table->string('tkdn');
             $table->enum('status',['0','1','2']);
             $table->text('keterangan')->nullable();
             $table->timestamps();

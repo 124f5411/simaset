@@ -41,6 +41,7 @@
                                 <th style="width: 100px">Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th style="width: 150px">Harga</th>
+                                <th style="width: 150px">T K D N</th>
                                 <th>Rekening Belanja</th>
                                 <th style="width: 100px">Keterangan</th>
                                 <th>Aksi</th>
@@ -108,6 +109,7 @@
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
+                    {data:'tkdn'},
                     {data:'rekening_belanja'},
                     {data:'keterangan'},
                     {data:'aksi', searchable:false, sortable:false},
@@ -187,6 +189,7 @@
                 $('#modalAsb [name=uraian]').val(response.uraian);
                 $('#modalAsb [name=id_satuan]').val(response.id_satuan).trigger('change');
                 $('#modalAsb [name=harga]').val(response.harga);
+                $('#modalAsb [name=tkdn]').val(response.tkdn);
             })
             .fail((errors) => {
                 alert('Gagl tampil data');

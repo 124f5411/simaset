@@ -331,7 +331,8 @@ class SshController extends Controller
             'uraian' => ['required'],
             'spesifikasi' => ['required'],
             'id_satuan' => ['required'],
-            'harga' => ['required']
+            'harga' => ['required'],
+            'tkdn' => ['required']
         ];
 
         $pesan = [
@@ -341,15 +342,17 @@ class SshController extends Controller
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
+            'tkdn.required' => 'T K D N tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            'id_rekening' => $request->id_rekening,
+            // 'id_rekening' => $request->id_rekening,
             'id_usulan' => $id,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,
+            'tkdn' => $request->tkdn,
             'id_satuan' => $request->id_satuan,
             'status' => '0'
         ];
@@ -398,7 +401,8 @@ class SshController extends Controller
             'spesifikasi' => ['required'],
             'uraian' => ['required'],
             'id_satuan' => ['required'],
-            'harga' => ['required']
+            'harga' => ['required'],
+            'tkdn' => ['required']
         ];
 
         $pesan = [
@@ -412,10 +416,11 @@ class SshController extends Controller
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            'id_rekening' => $request->id_rekening,
+            // 'id_rekening' => $request->id_rekening,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,
+            'tkdn' => $request->tkdn,
             'id_satuan' => $request->id_satuan
         ];
 

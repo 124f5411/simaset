@@ -26,6 +26,7 @@
             <th>Spesfikasi</th>
             <th>Satuan</th>
             <th>Harga</th>
+            <th>T K D N</th>
             <th>Rekening Belanja</th>
         </tr>
         <tbody>
@@ -40,6 +41,7 @@
                 <td style="width: 200px">{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
                 <td style="width: 200px">Rp. {{ number_format($value->harga, 2, ",", ".") }}</td>
+                <td style="width: 200px">{{ $value->tkdn }}</td>
                 <td>
                     @foreach (App\Models\DetailRincianUsulan::where('id_ssh','=',$value->id)->get() as $detail )
                             {{ getValue("kode_akun","referensi_rekening_belanja","id = ".$detail->kode_akun); }} <br>

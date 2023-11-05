@@ -41,6 +41,7 @@
                                 <th style="width: 200px">Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th style="width: 150px">Harga</th>
+                                <th style="width: 150px">T K D N</th>
                                 <th style="width: 150px">Rekening Belanja</th>
                                 <th style="width: 100px">Keterangan</th>
                                 <th>Aksi</th>
@@ -113,6 +114,7 @@
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
+                    {data:'tkdn'},
                     {data:'rekening_belanja',searchable:false, sortable:false},
                     {data:'keterangan'},
                     {data:'aksi', searchable:false, sortable:false},
@@ -245,6 +247,7 @@
                 $('#modalSsh [name=uraian]').val(response.uraian);
                 $('#modalSsh [name=id_satuan]').val(response.id_satuan).trigger('change');
                 $('#modalSsh [name=harga]').val(response.harga);
+                $('#modalSsh [name=tkdn]').val(response.tkdn);
             })
             .fail((errors) => {
                 alert('Gagl tampil data');

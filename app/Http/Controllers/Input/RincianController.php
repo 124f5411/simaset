@@ -108,7 +108,8 @@ class RincianController extends Controller
             'uraian' => ['required'],
             'spesifikasi' => ['required'],
             'id_satuan' => ['required'],
-            'harga' => ['required']
+            'harga' => ['required'],
+            'tkdn' => ['required']
         ];
 
         $pesan = [
@@ -118,6 +119,7 @@ class RincianController extends Controller
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
+            'tkdn.required' => 'T K D N tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
@@ -127,6 +129,7 @@ class RincianController extends Controller
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,
+            'tkdn' => $request->tkdn,
             'id_satuan' => $request->id_satuan,
             'id_kelompok' => $id_kelompok,
             'status' => '0'
@@ -163,7 +166,8 @@ class RincianController extends Controller
             'spesifikasi' => ['required'],
             'uraian' => ['required'],
             'id_satuan' => ['required'],
-            'harga' => ['required']
+            'harga' => ['required'],
+            'tkdn' => ['required']
         ];
 
         $pesan = [
@@ -173,6 +177,7 @@ class RincianController extends Controller
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
+            'tkdn.required' => 'T K D N tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
@@ -181,6 +186,7 @@ class RincianController extends Controller
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,
+            'tkdn' => $request->tkdn,
             'id_kelompok' => $id_kelompok,
             'id_satuan' => $request->id_satuan
         ];

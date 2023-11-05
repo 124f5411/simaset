@@ -333,7 +333,8 @@ class HspkController extends Controller
             'uraian' => ['required'],
             'spesifikasi' => ['required'],
             'id_satuan' => ['required'],
-            'harga' => ['required']
+            'harga' => ['required'],
+            'tkdn' => ['required']
         ];
 
         $pesan = [
@@ -343,11 +344,12 @@ class HspkController extends Controller
             'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
+            'tkdn.required' => 'T K D N tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            'id_rekening' => $request->id_rekening,
+            'tkdn' => $request->tkdn,
             'id_usulan' => $id,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
@@ -400,7 +402,8 @@ class HspkController extends Controller
             'spesifikasi' => ['required'],
             'uraian' => ['required'],
             'id_satuan' => ['required'],
-            'harga' => ['required']
+            'harga' => ['required'],
+            'tkdn' => ['required']
         ];
 
         $pesan = [
@@ -410,11 +413,12 @@ class HspkController extends Controller
             'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
             'harga.required' => 'Harga tidak boleh kosong <br />',
+            'tkdn.required' => 'T K D N tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
         $data = [
             'id_kode' => $request->id_kode,
-            'id_rekening' => $request->id_rekening,
+            'tkdn' => $request->tkdn,
             'spesifikasi' => $request->spesifikasi,
             'uraian' => $request->uraian,
             'harga' => $request->harga,

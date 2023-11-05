@@ -42,6 +42,10 @@
                         <input type="number" class="form-control" id="harga" name="harga" required>
                     </div>
                     <div class="form-group">
+                        <label for="tkdn">T K D N</label>
+                        <input type="number" class="form-control" id="tkdn" name="tkdn" required>
+                    </div>
+                    <div class="form-group">
                         <label for="id_rekening">Rekening Belanja</label>
                         <select class="form-control" id="id_rekening" name="id_rekening">
                             <option value="">Cari Akun Belanja</option>
