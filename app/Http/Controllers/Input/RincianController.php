@@ -208,10 +208,10 @@ class RincianController extends Controller
             'rincian' => $rincian,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $rincian->id
+            'id_ssh' => $rincian[0]->id
         ];
         $pdf = PDF::loadView('pdf.usulan.rincian',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('usulan-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 

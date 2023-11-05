@@ -542,7 +542,7 @@ class SshController extends Controller
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.ssh',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('ssh-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -692,10 +692,10 @@ class SshController extends Controller
             'ssh' => $ssh,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $ssh->id
+            'id_ssh' => $ssh[0]->id
         ];
         $pdf = PDF::loadView('pdf.ssh.instansi',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('ssh-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -730,10 +730,10 @@ class SshController extends Controller
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." STANDAR SATUAN HARGA TAHUN ANGGARAN",
             'ssh' => $ssh,
-            'id_ssh' => $ssh->id
+            'id_ssh' => $ssh[0]->id
         ];
         $pdf = PDF::loadView('pdf.ssh.aset',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('ssh-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
     }
 

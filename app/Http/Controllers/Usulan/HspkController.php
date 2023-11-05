@@ -544,7 +544,7 @@ class HspkController extends Controller
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.hspk',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('hspk-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -694,10 +694,10 @@ class HspkController extends Controller
             'hspk' => $hspk,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $hspk->id
+            'id_ssh' => $hspk[0]->id
         ];
         $pdf = PDF::loadView('pdf.hspk.instansi',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('hspk-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -732,10 +732,10 @@ class HspkController extends Controller
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." HARGA SATUAN POKOK KEGIATAN TAHUN ANGGARAN",
             'hspk' => $hspk,
-            'id_ssh' => $hspk->id
+            'id_ssh' => $hspk[0]->id
         ];
         $pdf = PDF::loadView('pdf.hspk.aset',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('hspk-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
     }
 

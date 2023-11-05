@@ -546,7 +546,7 @@ class SbuController extends Controller
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.sbu',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('sbu-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -696,10 +696,10 @@ class SbuController extends Controller
             'sbu' => $sbu,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $sbu->id
+            'id_ssh' => $sbu[0]->id
         ];
         $pdf = PDF::loadView('pdf.sbu.instansi',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('sbu-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -734,10 +734,10 @@ class SbuController extends Controller
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." STANDAR BIAYA UMUM TAHUN ANGGARAN",
             'sbu' => $sbu,
-            'id_ssh' => $sbu->id
+            'id_ssh' => $sbu[0]->id
         ];
         $pdf = PDF::loadView('pdf.sbu.aset',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('sbu-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
     }
 }

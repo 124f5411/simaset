@@ -545,7 +545,7 @@ class AsbController extends Controller
             'opd' => $opd
         ];
         $pdf = PDF::loadView('pdf.asb',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('asb-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -695,10 +695,10 @@ class AsbController extends Controller
             'asb' => $asb,
             'ttd' => $ttd,
             'opd' => $opd,
-            'id_ssh' => $asb->id
+            'id_ssh' => $asb[0]->id
         ];
         $pdf = PDF::loadView('pdf.asb.instansi',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('asb-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
@@ -733,10 +733,10 @@ class AsbController extends Controller
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
             'title' => "USULAN ".strtoupper($jenis)." ANALISIS STANDA BELANJA TAHUN ANGGARAN",
             'asb' => $asb,
-            'id_ssh' => $asb->id
+            'id_ssh' => $asb[0]->id
         ];
         $pdf = PDF::loadView('pdf.asb.aset',$data);
-        $pdf->setPaper(array(0, 0, 612.00, 792.00), 'landscape');
+        $pdf->setPaper('legal', 'landscape');
         return $pdf->stream('asb-'.$tahun.'-'.date('Y-m-d H:i:s').'.pdf');
     }
 }
