@@ -118,11 +118,12 @@
                         d.search = $('input[type="search"]').val()
                     }
                 },
-                dom: 'Bfrtip',
+                dom: 'Blfrtip',
                 buttons: [{
                     extend: 'excel',
                     title: 'SBU',
                 }],
+                lengthMenu:[[10, 25, 50, 100,-1], [10, 25, 50, 100, "All"]],
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
                     {data:'opd'},
