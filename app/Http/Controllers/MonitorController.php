@@ -22,14 +22,19 @@ class MonitorController extends Controller
             'hspk' => 'PANTAUHSPK'
         ];
 
-
+        $tahun = UsulanSsh::select('tahun')->groupBy('tahun')->get();
+        $jenis  = UsulanSsh::select('induk_perubahan')->groupBy('induk_perubahan')->get();
         return view($view[$any],[
             'title' => 'MONITORING',
-            'page' => $page[$any]
+            'page' => $page[$any],
+            'drops' => [
+                'tahun' => $tahun,
+                'jenis' => $jenis
+            ],
         ]);
     }
 
-    public function getData($any){
+    public function getData(Request $request,$any){
         $id_kelompok = [
             'ssh' => '1',
             'sbu' => '2',
@@ -55,8 +60,7 @@ class MonitorController extends Controller
             '_data_ssh.status as status_ssh','_data_ssh.keterangan','_data_ssh.id_kelompok'
             )
             ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
-            ->where('_data_ssh.id_kelompok','=',$id_kelompok[$any])
-            ->get();
+            ->where('_data_ssh.id_kelompok','=',$id_kelompok[$any]);
         return datatables()->of($data)
                 ->addIndexColumn()
                 ->addColumn('opd', function($data){
@@ -64,6 +68,9 @@ class MonitorController extends Controller
                 })
                 ->addColumn('kode_barang',function($data){
                     return getValue("kode_barang","referensi_kode_barang"," id = ".$data->id_kode);
+                })
+                ->addColumn('usulan',function($data){
+                    return ($data->induk_perubahan == "1") ? "Induk" : "Perubahan";
                 })
                 ->addColumn('harga',function($data) {
                     return number_format($data->harga, 2, ",", ".");
@@ -114,6 +121,15 @@ class MonitorController extends Controller
                         '2' => 'Diterima'
                     ];
                     return $status[$data->status_ssh];
+                })
+                ->filter( function($instance) use ($request){
+                    if (!empty($request->get('tahun'))) {
+                        $instance->where('usulan_ssh.tahun','LIKE','%'.$request->get('tahun').'%');
+                    }
+                    if ($request->get('usulan') == '1' || $request->get('usulan') == '2') {
+                        $instance->where('usulan_ssh.induk_perubahan','LIKE','% '.$request->get('usulan').' %');
+                    }
+
                 })
                 ->rawColumns(['rekening'])
                 ->make(true);

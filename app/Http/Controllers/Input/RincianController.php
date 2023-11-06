@@ -37,7 +37,7 @@ class RincianController extends Controller
     }
 
     public function data($id){
-        $rincian = dataSsh::where('id_usulan','=',$id)->get();
+        $rincian = dataSsh::where('id_usulan','=',$id);
         return datatables()->of($rincian)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($rincian) {
