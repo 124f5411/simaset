@@ -189,6 +189,16 @@ class RincianController extends Controller
             'tkdn' => $request->tkdn,
             'id_kelompok' => $id_kelompok,
             'id_satuan' => $request->id_satuan,
+            'rek_1' => $request->rek_1,
+            'rek_2' => $request->rek_2,
+            'rek_3' => $request->rek_3,
+            'rek_4' => $request->rek_4,
+            'rek_5' => $request->rek_5,
+            'rek_6' => $request->rek_6,
+            'rek_7' => $request->rek_7,
+            'rek_8' => $request->rek_8,
+            'rek_9' => $request->rek_9,
+            'rek_10' => $request->rek_10,
         ];
 
         $rincian->update($data);
