@@ -12,7 +12,7 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">RINCIAN USULAN</h6>
-                    <a href="#" onclick="window.open('{{ route('rincian.export',Request::segment(2)) }}','Title','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720');"
+                    <a href="javascript:void(0)" onclick="window.open('{{ route('rincian.export',Request::segment(2)) }}','Title','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=1024,height = 720');"
                     class="btn btn-sm btn-danger btn-icon-split mt-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-file-pdf"></i>
@@ -20,7 +20,7 @@
                         <span class="text">EXPORT</span>
                     </a>
                     @if ($usulan_status == '0')
-                        <a href="#" onclick="addSsh('{{ route('rincian.store',decrypt(Request::segment(2))) }}')"
+                        <a href="javascript:void(0)" onclick="addSsh('{{ route('rincian.store',decrypt(Request::segment(2))) }}')"
                         class="btn btn-sm btn-primary btn-icon-split float-right mt-2">
                             <span class="icon text-white-50">
                                 <i class="fas fa-plus-circle"></i>
