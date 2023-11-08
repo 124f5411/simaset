@@ -228,7 +228,7 @@ class RincianController extends Controller
         $pdf->setPaper('legal', 'landscape');
         $pdf->render();
         $pdf->get_canvas()->page_text(10, 20, "Halaman {PAGE_NUM} dari {PAGE_COUNT}", null, 10, array(0, 0, 0));
-        return $pdf->stream('usulan-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
+        return $pdf->stream('usulan-'.$jenis.'-'.$usulan->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 
     public function destroy($id){
