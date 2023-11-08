@@ -127,7 +127,7 @@ class MonitorController extends Controller
                         $instance->where('usulan_ssh.tahun','LIKE','%'.$request->get('tahun').'%');
                     }
                     if ($request->get('usulan') == '1' || $request->get('usulan') == '2') {
-                        $instance->where('usulan_ssh.induk_perubahan','LIKE','% '.$request->get('usulan').' %');
+                        $instance->where('usulan_ssh.induk_perubahan','=',$request->get('usulan'));
                     }
 
                 })

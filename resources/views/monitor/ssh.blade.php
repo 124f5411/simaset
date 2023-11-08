@@ -47,7 +47,6 @@
                                 <th>Spesfikasi</th>
                                 <th>Satuan</th>
                                 <th>Harga</th>
-                                <th>TKDN</th>
                                 <th>Rek 1</th>
                                 <th>Rek 2</th>
                                 <th>Rek 3</th>
@@ -58,6 +57,7 @@
                                 <th>Rek 8</th>
                                 <th>Rek 9</th>
                                 <th>Rek 10</th>
+                                <th>TKDN</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -139,7 +139,6 @@
                     {data:'spesifikasi'},
                     {data:'satuan'},
                     {data:'harga'},
-                    {data:'tkdn'},
                     {data:'rek_1'},
                     {data:'rek_2'},
                     {data:'rek_3'},
@@ -150,6 +149,7 @@
                     {data:'rek_8'},
                     {data:'rek_9'},
                     {data:'rek_10'},
+                    {data:'tkdn'},
                     {data:'status_ssh'},
                 ]
             });
