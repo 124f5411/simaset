@@ -7,9 +7,18 @@
     <title>USULAN {{ $tahun }}</title>
     <link href="{{ asset('themes/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <style>
+        th,td,p,div,b ... {margin:0;padding:0}
+        html{margin:50px 50px}
         .table td, .table th {
-            font-size: 10pt;
+            font-size: 8pt;
         }
+        #ttd {
+        font-size: 10pt;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+
     </style>
 </head>
 <body>
@@ -26,7 +35,6 @@
             <th>Spesfikasi</th>
             <th>Satuan</th>
             <th>Harga</th>
-            <th>TKDN</th>
             <th>Rek 1</th>
             <th>Rek 2</th>
             <th>Rek 3</th>
@@ -37,6 +45,7 @@
             <th>Rek 8</th>
             <th>Rek 9</th>
             <th>Rek 10</th>
+            <th>TKDN</th>
         </tr>
         <tbody>
             <?php $i=0;?>
@@ -50,7 +59,6 @@
                 <td>{{ $value->spesifikasi }}</td>
                 <td>{{ getValue("nm_satuan","data_satuan","id = ".$value->id_satuan); }}</td>
                 <td>{{ number_format($value->harga, 2, ",", ".") }}</td>
-                <td>{{ (!is_null($value->tkdn)) ? $value->tkdn : "" }}</td>
                 <td>{{ (!is_null($value->rek_1)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_1) :""; }}</td>
                 <td>{{ (!is_null($value->rek_2)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_2) : ""; }}</td>
                 <td>{{ (!is_null($value->rek_3)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_3) : ""; }}</td>
@@ -61,13 +69,14 @@
                 <td>{{ (!is_null($value->rek_8)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_8) : ""; }}</td>
                 <td>{{ (!is_null($value->rek_9)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_9) : ""; }}</td>
                 <td>{{ (!is_null($value->rek_10)) ? getValue("kode_akun","referensi_rekening_belanja"," id = ".$value->rek_10): ""; }}</td>
+                <td>{{ (!is_null($value->tkdn)) ? $value->tkdn : "" }}</td>
             </tr>
 
             @endforeach
         </tbody>
     </table>
     <div class="float-right" style="width: 350px">
-        <div class="text-center text-dark font-weight-light">
+        <div class="text-center text-dark font-weight-light" id="ttd">
             <h6 class="mt-2">Kepala {{ $opd }}</h6><br><br><br>
             <h6><u>{{ $ttd->nm_pimp }}</u><br> NIP {{ $ttd->nip }}</h6>
         </div>
