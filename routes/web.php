@@ -348,5 +348,5 @@ Route::group(['middleware' => 'auth'], function (){
     Route::post('usulan/rekening/{id}',[RincianController::class,'detailStore'])->name('rincian.rekening.store');
     Route::delete('usulan/rekening/{id}',[RincianController::class,'detailDestroy'])->name('rincian.rekening.destroy');
 
+    Route::get('usulan/rincian/pdf/{id}',[RincianController::class,'export'])->name('rincian.export')->withoutMiddleware(['auth']);
 });
-Route::get('usulan/rincian/pdf/{id}',[RincianController::class,'export'])->name('rincian.export');
