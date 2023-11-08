@@ -14,6 +14,7 @@ use App\Models\UsulanSsh;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class RincianController extends Controller
 {
@@ -211,6 +212,7 @@ class RincianController extends Controller
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
         $opd = getValue("opd","data_opd"," id =".$usulan->id_opd);
+        $qrcode = base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate(route('rincian.export',$id)));
         $data = [
             'tahun' => $usulan->tahun,
             'instansi' => "PEMERINTAH PROVINSI PAPUA BARAT DAYA",
@@ -219,10 +221,13 @@ class RincianController extends Controller
             'ttd' => $ttd,
             'opd' => $opd,
             'id_ssh' => $rincian[0]->id,
+            'qrcode' => $qrcode,
 
         ];
         $pdf = PDF::loadView('pdf.usulan.rincian',$data);
         $pdf->setPaper('legal', 'landscape');
+        $pdf->render();
+        $pdf->get_canvas()->page_text(10, 20, "Halaman {PAGE_NUM} dari {PAGE_COUNT}", null, 10, array(0, 0, 0));
         return $pdf->stream('usulan-'.$jenis.'-'.Auth::user()->id_opd.'-TA-'.$usulan->tahun.'-' . date('Y-m-d H:i:s') . '.pdf');
     }
 

@@ -7,22 +7,27 @@
     <title>USULAN {{ $tahun }}</title>
     <link href="{{ asset('themes/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <style>
-        th,td,p,div,b ... {margin:0;padding:0}
-        html{margin:50px 50px}
+        @page {
+            margin: 70px 25px 60px 25px;
+        }
         .table td, .table th {
             font-size: 8pt;
         }
-        #ttd {
-        font-size: 10pt;
+        table #ttd {
+            border: none;
+            font-size: 10pt;
         }
         .page-break {
             page-break-after: always;
+        }
+        body{
+            break-inside: auto;
         }
 
     </style>
 </head>
 <body>
-    <div class="text-center text-dark font-weight-light">
+    <div class="text-center text-dark font-weight-light header" >
         <img src="{{ asset('logo/pbd.png') }}" class="rounded" alt="imms" width="100px" >
         <p class="font-weight-light">{{$instansi}} <br>{{$title}} {{ $tahun }} <br> {{strtoupper($opd)}}</p>
     </div>
@@ -75,11 +80,27 @@
             @endforeach
         </tbody>
     </table>
-    <div class="float-right" style="width: 350px">
-        <div class="text-center text-dark font-weight-light" id="ttd">
-            <h6 class="mt-2">Kepala {{ $opd }}</h6><br><br><br>
-            <h6><u>{{ $ttd->nm_pimp }}</u><br> NIP {{ $ttd->nip }}</h6>
-        </div>
-    </div>
+    <div class="page_break"></div>
+    <table  id="ttd" width="100%" cellspacing="0">
+        <tr>
+            <td style="text-align: center;">
+                <img src="data:image/png;base64, {{ $qrcode }} ">
+            </td>
+            <td style="width: 50%">
+
+            </td>
+            <td>
+                <div class="text-center text-dark font-weight-light" style="width: 300px">
+                    <h6 class="mt-2">Kepala {{ $opd }}</h6><br><br><br>
+                    <h6><u>{{ $ttd->nm_pimp }}</u><br> NIP {{ $ttd->nip }}</h6>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+
+
+
+
 </body>
 </html>
