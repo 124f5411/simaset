@@ -61,7 +61,7 @@ class MonitorController extends Controller
             )
             ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
             ->where('_data_ssh.id_kelompok','=',$id_kelompok[$any]);
-        return datatables()->of($data)
+        return datatables()->eloquent($data)
                 ->addIndexColumn()
                 ->addColumn('opd', function($data){
                     return getValue("opd","data_opd"," id = ".$data->id_opd);

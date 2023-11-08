@@ -19,7 +19,7 @@ class UsulanController extends Controller
 
     public function data(){
         $usulan = UsulanSsh::where('id_opd','=',Auth::user()->id_opd);
-        return datatables()->of($usulan)
+        return datatables()->eloquent($usulan)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($usulan) {
                     return getValue("opd","data_opd","id = ".$usulan->id_opd);
