@@ -18,22 +18,6 @@ use Illuminate\Support\Facades\Auth;
 class SbuController extends Controller
 {
     public function index(){
-        // if(Auth::user()->level == 'aset'){
-        //     $kode_barang = KodeBarang::where('kelompok','=','2')->get();
-        //     $rekening = RekeningBelanja::all();
-        //     $satuan = DataSatuan::all();
-        //     $instansi = DataOpd::all();
-        //     return view('usulan.sbu.aset',[
-        //         'title' => 'Usulan',
-        //         'page' => 'SBU',
-        //         'drops' => [
-        //             'kode_barang' => $kode_barang,
-        //             'rekening' => $rekening,
-        //             'instansi' => $instansi,
-        //             'satuan' => $satuan
-        //         ]
-        //     ]);
-        // }
         if(Auth::user()->level == 'aset'){
             $instansi = DataOpd::all();
             $tahun  = UsulanSsh::select('tahun')->where('id_kelompok','=','2')->where('status','=','1')->groupBy('tahun')->get();
@@ -77,9 +61,9 @@ class SbuController extends Controller
         $sbu = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening','_data_ssh.uraian')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',2)
-                        ->whereIn('_data_ssh.status',['1','2'])->get();
+                        ->whereIn('_data_ssh.status',['1','2']);
 
-        return datatables()->of($sbu)
+        return datatables()->eloquent($sbu)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($sbu) {
                     return getValue("opd","data_opd","id = ".$sbu->id_opd);
@@ -154,8 +138,8 @@ class SbuController extends Controller
     }
 
     public function data_rincian($id){
-        $sbu = dataSbu::where('id_usulan','=',$id)->get();
-        return datatables()->of($sbu)
+        $sbu = dataSbu::where('id_usulan','=',$id);
+        return datatables()->eloquent($sbu)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($sbu) {
                     return getValue("uraian","referensi_kode_barang","id = ".$sbu->id_kode);
@@ -200,8 +184,8 @@ class SbuController extends Controller
     }
 
     public function data(){
-        $sbu = UsulanSsh::where('id_kelompok','=','2')->where('id_opd','=',Auth::user()->id_opd)->get();
-        return datatables()->of($sbu)
+        $sbu = UsulanSsh::where('id_kelompok','=','2')->where('id_opd','=',Auth::user()->id_opd);
+        return datatables()->eloquent($sbu)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($sbu) {
                     return getValue("opd","data_opd","id = ".$sbu->id_opd);
@@ -559,8 +543,8 @@ class SbuController extends Controller
     }
 
     public function asetInstansi($id){
-        $sbu = UsulanSsh::where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
-        return datatables()->of($sbu)
+        $sbu = UsulanSsh::where('id_opd','=',decrypt($id))->whereIn('status',['1','2']);
+        return datatables()->eloquent($sbu)
                 ->addIndexColumn()
                 ->addColumn('usulan',function($sbu) {
                     if(is_null($sbu->induk_perubahan)){
@@ -615,8 +599,8 @@ class SbuController extends Controller
     }
 
     public function rincianAset($id){
-        $sbu = dataSbu::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','2')->whereIn('status',['1','2'])->get();
-        return datatables()->of($sbu)
+        $sbu = dataSbu::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','2')->whereIn('status',['1','2']);
+        return datatables()->eloquent($sbu)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($sbu) {
                     return getValue("uraian","referensi_kode_barang","id = ".$sbu->id_kode);

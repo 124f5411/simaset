@@ -78,9 +78,9 @@ class HspkController extends Controller
         $hspk = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening','_data_ssh.uraian')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',4)
-                        ->whereIn('_data_ssh.status',['1','2'])->get();
+                        ->whereIn('_data_ssh.status',['1','2']);
 
-        return datatables()->of($hspk)
+        return datatables()->eloquent($hspk)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($hspk) {
                     return getValue("opd","data_opd","id = ".$hspk->id_opd);
@@ -155,8 +155,8 @@ class HspkController extends Controller
     }
 
     public function data_rincian($id){
-        $hspk = dataHspk::where('id_usulan','=',$id)->get();
-        return datatables()->of($hspk)
+        $hspk = dataHspk::where('id_usulan','=',$id);
+        return datatables()->eloquent($hspk)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($hspk) {
                     return getValue("uraian","referensi_kode_barang","id = ".$hspk->id_kode);
@@ -201,8 +201,8 @@ class HspkController extends Controller
     }
 
     public function data(){
-        $hspk = UsulanSsh::where('id_kelompok','=','4')->where('id_opd','=',Auth::user()->id_opd)->get();
-        return datatables()->of($hspk)
+        $hspk = UsulanSsh::where('id_kelompok','=','4')->where('id_opd','=',Auth::user()->id_opd);
+        return datatables()->eloquent($hspk)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($hspk) {
                     return getValue("opd","data_opd","id = ".$hspk->id_opd);
@@ -557,8 +557,8 @@ class HspkController extends Controller
     }
 
     public function asetInstansi($id){
-        $hspk = UsulanSsh::where('id_kelompok','=','4')->where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
-        return datatables()->of($hspk)
+        $hspk = UsulanSsh::where('id_kelompok','=','4')->where('id_opd','=',decrypt($id))->whereIn('status',['1','2']);
+        return datatables()->eloquent($hspk)
                 ->addIndexColumn()
                 ->addColumn('usulan',function($hspk) {
                     if(is_null($hspk->induk_perubahan)){
@@ -613,8 +613,8 @@ class HspkController extends Controller
     }
 
     public function rincianAset($id){
-        $hspk = dataHspk::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','4')->whereIn('status',['1','2'])->get();
-        return datatables()->of($hspk)
+        $hspk = dataHspk::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','4')->whereIn('status',['1','2']);
+        return datatables()->eloquent($hspk)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($hspk) {
                     return getValue("uraian","referensi_kode_barang","id = ".$hspk->id_kode);

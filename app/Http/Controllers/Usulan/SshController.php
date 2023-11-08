@@ -18,22 +18,6 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 class SshController extends Controller
 {
     public function index(){
-        // if(Auth::user()->level == 'aset'){
-        //     $kode_barang = KodeBarang::where('kelompok','=','1')->get();
-        //     $rekening = RekeningBelanja::all();
-        //     $satuan = DataSatuan::all();
-        //     $instansi = DataOpd::all();
-        //     return view('usulan.ssh.aset',[
-        //         'title' => 'Usulan',
-        //         'page' => 'SSH',
-        //         'drops' => [
-        //             'kode_barang' => $kode_barang,
-        //             'rekening' => $rekening,
-        //             'instansi' => $instansi,
-        //             'satuan' => $satuan
-        //         ]
-        //     ]);
-        // }
         if(Auth::user()->level == 'aset'){
             $instansi = DataOpd::all();
             $tahun  = UsulanSsh::select('tahun')->where('status','=','1')->groupBy('tahun')->get();
@@ -77,9 +61,9 @@ class SshController extends Controller
         $ssh = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening','_data_ssh.uraian')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',1)
-                        ->whereIn('_data_ssh.status',['1','2'])->get();
+                        ->whereIn('_data_ssh.status',['1','2']);
 
-        return datatables()->of($ssh)
+        return datatables()->eloquent($ssh)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($ssh) {
                     return getValue("opd","data_opd","id = ".$ssh->id_opd);
@@ -182,8 +166,8 @@ class SshController extends Controller
     }
 
     public function data_rincian($id){
-        $ssh = dataSsh::where('id_usulan','=',$id)->get();
-        return datatables()->of($ssh)
+        $ssh = dataSsh::where('id_usulan','=',$id);
+        return datatables()->eloquent($ssh)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);
@@ -259,8 +243,8 @@ class SshController extends Controller
 
 
     public function data(){
-        $ssh = UsulanSsh::where('id_kelompok','=','1')->where('id_opd','=',Auth::user()->id_opd)->get();
-        return datatables()->of($ssh)
+        $ssh = UsulanSsh::where('id_kelompok','=','1')->where('id_opd','=',Auth::user()->id_opd);
+        return datatables()->eloquent($ssh)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($ssh) {
                     return getValue("opd","data_opd","id = ".$ssh->id_opd);
@@ -629,8 +613,8 @@ class SshController extends Controller
     }
 
     public function asetInstansi($id){
-        $ssh = UsulanSsh::where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
-        return datatables()->of($ssh)
+        $ssh = UsulanSsh::where('id_opd','=',decrypt($id))->whereIn('status',['1','2']);
+        return datatables()->eloquent($ssh)
                 ->addIndexColumn()
                 ->addColumn('usulan',function($ssh) {
                     if(is_null($ssh->induk_perubahan)){
@@ -685,8 +669,8 @@ class SshController extends Controller
     }
 
     public function rincianAset($id){
-        $ssh = dataSsh::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','1')->whereIn('status',['1','2'])->get();
-        return datatables()->of($ssh)
+        $ssh = dataSsh::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','1')->whereIn('status',['1','2']);
+        return datatables()->eloquent($ssh)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($ssh) {
                     return getValue("uraian","referensi_kode_barang","id = ".$ssh->id_kode);

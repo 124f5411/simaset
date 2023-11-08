@@ -79,9 +79,9 @@ class AsbController extends Controller
         $asb = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening','_data_ssh.uraian')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',3)
-                        ->whereIn('_data_ssh.status',['1','2'])->get();
+                        ->whereIn('_data_ssh.status',['1','2']);
 
-        return datatables()->of($asb)
+        return datatables()->eloquent($asb)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($asb) {
                     return getValue("opd","data_opd","id = ".$asb->id_opd);
@@ -156,8 +156,8 @@ class AsbController extends Controller
     }
 
     public function data_rincian($id){
-        $asb = dataAsb::where('id_usulan','=',$id)->get();
-        return datatables()->of($asb)
+        $asb = dataAsb::where('id_usulan','=',$id);
+        return datatables()->eloquent($asb)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($asb) {
                     return getValue("uraian","referensi_kode_barang","id = ".$asb->id_kode);
@@ -202,8 +202,8 @@ class AsbController extends Controller
     }
 
     public function data(){
-        $asb = UsulanSsh::where('id_kelompok','=','3')->where('id_opd','=',Auth::user()->id_opd)->get();
-        return datatables()->of($asb)
+        $asb = UsulanSsh::where('id_kelompok','=','3')->where('id_opd','=',Auth::user()->id_opd);
+        return datatables()->eloquent($asb)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($asb) {
                     return getValue("opd","data_opd","id = ".$asb->id_opd);
@@ -558,8 +558,8 @@ class AsbController extends Controller
     }
 
     public function asetInstansi($id){
-        $asb = UsulanSsh::where('id_kelompok','=','3')->where('id_opd','=',decrypt($id))->whereIn('status',['1','2'])->get();
-        return datatables()->of($asb)
+        $asb = UsulanSsh::where('id_kelompok','=','3')->where('id_opd','=',decrypt($id))->whereIn('status',['1','2']);
+        return datatables()->eloquent($asb)
                 ->addIndexColumn()
                 ->addColumn('usulan',function($asb) {
                     if(is_null($asb->induk_perubahan)){
@@ -614,8 +614,8 @@ class AsbController extends Controller
     }
 
     public function rincianAset($id){
-        $asb = dataAsb::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','3')->whereIn('status',['1','2'])->get();
-        return datatables()->of($asb)
+        $asb = dataAsb::where('id_usulan','=',decrypt($id))->where('id_kelompok','=','3')->whereIn('status',['1','2']);
+        return datatables()->eloquent($asb)
                 ->addIndexColumn()
                 ->addColumn('uraian_id',function($asb) {
                     return getValue("uraian","referensi_kode_barang","id = ".$asb->id_kode);
