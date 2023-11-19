@@ -114,6 +114,7 @@ class RincianKontrakController extends Controller
     }
 
     protected function kodeRegister($kode,$id_kontrak){
+        // dd($kode);
         $register = DetailKontrak::select('detail_kontrak.register')
             ->join('data_kontrak','detail_kontrak.id_kontrak','=','data_kontrak.id')
             ->where([
@@ -122,15 +123,15 @@ class RincianKontrakController extends Controller
                 ['data_kontrak.opd','=',Auth::user()->id_opd]
             ])->get();
 
-        if($register->count() == 0){
-            $reg = '000000';
-        }else{
-            $reg = $register[0]->max('register');
-        }
+            if($register->count() == 0){
+                $reg = '000000';
+            }else{
+                $reg = $register->max('register');
+            }
 
-        $urut = (int) substr($reg, 0, 6);
-		$urut++;
-		$regis = sprintf("%06s", $urut);
+            $urut = (int) substr($reg, 0, 6);
+            $urut++;
+            $regis = sprintf("%06s", $urut);
         return $regis;
     }
 
