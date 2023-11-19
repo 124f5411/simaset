@@ -128,7 +128,7 @@ class RincianKontrakController extends Controller
             $reg = $register[0]->max('register');
         }
 
-        $urut = (int) substr($reg, 1, 6);
+        $urut = (int) substr($reg, 0, 6);
 		$urut++;
 		$regis = sprintf("%06s", $urut);
         return $regis;
