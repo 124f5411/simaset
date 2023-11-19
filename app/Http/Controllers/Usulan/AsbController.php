@@ -9,6 +9,7 @@ use App\Models\DataSatuan;
 use App\Models\dataSsh;
 use App\Models\DetailRincianUsulan;
 use App\Models\KodeBarang;
+use App\Models\KodeOpd;
 use App\Models\RekeningBelanja;
 use App\Models\TtdSetting;
 use App\Models\UsulanSsh;
@@ -37,7 +38,7 @@ class AsbController extends Controller
         // }
 
         if(Auth::user()->level == 'aset'){
-            $instansi = DataOpd::all();
+            $instansi = KodeOpd::all();
             $tahun  = UsulanSsh::select('tahun')->where('id_kelompok','=','3')->where('status','=','1')->groupBy('tahun')->get();
             $jenis  = UsulanSsh::select('induk_perubahan')->where('id_kelompok','=','3')->where('status','=','1')->groupBy('induk_perubahan')->get();
             return view('usulan.asb.aset.index',[
@@ -61,7 +62,7 @@ class AsbController extends Controller
         $kode_barang = KodeBarang::where('kelompok','=','3')->get();
         $rekening = RekeningBelanja::all();
         $satuan = DataSatuan::all();
-        $instansi = DataOpd::all();
+        $instansi = KodeOpd::all();
         return view('usulan.asb.rincian',[
             'title' => 'Usulan',
             'page' => 'ASB',
@@ -76,7 +77,8 @@ class AsbController extends Controller
     }
 
     public function datas(){
-        $asb = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi','_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening','_data_ssh.uraian')
+        $asb = UsulanSsh::select('usulan_ssh.*','_data_ssh.id as id_ssh','_data_ssh.id_kode','_data_ssh.id_usulan','_data_ssh.spesifikasi',
+                                '_data_ssh.id_satuan','_data_ssh.harga','_data_ssh.status as s_status','_data_ssh.id_rekening','_data_ssh.uraian')
                         ->join('_data_ssh','usulan_ssh.id','=','_data_ssh.id_usulan')
                         ->where('usulan_ssh.id_kelompok','=',3)
                         ->whereIn('_data_ssh.status',['1','2']);
@@ -84,7 +86,7 @@ class AsbController extends Controller
         return datatables()->eloquent($asb)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($asb) {
-                    return getValue("opd","data_opd","id = ".$asb->id_opd);
+                    return getValue("nm_opd","kode_opd"," id = ".$asb->id_opd);
                 })
                 ->addColumn('usulan',function($asb) {
                     if(is_null($asb->induk_perubahan)){
@@ -206,7 +208,7 @@ class AsbController extends Controller
         return datatables()->eloquent($asb)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($asb) {
-                    return getValue("opd","data_opd","id = ".$asb->id_opd);
+                    return getValue("nm_opd","kode_opd"," id = ".$asb->id_opd);
                 })
                 ->addColumn('usulan',function($asb) {
                     if(is_null($asb->induk_perubahan)){

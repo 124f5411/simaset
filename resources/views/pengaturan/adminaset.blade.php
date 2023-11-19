@@ -96,7 +96,7 @@
                             $("#massages").empty();
                             $('#modalAdmin form')[0].reset();
                             $('#modalAdmin').modal('hide');
-                        }, 3000);
+                        }, 1000);
                         table.ajax.reload();
                     })
                     .fail((errors) => {
@@ -109,7 +109,7 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
-                            }, 5000);
+                            }, 3000);
                         });
                     });
                 }

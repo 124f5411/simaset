@@ -54,7 +54,7 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     @if (Auth::user()->level != 'admin')
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
             aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-folder"></i>
@@ -70,14 +70,14 @@
                 <a class="collapse-item text-wrap" {{ ($page == "KDP") ? "active" : "" }} href="{{ route('kdp.index') }}">Kontruksi Dalam Pengerjaan</a>
             </div>
         </div>
-    </li>
-    @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
-        <li class="nav-item {{ ($title == "Kontrak") ? "active" : "" }}">
-            <a class="nav-link" href="{{ route('kontrak.index') }}">
-                <i class="fas fa-file"></i>
-                <span>Kontrak</span></a>
-        </li>
-    @endif
+    </li> --}}
+        @if (Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara')
+            <li class="nav-item {{ ($title == "Kontrak") ? "active" : "" }}">
+                <a class="nav-link" href="{{ route('kontrak.index') }}">
+                    <i class="fas fa-file"></i>
+                    <span>Kontrak</span></a>
+            </li>
+        @endif
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
@@ -85,11 +85,11 @@
             <i class="far fa-file"></i>
             <span>Kartu Inventaris Barang</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+        <div id="collapseUtilities" class="collapse {{ ($title == "Kartu Inventaris Barang") ? "show" : "" }}" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="utilities-color.html">KIB A</a>
-                <a class="collapse-item" href="utilities-border.html">KIB B</a>
+                <a class="collapse-item {{ ($page == "KIB A") ? "active" : "" }}" href="{{ route('kiba.index') }}">KIB A</a>
+                <a class="collapse-item {{ ($page == "KIB B") ? "active" : "" }}" href="{{ route('kibb.index') }}">KIB B</a>
                 <a class="collapse-item" href="utilities-animation.html">KIB C</a>
                 <a class="collapse-item" href="utilities-animation.html">KIB D</a>
                 <a class="collapse-item" href="utilities-animation.html">KIB E</a>
@@ -111,14 +111,31 @@
             </a>
             <div id="collapsePages" class="collapse {{ ($title == "Referensi") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item {{ ($page == "Kode OPD") ? "active" : "" }}" href="{{ route('opd.index') }}">Kode OPD</a>
                     <a class="collapse-item {{ ($page == "Hak") ? "active" : "" }}" href="{{ route('hak_tanah.index') }}">Hak Tanah</a>
                     <a class="collapse-item {{ ($page == "Satuan") ? "active" : "" }}" href="{{ route('satuan.index') }}">Satuan</a>
                     <a class="collapse-item {{ ($page == "Status") ? "active" : "" }}" href="{{ route('status_tanah.index') }}">Status Tanah</a>
                     <a class="collapse-item {{ ($page == "Jenis") ? "active" : "" }}" href="{{ route('jenis.index') }}">Jenis Aset</a>
                     <a class="collapse-item {{ ($page == "Kib") ? "active" : "" }}" href="{{ route('kib.index') }}">Master KIB</a>
                     <a class="collapse-item {{ ($page == "Kode") ? "active" : "" }}" href="{{ route('kode_barang.index') }}">Kode Barang</a>
+                    <a class="collapse-item {{ ($page == "Kode Barang Kontrak") ? "active" : "" }}" href="{{ route('kode_barang_kontrak.list') }}">Kode Barang Kontrak</a>
                     <a class="collapse-item {{ ($page == "Rekening") ? "active" : "" }}" href="{{ route('rekening_belanja.index') }}">Rekening Belanja</a>
                     <a class="collapse-item {{ ($page == "Kelompok") ? "active" : "" }}" href="{{ route('kelompok.index') }}">Kelompok SSH</a>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item {{ ($title == "Referensi") ? "active" : "" }}">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseImport"
+                aria-expanded="true" aria-controls="collapseImport">
+
+                <i class="fas fa-file-import"></i>
+                <span>Import</span>
+            </a>
+            <div id="collapseImport" class="collapse {{ ($title == "Import") ? "show" : "" }}" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item {{ ($page == "Kode Rekekning") ? "active" : "" }}" href="">Rekening Belanja</a>
+                    <a class="collapse-item {{ ($page == "Kode Barang Usulan") ? "active" : "" }}" href="">Kode Barang Usulan</a>
+                    <a class="collapse-item {{ ($page == "Kode Barang Kontrak") ? "active" : "" }}" href="{{ route('import.kontrak.index') }}">Kode Barang Kontrak</a>
                 </div>
             </div>
         </li>
@@ -137,7 +154,6 @@
                         <a class="collapse-item {{ ($page == "Admin") ? "active" : "" }}" href="{{ route('admin.index') }}">Admin</a>
                         <a class="collapse-item {{ ($page == "Admin Aset") ? "active" : "" }}" href="{{ route('adminaset.index') }}">Admin Aset</a>
                         <a class="collapse-item {{ ($page == "Bendahara") ? "active" : "" }}" href="{{ route('bendahara.index') }}">Bendahara</a>
-                        <a class="collapse-item {{ ($page == "Instansi") ? "active" : "" }}" href="{{ route('instansi.index') }}">Instansi</a>
                     @endif
                     @if (Auth::user()->level == "admin" || Auth::user()->level == "bendahara")
                         <a class="collapse-item {{ ($page == "Operator") ? "active" : "" }}" href="{{ route('operator.index') }}">Operator</a>

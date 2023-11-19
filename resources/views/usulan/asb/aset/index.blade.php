@@ -40,7 +40,7 @@
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
 
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800 text-justify" style="font-size: 10pt"> {{ $value->opd }}</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800 text-justify" style="font-size: 10pt"> {{ $value->nm_opd }}</div>
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fas fa-folder fa-2x text-gray-300"></i>

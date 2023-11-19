@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pengaturan;
 
 use App\Http\Controllers\Controller;
 use App\Models\DataOpd;
+use App\Models\KodeOpd;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 class OperatorController extends Controller
 {
     public function index(){
-        $instansi = DataOpd::all();
+        $instansi = KodeOpd::all();
         return view('pengaturan.operator',[
             'title' => 'Pengaturan',
             'page' => 'Operator',
@@ -22,18 +23,18 @@ class OperatorController extends Controller
 
     public function data(){
         if(Auth::user()->level == 'admin'){
-            $admin = User::where('level','=','operator')->get();
+            $admin = User::where('level','=','operator');
         }elseif(Auth::user()->level == 'bendahara'){
             // $admin = User::where('level','=','operator')->where('id_opd','=',Auth::user()->id_opd)->get();
             $admin = User::where([
                 ['level','=','operator'],
                 ['id_opd','=',Auth::user()->id_opd]
-            ])->get();
+            ]);
         }
-        return datatables()->of($admin)
+        return datatables()->eloquent($admin)
                 ->addIndexColumn()
                 ->addColumn('instansi', function($admin) {
-                    return getValue("opd","data_opd"," id = ".$admin->id_opd);
+                    return getValue("nm_opd","kode_opd"," id = ".$admin->id_opd);
                 })
                 ->addColumn('aksi', function($admin){
                     return '

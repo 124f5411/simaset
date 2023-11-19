@@ -117,4 +117,9 @@ class KodeBarangController extends Controller
         return response()->json('Kode barang berhasil diimport', 200);
 
     }
+
+    public function dataBarang(){
+        $barang = KodeBarang::whereIn('kelompok',['1','2','3','4'])->get();
+        return response()->json($barang);
+    }
 }

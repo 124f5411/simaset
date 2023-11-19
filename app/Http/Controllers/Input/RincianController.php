@@ -21,7 +21,7 @@ class RincianController extends Controller
     public function index($id){
         $usulan = UsulanSsh::find(decrypt($id));
         $kode_barang = KodeBarang::whereIn('kelompok',['1','2','3','4'])->get();
-        $rekening = RekeningBelanja::all();
+        // $rekening = RekeningBelanja::all();
         $satuan = DataSatuan::all();
 
         return view('input.rincian',[
@@ -29,7 +29,6 @@ class RincianController extends Controller
             'page' => 'Usulan',
             'drops' => [
                 'kode_barang' => $kode_barang,
-                'rekening' => $rekening,
                 'satuan' => $satuan
             ],
             'usulan_status' => $usulan->status
@@ -117,7 +116,6 @@ class RincianController extends Controller
 
         $pesan = [
             'id_kode.required' => 'Barang tidak boleh kosong <br />',
-            'id_rekening.required' => 'Rekening belanja tidak boleh kosong <br />',
             'uraian.required' => 'Uraian tidak boleh kosong <br />',
             'spesifikasi.required' => 'Spesifikasi tidak boleh kosong <br />',
             'id_satuan.required' => 'Satuan tidak boleh kosong <br />',
@@ -182,6 +180,16 @@ class RincianController extends Controller
             'tkdn.required' => 'T K D N tidak boleh kosong <br />',
         ];
         $this->validate($request, $field, $pesan);
+        $rek_1 = ($request->rek_1 == "Cari Kode Rekening") ? NULL : $request->rek_1;
+        $rek_2 = ($request->rek_2 == "Cari Kode Rekening") ? NULL : $request->rek_2;
+        $rek_3 = ($request->rek_3 == "Cari Kode Rekening") ? NULL : $request->rek_3;
+        $rek_4 = ($request->rek_4 == "Cari Kode Rekening") ? NULL : $request->rek_4;
+        $rek_5 = ($request->rek_5 == "Cari Kode Rekening") ? NULL : $request->rek_5;
+        $rek_6 = ($request->rek_6 == "Cari Kode Rekening") ? NULL : $request->rek_6;
+        $rek_7 = ($request->rek_7 == "Cari Kode Rekening") ? NULL : $request->rek_7;
+        $rek_8 = ($request->rek_8 == "Cari Kode Rekening") ? NULL : $request->rek_8;
+        $rek_9 = ($request->rek_9 == "Cari Kode Rekening") ? NULL : $request->rek_9;
+        $rek_10 = ($request->rek_10 == "Cari Kode Rekening") ? NULL : $request->rek_10;
         $data = [
             'id_kode' => $request->id_kode,
             'spesifikasi' => $request->spesifikasi,
@@ -190,16 +198,16 @@ class RincianController extends Controller
             'tkdn' => $request->tkdn,
             'id_kelompok' => $id_kelompok,
             'id_satuan' => $request->id_satuan,
-            'rek_1' => $request->rek_1,
-            'rek_2' => $request->rek_2,
-            'rek_3' => $request->rek_3,
-            'rek_4' => $request->rek_4,
-            'rek_5' => $request->rek_5,
-            'rek_6' => $request->rek_6,
-            'rek_7' => $request->rek_7,
-            'rek_8' => $request->rek_8,
-            'rek_9' => $request->rek_9,
-            'rek_10' => $request->rek_10,
+            'rek_1' => $rek_1,
+            'rek_2' => $rek_2,
+            'rek_3' => $rek_3,
+            'rek_4' => $rek_4,
+            'rek_5' => $rek_5,
+            'rek_6' => $rek_6,
+            'rek_7' => $rek_7,
+            'rek_8' => $rek_8,
+            'rek_9' => $rek_9,
+            'rek_10' => $rek_10,
         ];
 
         $rincian->update($data);
@@ -211,7 +219,7 @@ class RincianController extends Controller
         $usulan = UsulanSsh::find(decrypt($id));
         $jenis = ($usulan->induk_perubahan == "1") ? "induk" : "perubahan";
         $ttd = TtdSetting::where('id_opd','=',$usulan->id_opd)->first();
-        $opd = getValue("opd","data_opd"," id =".$usulan->id_opd);
+        $opd = getValue("nm_opd","kode_opd"," id =".$usulan->id_opd);
         $qrcode = base64_encode(QrCode::format('svg')->size(100)->errorCorrection('H')->generate(route('rincian.export',$id)));
         $data = [
             'tahun' => $usulan->tahun,

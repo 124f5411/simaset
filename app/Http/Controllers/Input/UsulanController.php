@@ -22,7 +22,7 @@ class UsulanController extends Controller
         return datatables()->eloquent($usulan)
                 ->addIndexColumn()
                 ->addColumn('q_opd',function($usulan) {
-                    return getValue("opd","data_opd","id = ".$usulan->id_opd);
+                    return getValue("nm_opd","kode_opd"," id = ".$usulan->id_opd);
                 })
                 ->addColumn('usulan',function($usulan) {
                     $jenis = [

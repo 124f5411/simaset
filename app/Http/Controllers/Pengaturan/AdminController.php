@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pengaturan;
 
 use App\Http\Controllers\Controller;
 use App\Models\DataOpd;
+use App\Models\KodeOpd;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     public function index(){
-        $instansi = DataOpd::all();
+        $instansi = KodeOpd::all();
         return view('pengaturan.admin',[
             'title' => 'Pengaturan',
             'page' => 'Admin',
@@ -20,11 +21,11 @@ class AdminController extends Controller
     }
 
     public function data(){
-        $admin = User::where('level','=','admin')->get();
-        return datatables()->of($admin)
+        $admin = User::where('level','=','admin');
+        return datatables()->eloquent($admin)
                 ->addIndexColumn()
                 ->addColumn('instansi', function($admin) {
-                    return getValue("opd","data_opd"," id = ".$admin->id_opd);
+                    return getValue("nm_opd","kode_opd"," id = ".$admin->id_opd);
                 })
                 ->addColumn('aksi', function($admin){
                     return '

@@ -28,7 +28,7 @@
                         <select class="form-control" id="id_opd" name="id_opd">
                             <option value="">Pilih Instansi</option>
                             @foreach ($drops as $value)
-                                <option value="{{ $value->id }}">{{ $value->opd }}</option>
+                                <option value="{{ $value->id }}">{{ $value->nm_opd }}</option>
                             @endforeach
                         </select>
                     </div>

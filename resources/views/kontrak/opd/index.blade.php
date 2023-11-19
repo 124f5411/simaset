@@ -24,8 +24,8 @@
                     <table class="table table-bordered" id="dataKontrak" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Nomor</th>
+                                <th>No</th>
+                                <th>Nomor Kontrak</th>
                                 <th>Kegiatan</th>
                                 <th>Tahun</th>
                                 <th>Tanggal</th>
@@ -99,7 +99,7 @@
                             $("#massages").empty();
                             $('#modalKontrak form')[0].reset();
                             $('#modalKontrak').modal('hide');
-                        }, 3000);
+                        }, 1000);
                         table.ajax.reload();
                     })
                     .fail((errors) => {
@@ -112,9 +112,7 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
-                                $('#modalKontrak form')[0].reset();
-                                $('#modalKontrak').modal('hide');
-                            }, 5000);
+                            }, 3000);
                         });
                     });
                 }

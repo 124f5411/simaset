@@ -64,7 +64,7 @@ class MonitorController extends Controller
         return datatables()->eloquent($data)
                 ->addIndexColumn()
                 ->addColumn('opd', function($data){
-                    return getValue("opd","data_opd"," id = ".$data->id_opd);
+                    return getValue("nm_opd","kode_opd"," id = ".$data->id_opd);
                 })
                 ->addColumn('kode_barang',function($data){
                     return getValue("kode_barang","referensi_kode_barang"," id = ".$data->id_kode);

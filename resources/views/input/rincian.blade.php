@@ -71,7 +71,7 @@
     <link href="{{ asset('themes/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
 <style>
     .table td, .table th {
         font-size: 10pt;
@@ -212,8 +212,124 @@
                 }
             });
 
+            function dropRekening(selector){
+            let target = $('#' + selector);
+                target.focus();
+                $.ajax({
+                    url: "{{ route('rekening_belanja.dropdown') }}",
+                    type: 'GET',
+                    success: function(data) {
+                        target.empty()
+                        target.attr('placeholder', target.data('placeholder'))
+                        target.append(`<option> ${target.data('placeholder')} </option>`)
+                        $.each(data, function(key, value) {
+                            target.append(`<option value="${value.id}">${value.kode_akun} - ${value.nm_akun}</option>`)
+                        });
+                    }
+                });
+        }
+
+            $('#modalSsh #rek_1').on('change', function() {
+                $('#modalSsh .rek_2').show();
+                dropRekening('modalSsh #rek_2');
+                $('#modalSsh .rek_3').hide();
+                $('#modalSsh .rek_4').hide();
+                $('#modalSsh .rek_5').hide();
+                $('#modalSsh .rek_6').hide();
+                $('#modalSsh .rek_7').hide();
+                $('#modalSsh .rek_8').hide();
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
+            });
+
+            $('#modalSsh #rek_2').on('change', function() {
+                $('#modalSsh .rek_3').show();
+                dropRekening('modalSsh #rek_3');
+                $('#modalSsh .rek_4').hide();
+                $('#modalSsh .rek_5').hide();
+                $('#modalSsh .rek_6').hide();
+                $('#modalSsh .rek_7').hide();
+                $('#modalSsh .rek_8').hide();
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
+            });
+
+            $('#modalSsh #rek_3').on('change', function() {
+                $('#modalSsh .rek_4').show();
+                dropRekening('modalSsh #rek_4');
+                $('#modalSsh .rek_5').hide();
+                $('#modalSsh .rek_6').hide();
+                $('#modalSsh .rek_7').hide();
+                $('#modalSsh .rek_8').hide();
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
+            });
+
+            $('#modalSsh #rek_4').on('change', function() {
+                $('#modalSsh .rek_5').show();
+                dropRekening('modalSsh #rek_5');
+                $('#modalSsh .rek_6').hide();
+                $('#modalSsh .rek_7').hide();
+                $('#modalSsh .rek_8').hide();
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
+            });
+
+            $('#modalSsh #rek_5').on('change', function() {
+                $('#modalSsh .rek_6').show();
+                dropRekening('modalSsh #rek_6');
+                $('#modalSsh .rek_7').hide();
+                $('#modalSsh .rek_8').hide();
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
+            });
+
+            $('#modalSsh #rek_6').on('change', function() {
+                $('#modalSsh .rek_7').show();
+                dropRekening('modalSsh #rek_7');
+                $('#modalSsh .rek_8').hide();
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
+            });
+
+            $('#modalSsh #rek_7').on('change', function() {
+                $('#modalSsh .rek_8').show();
+                dropRekening('modalSsh #rek_8');
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
+            });
+
+            $('#modalSsh #rek_8').on('change', function() {
+                $('#modalSsh .rek_9').show();
+                dropRekening('modalSsh #rek_9');
+                $('#modalSsh .rek_10').hide();
+            });
+
+            $('#modalSsh #rek_9').on('change', function() {
+                $('#modalSsh .rek_10').show();
+                dropRekening('modalSsh #rek_10');
+            });
+
 
         });
+
+
+        function dropRekening(selector){
+            let target = $('#' + selector);
+                target.focus();
+                $.ajax({
+                    url: "{{ route('rekening_belanja.dropdown') }}",
+                    type: 'GET',
+                    success: function(data) {
+                        target.empty()
+                        target.attr('placeholder', target.data('placeholder'))
+                        target.append(`<option> ${target.data('placeholder')} </option>`)
+                        $.each(data, function(key, value) {
+                            target.append(`<option value="${value.id}">${value.kode_akun} - ${value.nm_akun}</option>`)
+                        });
+                    }
+                });
+        }
 
         function addSsh(url){
             $('#modalSsh').modal('show');
@@ -224,6 +340,17 @@
             $('#modalSsh [name=_method]').val('post');
             $('#modalSsh [name=jenis]').val('');
             $('#modalSsh').on('shown.bs.modal', function () {
+                dropRekening('modalSsh #rek_1');
+                $('#modalSsh .rek_2').hide();
+                $('#modalSsh .rek_3').hide();
+                $('#modalSsh .rek_4').hide();
+                $('#modalSsh .rek_5').hide();
+                $('#modalSsh .rek_6').hide();
+                $('#modalSsh .rek_7').hide();
+                $('#modalSsh .rek_8').hide();
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
+
                 $('#id_kode').focus();
             })
         }
@@ -239,23 +366,23 @@
             $('#modalSsh [name=_method]').val('put');
             $('#modalSsh [name=jenis]').val('');
             $('#modalSsh').on('shown.bs.modal', function () {
-                $('#id_kode').focus();
+                $('#modalSsh #id_kode').focus();
+                dropRekening('modalSsh #rek_1');
+                $('#modalSsh .rek_2').hide();
+                $('#modalSsh .rek_3').hide();
+                $('#modalSsh .rek_4').hide();
+                $('#modalSsh .rek_5').hide();
+                $('#modalSsh .rek_6').hide();
+                $('#modalSsh .rek_7').hide();
+                $('#modalSsh .rek_8').hide();
+                $('#modalSsh .rek_9').hide();
+                $('#modalSsh .rek_10').hide();
             })
 
             let show = "{{route('rincian.show', '')}}"+"/"+id;
             $.get(show)
             .done((response) => {
                 $('#modalSsh [name=id_kode]').val(response.id_kode).trigger('change');
-                $('#modalSsh [name=rek_1]').val(response.rek_1).trigger('change');
-                $('#modalSsh [name=rek_2]').val(response.rek_2).trigger('change');
-                $('#modalSsh [name=rek_3]').val(response.rek_3).trigger('change');
-                $('#modalSsh [name=rek_4]').val(response.rek_4).trigger('change');
-                $('#modalSsh [name=rek_5]').val(response.rek_5).trigger('change');
-                $('#modalSsh [name=rek_6]').val(response.rek_6).trigger('change');
-                $('#modalSsh [name=rek_7]').val(response.rek_7).trigger('change');
-                $('#modalSsh [name=rek_8]').val(response.rek_8).trigger('change');
-                $('#modalSsh [name=rek_9]').val(response.rek_9).trigger('change');
-                $('#modalSsh [name=rek_10]').val(response.rek_10).trigger('change');
                 $('#modalSsh [name=spesifikasi]').val(response.spesifikasi);
                 $('#modalSsh [name=uraian]').val(response.uraian);
                 $('#modalSsh [name=id_satuan]').val(response.id_satuan).trigger('change');

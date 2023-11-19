@@ -95,4 +95,9 @@ class RekeningBelanjaController extends Controller
         return response()->json('Rekening belanja berhasil diimport', 200);
 
     }
+
+    public function dataRekening(){
+        $rekening = RekeningBelanja::all();
+        return response()->json($rekening);
+    }
 }

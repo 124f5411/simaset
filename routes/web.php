@@ -4,8 +4,14 @@ use App\Http\Controllers\Barang\KdpController;
 use App\Http\Controllers\Barang\PeralatanController;
 use App\Http\Controllers\Barang\TanahController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\getKodeController;
+use App\Http\Controllers\Import\KodeBarangKontrakController;
+use App\Http\Controllers\Import\KodeBarangUsulanController;
+use App\Http\Controllers\Import\RekeningController;
 use App\Http\Controllers\Input\RincianController;
 use App\Http\Controllers\Input\UsulanController;
+use App\Http\Controllers\Kib\KibAController;
+use App\Http\Controllers\Kib\KibBController;
 use App\Http\Controllers\KontrakController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\MonitorController;
@@ -21,9 +27,12 @@ use App\Http\Controllers\Referensi\jenisController;
 use App\Http\Controllers\Referensi\KelompokController;
 use App\Http\Controllers\Referensi\KibController;
 use App\Http\Controllers\Referensi\KodeBarangController;
+use App\Http\Controllers\Referensi\KodeOpdController;
+use App\Http\Controllers\Referensi\KodeUrusanController;
 use App\Http\Controllers\Referensi\RekeningBelanjaController;
 use App\Http\Controllers\Referensi\SatuanController;
 use App\Http\Controllers\Referensi\statusTanahController;
+use App\Http\Controllers\RincianKontrakController;
 use App\Http\Controllers\Usulan\AsbController;
 use App\Http\Controllers\Usulan\HspkController;
 use App\Http\Controllers\Usulan\SbuController;
@@ -67,11 +76,37 @@ Route::group(['middleware' => 'auth'], function (){
     Route::put('/kontrak/{id}',[KontrakController::class,'update'])->name('kontrak.update');
     Route::delete('/kontrak/{id}',[KontrakController::class,'destroy'])->name('kontrak.destroy');
 
+    Route::get('/kontrak/rincian/{id}',[RincianKontrakController::class,'index'])->name('kontrak.rincian.index');
+    Route::get('/kontrak/rincian/show/{id}',[RincianKontrakController::class,'show'])->name('kontrak.rincian.show');
+    Route::get('/kontrak/rincian/data/{id}',[RincianKontrakController::class,'data'])->name('kontrak.rincian.data');
+    Route::get('/kontrak/getregister/{kode}/{id_kontrak}',[RincianKontrakController::class,'getRegister'])->name('kontrak.rincian.getregister');
+
+    Route::put('kontrak/detail/update/{id}',[RincianKontrakController::class,'update'])->name('kontrak.detail.update');
+    Route::post('kontrak/detail/{id}',[RincianKontrakController::class,'store'])->name('kontrak.rincian.store');
+    Route::delete('kontrak/detail/hapus/{id}',[RincianKontrakController::class,'destroy'])->name('kontrak.detail.destroy');
+
+    Route::get('kib/a',[KibAController::class,'index'])->name('kiba.index');
+    Route::get('kib/a/data',[KibAController::class,'data'])->name('kiba.data');
+
+    Route::get('kib/b',[KibBController::class,'index'])->name('kibb.index');
+    Route::get('kib/b/data',[KibBController::class,'data'])->name('kibb.data');
+
     Route::get('pengaturan/instansi',[InstansiController::class,'index'])->name('instansi.index');
     Route::get('pengaturan/admin',[AdminController::class,'index'])->name('admin.index');
     Route::get('pengaturan/adminaset',[AdminAsetController::class,'index'])->name('adminaset.index');
     Route::get('pengaturan/bendahara',[BendaharaController::class,'index'])->name('bendahara.index');
     Route::get('pengaturan/operator',[OperatorController::class,'index'])->name('operator.index');
+
+    Route::get('import/rekening/index',[RekeningController::class,'index'])->name('import.rekening.index');
+    Route::post('import/rekening',[RekeningController::class,'import'])->name('import.rekening');
+
+    Route::get('import/usulan/index',[KodeBarangUsulanController::class,'index'])->name('import.usulan.index');
+    Route::post('import/usulan',[RekeningController::class,'import'])->name('import.usulan');
+
+    Route::get('import/kontrak/index',[KodeBarangKontrakController::class,'index'])->name('import.kontrak.index');
+    Route::post('import/kontrak',[KodeBarangKontrakController::class,'import'])->name('import.kontrak');
+
+
     Route::get('pengaturan/pb',[TtdController::class,'index'])->name('pb.index');
 
     Route::get('pb/show/{id}',[TtdController::class,'show'])->name('ttd.show');
@@ -107,9 +142,57 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('referensi/status_tanah',[statusTanahController::class,'index'])->name('status_tanah.index');
     Route::get('referensi/hak_tanah',[hakTanahController::class,'index'])->name('hak_tanah.index');
     Route::get('referensi/kode_barang',[KodeBarangController::class,'index'])->name('kode_barang.index');
+    Route::get('referensi/kode_barang_kontrak',[KodeBarangKontrakController::class,'list'])->name('kode_barang_kontrak.list');
     Route::get('referensi/rekening_belanja',[RekeningBelanjaController::class,'index'])->name('rekening_belanja.index');
     Route::get('referensi/kelompok',[KelompokController::class,'index'])->name('kelompok.index');
     Route::get('referensi/satuan',[SatuanController::class,'index'])->name('satuan.index');
+    Route::get('referensi/urusan',[KodeUrusanController::class,'index'])->name('urusan.index');
+    Route::get('referensi/opd',[KodeOpdController::class,'index'])->name('opd.index');
+
+
+    Route::get('opd/data',[KodeOpdController::class,'data'])->name('opd.data');
+    Route::get('opd/data/{id}',[KodeOpdController::class,'show'])->name('opd.show');
+    Route::post('opd/data',[KodeOpdController::class,'store'])->name('opd.store');
+    // Route::post('opd/data/biro',[KodeOpdController::class,'biroStore'])->name('opd.birostore');
+    Route::put('opd/data/{id}',[KodeOpdController::class,'update'])->name('opd.update');
+    Route::delete('opd/data/{id}',[KodeOpdController::class,'destroy'])->name('opd.destroy');
+
+    Route::get('urusan/dropUrusan',[KodeUrusanController::class,'dropUrusan'])->name('urusan.dropUrusan');
+    Route::get('urusan/dropSubUrusan',[KodeUrusanController::class,'dropSubUrusan'])->name('urusan.suburusan');
+    Route::get('urusan/getKodeBidang/{id}',[KodeUrusanController::class,'getKodeBidang'])->name('urusan.getkodebidang');
+    Route::get('urusan/kodeUrusan/{id}',[KodeUrusanController::class,'kodeUrusan'])->name('urusan.kodeUrusan');
+    Route::get('urusan/kodeBiro',[KodeUrusanController::class,'kodeBiro'])->name('urusan.biro');
+
+
+
+    Route::get('kode/barang/kontrak/data',[KodeBarangKontrakController::class,'data'])->name('kode.barang.kontrak.data');
+    Route::get('kode/barang/kontrak/kelompokdropdown',[KodeBarangKontrakController::class,'dropdownKelompok'])->name('kode.barang.kontrak.kelompokdropdown');
+    Route::get('kode/barang/kontrak/kelompok',[KodeBarangKontrakController::class,'getKelompok'])->name('kode.barang.kontrak.kelompok');
+    Route::get('kode/barang/kontrak/objek',[KodeBarangKontrakController::class,'getObjek'])->name('kode.barang.kontrak.objek');
+    Route::get('kode/barang/kontrak/jenis',[KodeBarangKontrakController::class,'getJenis'])->name('kode.barang.kontrak.jenis');
+    Route::get('kode/barang/kontrak/rincian',[KodeBarangKontrakController::class,'getRincian'])->name('kode.barang.kontrak.rincian');
+    Route::get('kode/barang/kontrak/subrincian',[KodeBarangKontrakController::class,'getSubRincian'])->name('kode.barang.kontrak.subrincian');
+    Route::get('kode/barang/kontrak/{id}',[KodeBarangKontrakController::class,'show'])->name('kode.barang.kontrak.show');
+    Route::post('kode/barang/kontrak',[KodeBarangKontrakController::class,'store'])->name('kode.barang.kontrak.store');
+    Route::put('kode/barang/kontrak/{id}',[KodeBarangKontrakController::class,'update'])->name('kode.barang.kontrak.update');
+    Route::delete('kode/barang/kontrak/{id}',[KodeBarangKontrakController::class,'destroy'])->name('kode.barang.kontrak.destroy');
+
+    Route::get('ambilKode/kelompok',[getKodeController::class,'kodeKelompok'])->name('ambilkode.kelompok');
+    Route::get('ambilKode/jenis/{id}',[getKodeController::class,'kodeJenis'])->name('ambilkode.jenis');
+    Route::get('ambilKode/objek/{id}',[getKodeController::class,'kodeObjek'])->name('ambilkode.objek');
+    Route::get('ambilKode/rincian/{id}',[getKodeController::class,'kodeRincian'])->name('ambilkode.rincian');
+    Route::get('ambilKode/subrincian/{id}',[getKodeController::class,'kodeSubRincian'])->name('ambilkode.subrincian');
+    Route::get('ambilKode/barang/{id}',[getKodeController::class,'kodeBarang'])->name('ambilkode.barang');
+
+    Route::get('kodeJenis/{id}',[getKodeController::class,'getJenis'])->name('getkode.jenis');
+
+
+    Route::get('kodeObjek/{id}',[getKodeController::class,'getObjek'])->name('getkode.objek');
+
+    Route::get('kodeRincian/{id}',[getKodeController::class,'getRincian'])->name('getkode.rincian');
+
+    Route::get('kodeSubRincian/{id}',[getKodeController::class,'getSubRincian'])->name('getkode.subrincian');
+    Route::get('kodeBarang/{id}',[getKodeController::class,'getBarang'])->name('getkode.barang');
 
     Route::get('usulan/ssh',[SshController::class,'index'])->name('ssh.index');
     Route::get('usulan/asb',[AsbController::class,'index'])->name('asb.index');
@@ -195,6 +278,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('kdp/kontrak/{id}/{id_opd}',[KdpController::class,'getKontrak'])->name('kdp.getKontrak');
 
     Route::get('kode_barang/data',[KodeBarangController::class,'data'])->name('kode_barang.data');
+    Route::get('kode_barang/dropdown',[KodeBarangController::class,'dataBarang'])->name('kode_barang.dropdown');
     Route::get('kode_barang/{id}',[KodeBarangController::class,'show'])->name('kode_barang.show');
     Route::post('kode_barang',[KodeBarangController::class,'store'])->name('kode_barang.store');
     Route::post('kode_barang/import',[KodeBarangController::class,'import'])->name('kode_barang.import');
@@ -202,6 +286,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('kode_barang/{id}',[KodeBarangController::class,'destroy'])->name('kode_barang.destroy');
 
     Route::get('rekening_belanja/data',[RekeningBelanjaController::class,'data'])->name('rekening_belanja.data');
+    Route::get('rekening_belanja/dropdown',[RekeningBelanjaController::class,'dataRekening'])->name('rekening_belanja.dropdown');
     Route::get('rekening_belanja/{id}',[RekeningBelanjaController::class,'show'])->name('rekening_belanja.show');
     Route::post('rekening_belanja',[RekeningBelanjaController::class,'store'])->name('rekening_belanja.store');
     Route::post('rekening_belanja/import',[RekeningBelanjaController::class,'import'])->name('rekening_belanja.import');
@@ -335,6 +420,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('usulan/{id}',[UsulanController::class,'destroy'])->name('usulan.destroy');
     Route::put('usulan/upload/{id}',[UsulanController::class,'upload'])->name('usulan.upload');
     Route::put('usulan/valid/{id}',[UsulanController::class,'validasi'])->name('usulan.validasi');
+
 
     Route::get('rincian/{id}',[RincianController::class,'index'])->name('rincian.index');
     Route::post('usulan/rincian/data/{id}',[RincianController::class,'data'])->name('rincian.data');

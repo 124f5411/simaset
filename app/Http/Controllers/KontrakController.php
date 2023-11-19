@@ -6,6 +6,7 @@ use App\Models\DataKontrak;
 use App\Models\DataOpd;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class KontrakController extends Controller
 {
@@ -33,15 +34,15 @@ class KontrakController extends Controller
     public function data_opd(){
         $kontrak = DataKontrak::where([
             ['opd','=',Auth::user()->id_opd]
-        ])->get();
-        return datatables()->of($kontrak)
+        ]);
+        return datatables()->eloquent($kontrak)
                 ->addIndexColumn()
                 ->addColumn('tanggal', function($kontrak) {
-                    return indo_date($kontrak->t_kontrak);
+                    return indo_dates($kontrak->t_kontrak);
                 })
                 ->addColumn('rincian', function($kontrak){
                     return '
-                    <a href="#" class="btn btn-success btn-icon-split" title="Lihat Rincian">
+                    <a href="'.route('kontrak.rincian.index',encrypt($kontrak->id)).'" class="btn btn-success btn-icon-split" title="Lihat Rincian">
                         <span class="icon text-white-50">
                             <i class="fas fa-eye"></i>
                         </span>
@@ -153,8 +154,8 @@ class KontrakController extends Controller
     }
 
     public function destroy($id){
-        $kontrak = DataKontrak::find($id);
-        $kontrak->delete();
+        $q = 'DELETE data_kontrak, detail_kontrak FROM data_kontrak  JOIN detail_kontrak on data_kontrak.id = detail_kontrak.id_kontrak where data_kontrak.id = ?';
+        DB::delete($q,[$id]);
         return response('Kontrak berhasil dihapus', 204);
     }
 }
