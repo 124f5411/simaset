@@ -44,7 +44,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="objek">Kode Kelompok</label>
-                        <input type="text" class="form-control" id="kode" name="kode" required readonly>
+                        <input type="text" class="form-control" id="kode" name="kode" required>
                     </div>
                     <div class="form-group">
                         <label for="nama">Uraian</label>

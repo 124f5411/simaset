@@ -114,7 +114,6 @@ class RincianKontrakController extends Controller
     }
 
     protected function kodeRegister($kode,$id_kontrak){
-        // dd($kode);
         $register = DetailKontrak::select('detail_kontrak.register')
             ->join('data_kontrak','detail_kontrak.id_kontrak','=','data_kontrak.id')
             ->where([
