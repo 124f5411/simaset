@@ -21,6 +21,7 @@ use App\Http\Controllers\Pengaturan\BendaharaController;
 use App\Http\Controllers\Pengaturan\InstansiController;
 use App\Http\Controllers\Pengaturan\OperatorController;
 use App\Http\Controllers\Pengaturan\TtdController;
+use App\Http\Controllers\PenyediaController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\Referensi\hakTanahController;
 use App\Http\Controllers\Referensi\jenisController;
@@ -96,6 +97,13 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('pengaturan/adminaset',[AdminAsetController::class,'index'])->name('adminaset.index');
     Route::get('pengaturan/bendahara',[BendaharaController::class,'index'])->name('bendahara.index');
     Route::get('pengaturan/operator',[OperatorController::class,'index'])->name('operator.index');
+
+    Route::get('penyedia',[PenyediaController::class,'index'])->name('penyedia.index');
+    Route::get('penyedia/data',[PenyediaController::class,'data'])->name('penyedia.data');
+    Route::post('penyedia',[PenyediaController::class,'store'])->name('penyedia.store');
+    Route::get('penyedia/{id}',[PenyediaController::class,'show'])->name('penyedia.show');
+    Route::put('penyedia/{id}',[PenyediaController::class,'update'])->name('penyedia.update');
+    Route::delete('penyedia/{id}',[PenyediaController::class,'destroy'])->name('penyedia.destroy');
 
     Route::get('import/rekening/index',[RekeningController::class,'index'])->name('import.rekening.index');
     Route::post('import/rekening',[RekeningController::class,'import'])->name('import.rekening');

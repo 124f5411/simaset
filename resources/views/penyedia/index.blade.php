@@ -11,26 +11,25 @@
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Data Kontrak</h6>
-                <a href="#" onclick="addKontrak('{{ route('kontrak.store') }}')" class="btn btn-primary btn-icon-split float-right">
+                <h6 class="m-0 font-weight-bold text-primary">Penyedia</h6>
+                <a href="javascript:void(0)" onclick="addPenyedia('{{ route('penyedia.store') }}')" class="btn btn-primary btn-icon-split float-right">
                     <span class="icon text-white-50">
                         <i class="fas fa-plus-circle"></i>
                     </span>
-                    <span class="text">{{ $page }}</span>
+                    <span class="text">Penyedia</span>
                 </a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataKontrak" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="dataPenyedia" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Nomor Kontrak</th>
-                                <th>Kegiatan</th>
+                                <th>#</th>
                                 <th>Penyedia</th>
-                                <th>Tahun</th>
-                                <th>Tanggal</th>
-                                <th>Rincian</th>
+                                <th>Pimpinan</th>
+                                <th>Alamat</th>
+                                <th>No Telp</th>
+                                <th>Email</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -41,57 +40,45 @@
 
     </div>
 </div>
-@includeIf('form.kontrak.opd.index')
+@includeIf('form.penyedia.index')
 @endsection
 
 @push('css')
     <link href="{{ asset('themes/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
-    <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
 
 @endpush
 
 @push('scripits')
     <script src="{{ asset('themes/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('themes/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.min.js"></script>
-    <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <script src="{{ asset('js/validator.min.js') }}"></script>
 
     <script>
         let table;
         $(document).ready(function() {
-            $('#penyedia_id').select2({
-                theme: 'bootstrap4',
-            });
-            $('#t_kontrak').datepicker({
-                uiLibrary: 'bootstrap4',
-                format: 'yyyy-mm-dd'
-            });
-            table = $('#dataKontrak').DataTable({
+            table = $('#dataPenyedia').DataTable({
                 responsive: true,
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
                 ajax:{
-                    url: '{{ route('kontrak.opd') }}'
+                    url: '{{ route('penyedia.data') }}'
                 },
                 columns:[
                     {data:'DT_RowIndex', searchable:false, sortable:false},
-                    {data:'no_kontrak'},
-                    {data:'nm_kontrak'},
-                    {data:'penyedia'},
-                    {data:'tahun'},
-                    {data:'tanggal'},
-                    {data:'rincian'},
+                    {data:'nm_penyedia'},
+                    {data:'pimpinan'},
+                    {data:'telp'},
+                    {data:'alamat'},
+                    {data:'email'},
                     {data:'aksi', searchable:false, sortable:false},
                 ]
             });
 
-            $('#modalKontrak').validator().on('submit', function (e){
+            $('#modalPenyedia').validator().on('submit', function (e){
                 if(! e.preventDefault()){
-                    $.post($('#modalKontrak form').attr('action'), $('#modalKontrak form').serialize())
+                    $.post($('#modalPenyedia form').attr('action'), $('#modalPenyedia form').serialize())
                     .done((response) => {
                         $(".alert" ).addClass( "alert-success" );
                         $(".alert").show();
@@ -99,8 +86,8 @@
                         setTimeout(function(){
                             $(".alert" ).removeClass( "alert-success" );
                             $("#massages").empty();
-                            $('#modalKontrak form')[0].reset();
-                            $('#modalKontrak').modal('hide');
+                            $('#modalPenyedia form')[0].reset();
+                            $('#modalPenyedia').modal('hide');
                         }, 1000);
                         table.ajax.reload();
                     })
@@ -114,6 +101,8 @@
                                 $(".alert").hide();
                                 $(".alert" ).removeClass( "alert-danger" );
                                 $("#massages").empty();
+                                $('#modalPenyedia form')[0].reset();
+                                $('#modalPenyedia').modal('hide');
                             }, 3000);
                         });
                     });
@@ -122,37 +111,39 @@
 
         });
 
-        function addKontrak(url){
-            $('#modalKontrak').modal('show');
-            $('#modalKontrak .modal-title').text('Tambah Kontrak');
+        function addPenyedia(url){
+            $('#modalPenyedia').modal('show');
+            $('#modalPenyedia .modal-title').text('Tambah Penyedia');
 
-            $('#modalKontrak form')[0].reset();
-            $('#modalKontrak form').attr('action',url);
-            $('#modalKontrak [name=_method]').val('post');
-            $('#modalKontrak').on('shown.bs.modal', function () {
-                $('#no_kontrak').focus();
+            $('#modalPenyedia form')[0].reset();
+            $('#modalPenyedia form').attr('action',url);
+            $('#modalPenyedia [name=_method]').val('post');
+            $('#modalPenyedia [name=jenis]').val('');
+            $('#modalPenyedia').on('shown.bs.modal', function () {
+                $('#nm_penyedia').focus();
             })
         }
 
-        function editKontrak(url, id){
-            $('#modalKontrak').modal('show');
-            $('#modalKontrak .modal-title').text('Ubah Kontrak');
+        function editPenyedia(url, id){
+            $('#modalPenyedia').modal('show');
+            $('#modalPenyedia .modal-title').text('Ubah Penyedia');
 
-            $('#modalKontrak form')[0].reset();
-            $('#modalKontrak form').attr('action',url);
-            $('#modalKontrak [name=_method]').val('put');
-            $('#modalKontrak').on('shown.bs.modal', function () {
-                $('#no_kontrak').focus();
+            $('#modalPenyedia form')[0].reset();
+            $('#modalPenyedia form').attr('action',url);
+            $('#modalPenyedia [name=_method]').val('put');
+            $('#modalPenyedia [name=jenis]').val('');
+            $('#modalPenyedia').on('shown.bs.modal', function () {
+                $('#nm_penyedia').focus();
             })
 
-            let show = "{{route('kontrak.show', '')}}"+"/"+id;
+            let show = "{{route('penyedia.show', '')}}"+"/"+id;
             $.get(show)
             .done((response) => {
-                $('#modalKontrak [name=no_kontrak]').val(response.no_kontrak);
-                $('#modalKontrak [name=nm_kontrak]').val(response.nm_kontrak);
-                $('#modalKontrak [name=penyedia_id]').val(response.penyedia_id).trigger('change');
-                $('#modalKontrak [name=tahun]').val(response.tahun);
-                $('#modalKontrak [name=t_kontrak]').val(response.t_kontrak);
+                $('#modalPenyedia [name=nm_penyedia]').val(response.nm_penyedia);
+                $('#modalPenyedia [name=pimpinan]').val(response.pimpinan);
+                $('#modalPenyedia [name=telp]').val(response.telp);
+                $('#modalPenyedia [name=alamat]').val(response.alamat);
+                $('#modalPenyedia [name=email]').val(response.email);
             })
             .fail((errors) => {
                 alert('Gagl tampil data');
@@ -160,7 +151,7 @@
             })
         }
 
-        function hapusKontrak(url){
+        function hapusPenyedia(url){
             if (confirm('Yakin ingin menghapus data terpilih?')) {
                     $.post(url, {
                             '_token': $('[name=csrf-token]').attr('content'),

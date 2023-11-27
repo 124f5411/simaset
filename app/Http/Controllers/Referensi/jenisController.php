@@ -19,8 +19,8 @@ class jenisController extends Controller
     }
 
     public function data(){
-        $jenis = DataJenis::all();
-        return datatables()->of($jenis)
+        $jenis = DataJenis::query();
+        return datatables()->eloquent($jenis)
         ->addIndexColumn()
         ->addColumn('kib', function($jenis) {
             return getValue("kib", " kib_master", " id = ".$jenis->id_master);

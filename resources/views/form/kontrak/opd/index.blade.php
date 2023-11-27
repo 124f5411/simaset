@@ -20,6 +20,15 @@
                         <input type="text" class="form-control" id="nm_kontrak" name="nm_kontrak" required>
                     </div>
                     <div class="form-group">
+                        <label for="penyedia_id">Penyedia</label>
+                        <select class="form-control" id="penyedia_id" name="penyedia_id">
+                            <option value="">Cari penyedia</option>
+                                @foreach ($drops['penyedia'] as $value)
+                                    <option value="{{ $value->id }}">{{ $value->nm_penyedia }}</option>
+                                @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="tahun">Tahun</label>
                         <input type="text" class="form-control" id="tahun" name="tahun" required>
                     </div>

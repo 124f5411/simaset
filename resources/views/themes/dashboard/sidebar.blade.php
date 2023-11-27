@@ -77,6 +77,11 @@
                     <i class="fas fa-file"></i>
                     <span>Kontrak</span></a>
             </li>
+            <li class="nav-item {{ ($title == "Penyedia") ? "active" : "" }}">
+                <a class="nav-link" href="{{ route('penyedia.index') }}">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Penyedia</span></a>
+            </li>
         @endif
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">

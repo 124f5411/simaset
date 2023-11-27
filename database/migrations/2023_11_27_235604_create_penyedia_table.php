@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDataKontrakTable extends Migration
+class CreatePenyediaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateDataKontrakTable extends Migration
      */
     public function up()
     {
-        Schema::create('data_kontrak', function (Blueprint $table) {
+        Schema::create('penyedia', function (Blueprint $table) {
             $table->id();
-            $table->string('no_kontrak');
-            $table->string('nm_kontrak');
-            $table->year('tahun');
-            $table->date('t_kontrak');
-            $table->bigInteger('opd');
-            $table->bigInteger('penyedia_id');
+            $table->string('nm_penyedia');
+            $table->string('pimpinan');
+            $table->string('telp');
+            $table->text('alamat');
+            $table->string('email');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ class CreateDataKontrakTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('data_kontrak');
+        Schema::dropIfExists('penyedia');
     }
 }

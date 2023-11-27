@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DataKontrak;
 use App\Models\DataOpd;
+use App\Models\Penyedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,9 +20,13 @@ class KontrakController extends Controller
         }
 
         if(Auth::user()->level == 'operator' || Auth::user()->level == 'bendahara'){
+            $penyedia = Penyedia::all();
             return view('kontrak.opd.index',[
                 'title' => 'Kontrak',
-                'page' => 'Kontrak'
+                'page' => 'Kontrak',
+                'drops' => [
+                    'penyedia' => $penyedia
+                ]
             ]);
         }
 
@@ -39,6 +44,9 @@ class KontrakController extends Controller
                 ->addIndexColumn()
                 ->addColumn('tanggal', function($kontrak) {
                     return indo_dates($kontrak->t_kontrak);
+                })
+                ->addColumn('penyedia', function($kontrak) {
+                    return getValue('nm_penyedia','penyedia',' id = '.$kontrak->penyedia_id);
                 })
                 ->addColumn('rincian', function($kontrak){
                     return '
@@ -82,6 +90,7 @@ class KontrakController extends Controller
         $field = [
             'no_kontrak' => ['required'],
             'nm_kontrak' =>  ['required'],
+            'penyedia_id' =>  ['required'],
             'tahun' =>  ['required'],
             't_kontrak' =>  ['required'],
         ];
@@ -89,6 +98,7 @@ class KontrakController extends Controller
         $pesan = [
             'no_kontrak.required' => 'Nomor kontrak tidak boleh kosong <br />',
             'nm_kontrak.required' => 'Judul kontrak tidak boleh kosong <br />',
+            'penyedia_id.required' => 'Mohon pilih penyedia <br />',
             'tahun.required' => 'Tahun kontrak tidak boleh kosong <br />',
             't_kontrak.required' => 'Tanggal kontrak tidak boleh kosong <br />'
         ];
@@ -100,6 +110,7 @@ class KontrakController extends Controller
         $data = [
             'no_kontrak' => $request->no_kontrak,
             'nm_kontrak' => $request->nm_kontrak,
+            'penyedia_id' => $request->penyedia_id,
             'tahun' => $request->tahun,
             't_kontrak' => $request->t_kontrak,
             'opd' => Auth::user()->id_opd
@@ -123,6 +134,7 @@ class KontrakController extends Controller
         $field = [
             'no_kontrak' => ['required'],
             'nm_kontrak' =>  ['required'],
+            'penyedia_id' =>  ['required'],
             'tahun' =>  ['required'],
             't_kontrak' =>  ['required'],
         ];
@@ -130,6 +142,7 @@ class KontrakController extends Controller
         $pesan = [
             'no_kontrak.required' => 'Nomor kontrak tidak boleh kosong <br />',
             'nm_kontrak.required' => 'Judul kontrak tidak boleh kosong <br />',
+            'penyedia_id.required' => 'Mohon pilih penyedia <br />',
             'tahun.required' => 'Tahun kontrak tidak boleh kosong <br />',
             't_kontrak.required' => 'Tanggal kontrak tidak boleh kosong <br />'
         ];
@@ -145,6 +158,7 @@ class KontrakController extends Controller
             'opd' => (Auth::user()->level == 'admin') ? $request->opd : Auth::user()->id_opd,
             'no_kontrak' => $request->no_kontrak,
             'nm_kontrak' => $request->nm_kontrak,
+            'penyedia_id' => $request->penyedia_id,
             'tahun' => $request->tahun,
             't_kontrak' => $request->t_kontrak,
         ];
