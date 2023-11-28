@@ -251,39 +251,39 @@ Route::group(['middleware' => 'auth'], function (){
     Route::delete('hak_tanah/{id}',[hakTanahController::class,'destroy'])->name('hak_tanah.destroy');
 
 
-    Route::get('barang/tanah',[TanahController::class,'index'])->name('tanah.index');
-    Route::get('barang/tanah/{id}',[TanahController::class,'detail'])->name('tanah.detail');
-    Route::get('barang/peralatan',[PeralatanController::class,'index'])->name('peralatan.index');
-    Route::get('barang/kdp',[KdpController::class,'index'])->name('kdp.index');
+    // Route::get('barang/tanah',[TanahController::class,'index'])->name('tanah.index');
+    // Route::get('barang/tanah/{id}',[TanahController::class,'detail'])->name('tanah.detail');
+    // Route::get('barang/peralatan',[PeralatanController::class,'index'])->name('peralatan.index');
+    // Route::get('barang/kdp',[KdpController::class,'index'])->name('kdp.index');
 
-    Route::get('tanah/data/{id}',[TanahController::class,'data'])->name('tanah.data');
-    Route::get('tanah/all',[TanahController::class,'data_all'])->name('tanah.all');
-    Route::get('tanah/register/{kode}/{id_opd}',[TanahController::class,'getRegister'])->name('tanah.getRegister');
-    Route::post('tanah/{id}',[TanahController::class,'store'])->name('tanah.store');
-    Route::get('tanah/{id}',[TanahController::class,'show'])->name('tanah.show');
-    Route::put('tanah/{id}',[TanahController::class,'update'])->name('tanah.update');
-    Route::put('tanah/valid/{id}',[TanahController::class,'validasi'])->name('tanah.validasi');
-    Route::put('tanah/tolak/{id}',[TanahController::class,'tolak'])->name('tanah.reject');
-    Route::delete('tanah/{id}',[TanahController::class,'destroy'])->name('tanah.destroy');
+    // Route::get('tanah/data/{id}',[TanahController::class,'data'])->name('tanah.data');
+    // Route::get('tanah/all',[TanahController::class,'data_all'])->name('tanah.all');
+    // Route::get('tanah/register/{kode}/{id_opd}',[TanahController::class,'getRegister'])->name('tanah.getRegister');
+    // Route::post('tanah/{id}',[TanahController::class,'store'])->name('tanah.store');
+    // Route::get('tanah/{id}',[TanahController::class,'show'])->name('tanah.show');
+    // Route::put('tanah/{id}',[TanahController::class,'update'])->name('tanah.update');
+    // Route::put('tanah/valid/{id}',[TanahController::class,'validasi'])->name('tanah.validasi');
+    // Route::put('tanah/tolak/{id}',[TanahController::class,'tolak'])->name('tanah.reject');
+    // Route::delete('tanah/{id}',[TanahController::class,'destroy'])->name('tanah.destroy');
 
-    Route::get('peralatan/data',[PeralatanController::class,'data'])->name('peralatan.data');
-    Route::get('peralatan/{id}',[PeralatanController::class,'show'])->name('peralatan.show');
-    Route::post('peralatan',[PeralatanController::class,'store'])->name('peralatan.store');
-    Route::put('peralatan/{id}',[PeralatanController::class,'update'])->name('peralatan.update');
-    Route::put('peralatan/valid/{id}',[PeralatanController::class,'validasi'])->name('peralatan.validasi');
-    Route::delete('peralatan/{id}',[PeralatanController::class,'destroy'])->name('peralatan.destroy');
-    Route::put('peralatan/tolak/{id}',[PeralatanController::class,'tolak'])->name('peralatan.reject');
-    Route::get('peralatan/register/{kode}/{id_opd}',[PeralatanController::class,'getRegister'])->name('peralatan.getRegister');
+    // Route::get('peralatan/data',[PeralatanController::class,'data'])->name('peralatan.data');
+    // Route::get('peralatan/{id}',[PeralatanController::class,'show'])->name('peralatan.show');
+    // Route::post('peralatan',[PeralatanController::class,'store'])->name('peralatan.store');
+    // Route::put('peralatan/{id}',[PeralatanController::class,'update'])->name('peralatan.update');
+    // Route::put('peralatan/valid/{id}',[PeralatanController::class,'validasi'])->name('peralatan.validasi');
+    // Route::delete('peralatan/{id}',[PeralatanController::class,'destroy'])->name('peralatan.destroy');
+    // Route::put('peralatan/tolak/{id}',[PeralatanController::class,'tolak'])->name('peralatan.reject');
+    // Route::get('peralatan/register/{kode}/{id_opd}',[PeralatanController::class,'getRegister'])->name('peralatan.getRegister');
 
-    Route::get('kdp/data',[KdpController::class,'data'])->name('kdp.data');
-    Route::get('kdp/{id}',[KdpController::class,'show'])->name('kdp.show');
-    Route::post('kdp',[KdpController::class,'store'])->name('kdp.store');
-    Route::put('kdp/{id}',[KdpController::class,'update'])->name('kdp.update');
-    Route::put('kdp/valid/{id}',[KdpController::class,'validasi'])->name('kdp.validasi');
-    Route::delete('kdp/{id}',[KdpController::class,'destroy'])->name('kdp.destroy');
-    Route::put('kdp/tolak/{id}',[KdpController::class,'tolak'])->name('kdp.reject');
-    Route::get('kdp/register/{kode}/{id_opd}',[KdpController::class,'getRegister'])->name('kdp.getRegister');
-    Route::get('kdp/kontrak/{id}/{id_opd}',[KdpController::class,'getKontrak'])->name('kdp.getKontrak');
+    // Route::get('kdp/data',[KdpController::class,'data'])->name('kdp.data');
+    // Route::get('kdp/{id}',[KdpController::class,'show'])->name('kdp.show');
+    // Route::post('kdp',[KdpController::class,'store'])->name('kdp.store');
+    // Route::put('kdp/{id}',[KdpController::class,'update'])->name('kdp.update');
+    // Route::put('kdp/valid/{id}',[KdpController::class,'validasi'])->name('kdp.validasi');
+    // Route::delete('kdp/{id}',[KdpController::class,'destroy'])->name('kdp.destroy');
+    // Route::put('kdp/tolak/{id}',[KdpController::class,'tolak'])->name('kdp.reject');
+    // Route::get('kdp/register/{kode}/{id_opd}',[KdpController::class,'getRegister'])->name('kdp.getRegister');
+    // Route::get('kdp/kontrak/{id}/{id_opd}',[KdpController::class,'getKontrak'])->name('kdp.getKontrak');
 
     Route::get('kode_barang/data',[KodeBarangController::class,'data'])->name('kode_barang.data');
     Route::get('kode_barang/dropdown',[KodeBarangController::class,'dataBarang'])->name('kode_barang.dropdown');
